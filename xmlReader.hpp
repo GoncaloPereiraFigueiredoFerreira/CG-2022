@@ -1,8 +1,11 @@
 #include "lib/rapidxml-1.13/rapidxml.hpp"
 #include <stdio.h>
+#include <vector>
 #include <iostream>
 
 #include <fstream>
+
+
 
 class Camera{
 	public:
@@ -23,24 +26,22 @@ class Camera{
 	int far;
 };
 
-class Lights{};
 
-
-class LPoint:Lights{
+class LPoint{
 	public:
 	int posX;
 	int posY;
 	int posZ;
 };
 
-class LDirec:Lights{
+class LDirec{
 	public:
 	int dirX;
 	int dirY;
 	int dirZ;
 };
 
-class LSpotl:Lights{
+class LSpotl{
 	public:
 	int posX;
 	int posY;
@@ -48,35 +49,52 @@ class LSpotl:Lights{
 	int dirX;
 	int dirY;
 	int dirZ;
-	int cutkff;
-}
+	int cutoff;
+};
+
+
+class Lights{
+	public:
+	std::vector<LPoint> points;
+	std::vector<LDirec> direct;
+	std::vector<LSpotl> spotL;
+};
 
 
 
-
-class Transform{};
-
-class Translate : Transform{
+class Translate {
 	public:
 	int x;
 	int y;
 	int z;
+	int order;
 };
 
-class Rotate : Transform{
+class Rotate {
 	public:
 	int angle;
 	int x;
 	int y;
 	int z;
+	int order;
 };
 
-class Scale : Transform{
+class Scale {
 	public:
 	int x;
 	int y;
 	int z;
+	int order;
 };
+
+
+class Transform{
+	public:
+	Translate transl;
+	Rotate rotate;
+	Scale scale;
+};
+
 
 
 
@@ -113,11 +131,10 @@ class Model{
 class xmlInfo{
 	public:
 	Camera cameraInfo;
-	Lights lightsList[8];
-	Transform* transforms; // only one entry for each type of transform
+	Lights lightsList;
+	Transform transforms; // only one entry for each type of transform
 						   // Order is relevant
-
-	Model* modelList;
+	std::vector<Model> modelList;
 };
 
 
