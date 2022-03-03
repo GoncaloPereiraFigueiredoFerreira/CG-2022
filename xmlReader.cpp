@@ -34,204 +34,241 @@ char* readFile(char * filename){
 xmlInfo readXML(){
     xml_document<> doc;
     char *fds = readFile((char*) "xml_syntax.xml");
-    xmlInfo xml;
-    if (fds){
+    xmlInfo xml;        
+    bool flag = true;
+        if (fds && flag){
 
-    doc.parse<0>(&fds[0]);
-    xml_node<> * root_node;
-    xml_node<> * temp1_node;
-    xml_node<> * temp2_node;
-    xml_node<> * temp3_node;
+        doc.parse<0>(&fds[0]);
+        xml_node<> * root;
+        xml_node<> * t1;
+        xml_node<> * t2;
+        xml_node<> * t3;
 
 
-    //faltam fazer verificações
-    root_node = doc.first_node("world");
-    
-
-    temp1_node = root_node->first_node("camera");
-    temp2_node = temp1_node->first_node("position");
-
-    xml.cameraInfo.xPos = atoi(temp2_node->first_attribute("x")->value());
-    xml.cameraInfo.yPos = atoi(temp2_node->first_attribute("y")->value());
-    xml.cameraInfo.zPos = atoi(temp2_node->first_attribute("z")->value());
-    
-
-    temp2_node = temp2_node->next_sibling();
-    xml.cameraInfo.xLook = atoi(temp2_node->first_attribute("x")->value());
-    xml.cameraInfo.yLook = atoi(temp2_node->first_attribute("y")->value());
-    xml.cameraInfo.zLook = atoi(temp2_node->first_attribute("z")->value());
-
-    temp2_node = temp2_node->next_sibling();
-    string t(temp2_node->name());
-    if (t== "up"){
-        xml.cameraInfo.xUp = atoi(temp2_node->first_attribute("x")->value());
-        xml.cameraInfo.yUp = atoi(temp2_node->first_attribute("y")->value());
-        xml.cameraInfo.zUp = atoi(temp2_node->first_attribute("z")->value());
-        temp2_node = temp2_node->next_sibling();
-        if (temp2_node) t.assign(temp2_node->name());
-    }
-    if (t== "projection"){
-        xml.cameraInfo.fov = atoi(temp2_node->first_attribute("fov")->value());
-        xml.cameraInfo.near = atoi(temp2_node->first_attribute("near")->value());
-        xml.cameraInfo.far = atoi(temp2_node->first_attribute("far")->value());
-    }
-
-    temp1_node = root_node->first_node("lights");
-    
-    int i=0;
-    for (temp2_node = temp1_node->first_node("light"); i<8 && temp2_node; i++,temp2_node= temp2_node->next_sibling()){
-        string s( temp2_node->first_attribute("type")->value());
-        if (s == "point"){
-            LPoint lp;
-            lp.posX = atoi(temp2_node->first_attribute("posX")->value());
-            lp.posY = atoi(temp2_node->first_attribute("posY")->value());
-            lp.posZ = atoi(temp2_node->first_attribute("posZ")->value());
-            xml.lightsList.points.push_back(lp);
-        }
-        else if (s== "directional"){
-            LDirec ld;
-            ld.dirX =atoi(temp2_node->first_attribute("dirX")->value());
-            ld.dirY =atoi(temp2_node->first_attribute("dirY")->value());
-            ld.dirZ =atoi(temp2_node->first_attribute("dirZ")->value());
-            xml.lightsList.direct.push_back(ld);
-        }
-        else if (s=="spotlight"){
-            LSpotl ls;
-            ls.posX = atoi(temp2_node->first_attribute("posX")->value());
-            ls.posY = atoi(temp2_node->first_attribute("posY")->value());
-            ls.posZ = atoi(temp2_node->first_attribute("posZ")->value());
-            ls.dirX =atoi(temp2_node->first_attribute("dirX")->value());
-            ls.dirY =atoi(temp2_node->first_attribute("dirY")->value());
-            ls.dirZ =atoi(temp2_node->first_attribute("dirZ")->value());
-            ls.cutoff = atoi(temp2_node->first_attribute("cutoff")->value());
-            xml.lightsList.spotL.push_back(ls);
-        }
-    }
-    temp1_node = root_node->first_node("group");
-    temp2_node = temp1_node->first_node("transform");
-    i=0;
- 
-    for (temp2_node = temp2_node->first_node(); temp2_node; i++,temp2_node = temp2_node->next_sibling()){
-        string s(temp2_node->name());
-        if (s == "translate"){
-            Translate t;
-            t.order=i;
-            t.x = atoi(temp2_node->first_attribute("X")->value());
-            t.y = atoi(temp2_node->first_attribute("Y")->value());
-            t.z = atoi(temp2_node->first_attribute("Z")->value());
-            xml.transforms.transl =t;
-        }
-        else if ( s == "rotate"){
-            Rotate r;
-            r.order=i;
-            r.angle= atoi(temp2_node->first_attribute("angle")->value());
-            r.x =atoi(temp2_node->first_attribute("axisX")->value());
-            r.y =atoi(temp2_node->first_attribute("axisY")->value());
-            r.z =atoi(temp2_node->first_attribute("axisZ")->value());
-            xml.transforms.rotate =r;
-        }
-        else if ( s== "scale"){
-            Scale s;
-            s.order=i;
-            s.x =atoi(temp2_node->first_attribute("X")->value());
-            s.y =atoi(temp2_node->first_attribute("Y")->value());
-            s.z =atoi(temp2_node->first_attribute("Z")->value());
-            xml.transforms.scale =s;
-        }
-    }
-    
-
-    temp1_node = temp1_node->first_node("models");
-     
-    for ( temp2_node = temp1_node->first_node("model"); temp2_node; temp2_node = temp2_node->next_sibling()){
-        Model m;
-        m.sourceF = temp2_node->first_attribute("file")->value();
-        m.textureF =  NULL;
         
-        temp3_node = temp2_node->first_node();
+        root = doc.first_node("world");
+        if (root==0)throw new exception();
         
-    
-        string name(temp3_node->name());
-        if (name == "texture"){
-            m.textureF = temp3_node->first_attribute()->value();
-            temp3_node= temp3_node->next_sibling();
-            if (temp3_node) name.assign(temp3_node->name());
+
+        t1 = root->first_node("camera");
+        if (t1==0) throw new exception();
+        
+        t2 = t1->first_node("position");
+        if (t2==0) throw new exception();
+        
+
+
+
+        xml.cameraInfo.xPos = atoi(t2->first_attribute("x")->value());
+        xml.cameraInfo.yPos = atoi(t2->first_attribute("y")->value());
+        xml.cameraInfo.zPos = atoi(t2->first_attribute("z")->value());
+
+
+        t2 = t2->next_sibling();
+        if (t2==0) throw new exception();
+        xml.cameraInfo.xLook = atoi(t2->first_attribute("x")->value());
+        xml.cameraInfo.yLook = atoi(t2->first_attribute("y")->value());
+        xml.cameraInfo.zLook = atoi(t2->first_attribute("z")->value());
+
+        t2 = t2->next_sibling();
+        if (t2==0) throw new exception();
+        string t(t2->name());
+
+        if (t== "up"){
+            xml.cameraInfo.xUp = atoi(t2->first_attribute("x")->value());
+            xml.cameraInfo.yUp = atoi(t2->first_attribute("y")->value());
+            xml.cameraInfo.zUp = atoi(t2->first_attribute("z")->value());
+            t2 = t2->next_sibling();
+            if (t2) t.assign(t2->name());
         }
-        if (name == "color"){
-            temp3_node = temp3_node->first_node("diffuse");
-            
-            m.color.diffuseR = atoi(temp3_node->first_attribute("R")->value());
-            m.color.diffuseG = atoi(temp3_node->first_attribute("G")->value());
-            m.color.diffuseB = atoi(temp3_node->first_attribute("B")->value());
-
-            temp3_node = temp3_node->next_sibling("ambient");
-           
-            m.color.ambientR = atoi(temp3_node->first_attribute("R")->value()); 
-    
-            
-            
-            m.color.ambientG = atoi(temp3_node->first_attribute("G")->value());
-            m.color.ambientB = atoi(temp3_node->first_attribute("B")->value());
-
-            temp3_node = temp3_node->next_sibling("specular");
-
-            m.color.specularR = atoi(temp3_node->first_attribute("R")->value());
-            m.color.specularG = atoi(temp3_node->first_attribute("G")->value());
-            m.color.specularB = atoi(temp3_node->first_attribute("B")->value());
-
-            temp3_node = temp3_node->next_sibling("emissive");
-
-            m.color.emissiveR = atoi(temp3_node->first_attribute("R")->value());
-            m.color.emissiveG = atoi(temp3_node->first_attribute("G")->value());
-            m.color.emissiveB = atoi(temp3_node->first_attribute("B")->value());
-
-            temp3_node = temp3_node->next_sibling("shininess");
-            m.color.shine =  atoi(temp3_node->first_attribute("value")->value());
-            
+        if (t== "projection"){
+            xml.cameraInfo.fov = atoi(t2->first_attribute("fov")->value());
+            xml.cameraInfo.near = atoi(t2->first_attribute("near")->value());
+            xml.cameraInfo.far = atoi(t2->first_attribute("far")->value());
         }
-       
+
+        t1 = root->first_node("lights");
+        if (t1==0) throw new exception();
+        t2 = t1->first_node("light");
+
+
+        int i=0;
+        for (; i<8 && t2; i++,t2= t2->next_sibling()){
+            string s( t2->first_attribute("type")->value());
+            if (s == "point"){
+                LPoint lp;
+                lp.posX = atoi(t2->first_attribute("posX")->value());
+                lp.posY = atoi(t2->first_attribute("posY")->value());
+                lp.posZ = atoi(t2->first_attribute("posZ")->value());
+                xml.lightsList.points.push_back(lp);
+            }
+            else if (s== "directional"){
+                LDirec ld;
+                ld.dirX =atoi(t2->first_attribute("dirX")->value());
+                ld.dirY =atoi(t2->first_attribute("dirY")->value());
+                ld.dirZ =atoi(t2->first_attribute("dirZ")->value());
+                xml.lightsList.direct.push_back(ld);
+            }
+            else if (s=="spotlight"){
+                LSpotl ls;
+                ls.posX = atoi(t2->first_attribute("posX")->value());
+                ls.posY = atoi(t2->first_attribute("posY")->value());
+                ls.posZ = atoi(t2->first_attribute("posZ")->value());
+                ls.dirX =atoi(t2->first_attribute("dirX")->value());
+                ls.dirY =atoi(t2->first_attribute("dirY")->value());
+                ls.dirZ =atoi(t2->first_attribute("dirZ")->value());
+                ls.cutoff = atoi(t2->first_attribute("cutoff")->value());
+                xml.lightsList.spotL.push_back(ls);
+            }
+        }
+        t1 = root->first_node("group");
+        if (t1==0) throw new exception();
+        t2 = t1->first_node("transform");
+        if (t2==0) throw new exception();
+        i=0;
     
-        xml.modelList.push_back(m);
+        for (t2 = t2->first_node(); t2; i++,t2 = t2->next_sibling()){
+            string s(t2->name());
+            if (s == "translate"){
+                Translate t;
+                t.order=i;
+                t.x = atoi(t2->first_attribute("X")->value());
+                t.y = atoi(t2->first_attribute("Y")->value());
+                t.z = atoi(t2->first_attribute("Z")->value());
+                xml.transforms.transl =t;
+            }
+            else if ( s == "rotate"){
+                Rotate r;
+                r.order=i;
+                r.angle= atoi(t2->first_attribute("angle")->value());
+                r.x =atoi(t2->first_attribute("axisX")->value());
+                r.y =atoi(t2->first_attribute("axisY")->value());
+                r.z =atoi(t2->first_attribute("axisZ")->value());
+                xml.transforms.rotate =r;
+            }
+            else if ( s== "scale"){
+                Scale s;
+                s.order=i;
+                s.x =atoi(t2->first_attribute("X")->value());
+                s.y =atoi(t2->first_attribute("Y")->value());
+                s.z =atoi(t2->first_attribute("Z")->value());
+                xml.transforms.scale =s;
+            }
+        }
+
+
+        t1 = t1->first_node("models");
+        if (t1==0) throw new exception();
+        t2 = t1->first_node("model");
+        if (t2==0) throw new exception();
+        
+        for ( ; t2; t2 = t2->next_sibling()){
+            Color defaultC;
+            defaultC.diffuseR=200;
+            defaultC.diffuseG=200;
+            defaultC.diffuseB=200;
+            defaultC.specularR=0;
+            defaultC.specularG=0;
+            defaultC.specularB=0;
+            defaultC.emissiveR=0;
+            defaultC.emissiveG=0;
+            defaultC.emissiveB=0;
+            defaultC.ambientR=50;
+            defaultC.ambientG=50;
+            defaultC.ambientB=50;
+            defaultC.shine=0;
+            
+            Model m;
+            m.color=defaultC;
+            m.sourceF = t2->first_attribute("file")->value();
+            m.textureF =  NULL;
+            m.color = defaultC;
+            
+            t3 = t2->first_node();
+            if (t3!=0) {
+
+
+            string name(t3->name());
+            if (name == "texture"){
+                m.textureF = t3->first_attribute()->value();
+                t3= t3->next_sibling();
+                if (t3) name.assign(t3->name());
+            }
+            if (name == "color"){
+                t3 = t3->first_node("diffuse");
+
+                m.color.diffuseR = atoi(t3->first_attribute("R")->value());
+                m.color.diffuseG = atoi(t3->first_attribute("G")->value());
+                m.color.diffuseB = atoi(t3->first_attribute("B")->value());
+
+                t3 = t3->next_sibling("ambient");
+
+                m.color.ambientR = atoi(t3->first_attribute("R")->value()); 
+
+
+
+                m.color.ambientG = atoi(t3->first_attribute("G")->value());
+                m.color.ambientB = atoi(t3->first_attribute("B")->value());
+
+                t3 = t3->next_sibling("specular");
+
+                m.color.specularR = atoi(t3->first_attribute("R")->value());
+                m.color.specularG = atoi(t3->first_attribute("G")->value());
+                m.color.specularB = atoi(t3->first_attribute("B")->value());
+
+                t3 = t3->next_sibling("emissive");
+
+                m.color.emissiveR = atoi(t3->first_attribute("R")->value());
+                m.color.emissiveG = atoi(t3->first_attribute("G")->value());
+                m.color.emissiveB = atoi(t3->first_attribute("B")->value());
+
+                t3 = t3->next_sibling("shininess");
+                m.color.shine =  atoi(t3->first_attribute("value")->value());
+
+            }
+            }
+
+            xml.modelList.push_back(m);
+        }
+
+    
+
+
+        /*
+        cout <<"Far:" <<xml.cameraInfo.far << "\n";
+        cout <<"xPos:" <<xml.cameraInfo.xPos << "\n";
+        cout <<"yPos:" <<xml.cameraInfo.yPos << "\n";
+        cout <<"zPos:" <<xml.cameraInfo.zPos << "\n";
+        cout <<"Fov:" <<xml.cameraInfo.fov << "\n\n";
+
+        cout <<"DirX:" <<xml.lightsList.direct[0].dirX << "\n\n";
+
+        cout <<"Cut:" <<xml.lightsList.spotL[0].cutoff << "\n\n";
+
+        cout <<"pointsX:" <<xml.lightsList.points[0].posX << "\n\n";
+
+        cout <<"angle:" <<xml.transforms.rotate.angle << "\n\n";
+
+        cout <<"angle:" <<xml.transforms.transl.order << "\n\n";
+
+        cout <<"angle:" <<xml.transforms.scale.order << "\n\n";
+
+
+
+
+        cout  <<xml.modelList[0].sourceF << "\n\n";
+
+        cout  <<xml.modelList[0].color.shine << "\n\n";
+
+        cout  <<xml.modelList[0].color.ambientB << "\n\n";
+
+    */
+        }
+        return xml;
+
     }
 
-  
-    
-
-    /*
-    cout <<"Far:" <<xml.cameraInfo.far << "\n";
-    cout <<"xPos:" <<xml.cameraInfo.xPos << "\n";
-    cout <<"yPos:" <<xml.cameraInfo.yPos << "\n";
-    cout <<"zPos:" <<xml.cameraInfo.zPos << "\n";
-    cout <<"Fov:" <<xml.cameraInfo.fov << "\n\n";
-    
-    cout <<"DirX:" <<xml.lightsList.direct[0].dirX << "\n\n";
-    
-    cout <<"Cut:" <<xml.lightsList.spotL[0].cutoff << "\n\n";
-
-    cout <<"pointsX:" <<xml.lightsList.points[0].posX << "\n\n";
-
-    cout <<"angle:" <<xml.transforms.rotate.angle << "\n\n";
-
-    cout <<"angle:" <<xml.transforms.transl.order << "\n\n";
-
-    cout <<"angle:" <<xml.transforms.scale.order << "\n\n";
-
-
-
-
-    cout  <<xml.modelList[0].sourceF << "\n\n";
-
-    cout  <<xml.modelList[0].color.shine << "\n\n";
-
-    cout  <<xml.modelList[0].color.ambientB << "\n\n";
-
-*/
+    int main(int argc, char **argv){
+       xmlInfo x = readXML();
+       cout<< x.modelList[0].sourceF << "\n";
     }
-    return xml;
-
-}
-
-int main(int argc, char **argv){
-   xmlInfo x = readXML();
-   cout<< x.modelList[0].sourceF << "\n";
-}
