@@ -73,92 +73,112 @@ void keyboard (unsigned char key, int x, int y){
 	glutPostRedisplay();
 }
 
-void drawSphere3(float radius, int slices, int stacks){
+void drawSphere(float radius, int slices, int stacks) {
     float cx = 0.0f, cy = 0.0f, cz = 0.0f;
-    MyPoint mat[stacks + 1][slices] = {MyPoint(cx,cy,cz)};
-    float angInc = 2 * M_PI / slices; //angle increment value
-    float ang, h, r;
 
-    
+    //Inicializacao da matriz onde serao guardados os pontos
+    MyPoint** mat = (MyPoint**) malloc(sizeof(MyPoint*) * (stacks - 1));
+    for (int i = 0; i < stacks - 1; i++)
+        mat[i] = (MyPoint*) malloc(sizeof(MyPoint) * slices);
 
-    for(int i = 1; i < stacks; i++){
-        h = cz + radius * sin(- M_PI_2 + i * M_PI / stacks);
-        r = radius * sin(i * M_PI / stacks);
+    float stacksAngInc = M_PI / stacks; 
+    float slicesAngInc = 2 * M_PI / slices; //Valor do angulo a aumentar entre cada ponto que define uma slice
+    float ang, height, r;
 
-        //glBegin(GL_LINE_LOOP);
-        glBegin(GL_TRIANGLES);
-        ang = 0;
-        MyPoint p = MyPoint(cx + r * cos(ang), cy + r * sin(ang), h);
-        mat[i][0] = p;
+    for (int i = 0; i < stacks - 1; i++) {
+        height = cy + radius * sin(-M_PI_2 + stacksAngInc * (i + 1));
+        r = radius * cos(-M_PI_2 + stacksAngInc * (i + 1)); //raio da "circunferencia" atual
 
-        for(int j = 1; j < slices; j++){
-            ang = angInc * j;
-            MyPoint p = MyPoint(cx + r * cos(ang), cy + r * sin(ang), h);
-            mat[i][j] = p;
-
-            glColor3f(0.5f, 0.2f, 0.2f);
-
-            if( i != 1){           
-                glVertex3f(mat[i-1][j].cx,mat[i-1][j].cy,mat[i-1][j].cz);
-                glVertex3f(p.cx, p.cy, p.cz);
-                glVertex3f(mat[i][j-1].cx,mat[i][j-1].cy,mat[i][j-1].cz);
-
-                glColor3f(0.2f, 0.2f, 0.5f);
-
-                glVertex3f(mat[i-1][j].cx,mat[i-1][j].cy,mat[i-1][j].cz);
-                glVertex3f(mat[i][j-1].cx,mat[i][j-1].cy,mat[i][j-1].cz);
-                glVertex3f(mat[i-1][j-1].cx,mat[i-1][j-1].cy,mat[i-1][j-1].cz);
-            }
+        for (int j = 0; j < slices; j++) {
+            ang       = slicesAngInc * j;
+            mat[i][j] = MyPoint(cx + r * cos(ang), height, cz + r * sin(ang));
         }
-
-            //dar a volta aos indices
-        if( i != 1){
-            glColor3f(0.5f, 0.2f, 0.2f);
-            glVertex3f(mat[i-1][0].cx,mat[i-1][0].cy,mat[i-1][0].cz);
-            glVertex3f(mat[i][0].cx,mat[i][0].cy,mat[i][0].cz);
-            glVertex3f(mat[i][slices-1].cx,mat[i][slices-1].cy,mat[i][slices-1].cz);
-
-            glColor3f(0.2f, 0.2f, 0.5f);
-
-            glVertex3f(mat[i-1][0].cx,mat[i-1][0].cy,mat[i-1][0].cz);
-            glVertex3f(mat[i][slices-1].cx,mat[i][slices-1].cy,mat[i][slices-1].cz);
-            glVertex3f(mat[i-1][slices-1].cx,mat[i-1][slices-1].cy,mat[i-1][slices-1].cz);
-        }
-        glEnd();
-        glColor3f(0.5f, 0.2f, 0.2f);
-
-
     }
 
-    //desenha as pontas
+    //Definicao do modo que mostra apenas a linha que define o limite dos triangulos
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glBegin(GL_TRIANGLES);
 
-    for(int i = 1; i < slices;i++){
-        glBegin(GL_TRIANGLES);
+    //Desenho da stack de baixo e de cima
 
-        glColor3f(0.2f, 0.5f, 0.2f);
+        //Inicializacao do ponto cuja coordenada y é a mais baixa
+        MyPoint lowestP = MyPoint(cx, cy - radius, cz);
 
-        glVertex3f(mat[1][i].cx,mat[1][i].cy,mat[1][i].cz);
-        glVertex3f(mat[1][i-1].cx,mat[1][i-1].cy,mat[1][i-1].cz);
-        glVertex3f(cx,cy,cz - radius);
+        //Inicializacao do ponto cuja coordenada y é a mais alta
+        MyPoint highestP = MyPoint(cx, cy + radius, cz);
 
-        glVertex3f(mat[stacks-1][i].cx,mat[stacks-1][i].cy,mat[stacks-1][i].cz);
-        glVertex3f(cx,cy,cz + radius);
-        glVertex3f(mat[stacks-1][i-1].cx,mat[stacks-1][i-1].cy,mat[stacks-1][i-1].cz);
+        for (int j = 0; j < slices - 1; j++) {
+            glVertex3f(lowestP.cx, lowestP.cy, lowestP.cz);
+            glVertex3f(mat[0][j].cx, mat[0][j].cy, mat[0][j].cz);
+            glVertex3f(mat[0][j + 1].cx, mat[0][j + 1].cy, mat[0][j + 1].cz);
 
+            glVertex3f(mat[stacks - 2][j].cx, mat[stacks - 2][j].cy, mat[stacks - 2][j].cz);
+            glVertex3f(highestP.cx, highestP.cy, highestP.cz);
+            glVertex3f(mat[stacks - 2][j + 1].cx, mat[stacks - 2][j + 1].cy, mat[stacks - 2][j + 1].cz);
+        }
+
+        //Desenha triangulos correspondentes à slice que completa uma volta
+        glVertex3f(lowestP.cx, lowestP.cy, lowestP.cz);
+        glVertex3f(mat[0][slices - 1].cx, mat[0][slices - 1].cy, mat[0][slices - 1].cz);
+        glVertex3f(mat[0][0].cx, mat[0][0].cy, mat[0][0].cz);
+
+        glVertex3f(mat[stacks - 2][slices - 1].cx, mat[stacks - 2][slices - 1].cy, mat[stacks - 2][slices - 1].cz);
+        glVertex3f(highestP.cx, highestP.cy, highestP.cz);
+        glVertex3f(mat[stacks - 2][0].cx, mat[stacks - 2][0].cy, mat[stacks - 2][0].cz);
+
+
+    //Desenho das restantes stacks
+    MyPoint *p1, *p2, *p3;
+
+    for (int i = stacks - 2; i > 0; i--) {
+
+        for (int j = 0; j < slices - 1; j++) {
+
+            /*    Desenha os triangulos com forma |\    */
+
+            p1 = &mat[i - 1][j + 1]; p2 = &mat[i][j + 1]; p3 = &mat[i - 1][j];
+
+            glVertex3f((*p1).cx, (*p1).cy, (*p1).cz);
+            glVertex3f((*p3).cx, (*p3).cy, (*p3).cz);
+            glVertex3f((*p2).cx, (*p2).cy, (*p2).cz);
+
+            /*     Desenha os triangulos com forma \|    */
+
+            p1 = &mat[i][j];
+
+            glVertex3f((*p1).cx, (*p1).cy, (*p1).cz);
+            glVertex3f((*p2).cx, (*p2).cy, (*p2).cz);
+            glVertex3f((*p3).cx, (*p3).cy, (*p3).cz);
+        }
+
+
+        //Desenha triangulos correspondentes à slice que completa uma volta
+
+            /*    Desenha os triangulos com forma |\    */
+
+            p1 = &mat[i - 1][0]; p2 = &mat[i][0]; p3 = &mat[i - 1][slices - 1];
+
+            glVertex3f((*p1).cx, (*p1).cy, (*p1).cz);
+            glVertex3f((*p3).cx, (*p3).cy, (*p3).cz);
+            glVertex3f((*p2).cx, (*p2).cy, (*p2).cz);
+
+            /*     Desenha os triangulos com forma \|    */
+
+            p1 = &mat[i][slices - 1];
+
+            glVertex3f((*p1).cx, (*p1).cy, (*p1).cz);
+            glVertex3f((*p2).cx, (*p2).cy, (*p2).cz);
+            glVertex3f((*p3).cx, (*p3).cy, (*p3).cz);
     }
-
-        //da a volta aos indices
-    glVertex3f(mat[1][0].cx,mat[1][0].cy,mat[1][0].cz);
-    glVertex3f(mat[1][slices-1].cx,mat[1][slices-1].cy,mat[1][slices-1].cz);
-    glVertex3f(cx,cy,cz - radius);
-
-    glVertex3f(mat[stacks-1][0].cx,mat[stacks-1][0].cy,mat[stacks-1][0].cz);
-    glVertex3f(cx,cy,cz + radius);
-    glVertex3f(mat[stacks-1][slices-1].cx,mat[stacks-1][slices-1].cy,mat[stacks-1][slices-1].cz);
 
     glEnd();
-    
+
+
+    //Liberta a memoria alocada
+    for (int i = 0; i < stacks - 1; i++) free(mat[i]);
+    free(mat);
 }
+
 
 void drawCone(float base, float height, int slices, int stacks){
     float cx = 0.0f, cy = 0.0f, cz = 0.0f;
