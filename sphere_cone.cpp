@@ -5,6 +5,7 @@
 #endif
 
 #include <math.h>
+#include <iostream>
 
 float angle_y = 0.0f;
 float angle_x = 0.0f;
@@ -242,6 +243,151 @@ void drawCone(float base, float height, int slices, int stacks){
     glEnd();
 }
 
+void drawPlane(float lenght,int div){
+    float cx = 0,cy = 0,cz = 0;
+    float incr = lenght/div; //side increment value
+    MyPoint mat[div+1][div+1];
+
+    glBegin(GL_TRIANGLES);
+
+    for(int i = 0; i <= div;i++){
+        for(int j = 0;j <= div;j++){
+            MyPoint p = MyPoint(cx,cy,cz);
+            mat[i][j] = p;
+            cx += incr;
+            if(i && j){
+                glColor3f(0.5f, 0.2f, 0.2f);
+                
+                glVertex3f(mat[i-1][j].cx,mat[i-1][j].cy,mat[i-1][j].cz);
+                glVertex3f(mat[i][j-1].cx,mat[i][j-1].cy,mat[i][j-1].cz);
+                glVertex3f(p.cx, p.cy, p.cz);
+
+                glColor3f(0.2f, 0.2f, 0.5f);
+
+                glVertex3f(mat[i-1][j].cx,mat[i-1][j].cy,mat[i-1][j].cz);
+                glVertex3f(mat[i-1][j-1].cx,mat[i-1][j-1].cy,mat[i-1][j-1].cz);
+                glVertex3f(mat[i][j-1].cx,mat[i][j-1].cy,mat[i][j-1].cz);
+            }
+        }
+        cz += incr;
+        cx = 0;
+    }
+
+    glEnd();
+}
+
+void drawCube(float lenght,int div){
+    float cx = 0,cz = 0;
+    float incr = lenght/div; //side increment value
+    float cy_b = 0; //bottom y
+    float cy_t = incr*div; //top y
+    MyPoint mat_b[div+1][div+1];
+    MyPoint mat_t[div+1][div+1];
+
+    glBegin(GL_TRIANGLES);
+
+    for(int i = 0; i <= div;i++){
+        for(int j = 0;j <= div;j++){
+            MyPoint p_b = MyPoint(cx,cy_b,cz);
+            MyPoint p_t = MyPoint(cx,cy_t,cz);
+            mat_b[i][j] = p_b;
+            mat_t[i][j] = p_t;
+            cx += incr;
+            if(i && j){
+                ///bottom
+                glColor3f(0.5f, 0.2f, 0.2f);
+                
+                glVertex3f(mat_b[i-1][j].cx,mat_b[i-1][j].cy,mat_b[i-1][j].cz);
+                glVertex3f(p_b.cx, p_b.cy, p_b.cz);
+                glVertex3f(mat_b[i][j-1].cx,mat_b[i][j-1].cy,mat_b[i][j-1].cz);
+
+                glColor3f(0.2f, 0.2f, 0.5f);
+
+                glVertex3f(mat_b[i-1][j].cx,mat_b[i-1][j].cy,mat_b[i-1][j].cz);
+                glVertex3f(mat_b[i][j-1].cx,mat_b[i][j-1].cy,mat_b[i][j-1].cz);
+                glVertex3f(mat_b[i-1][j-1].cx,mat_b[i-1][j-1].cy,mat_b[i-1][j-1].cz);
+                ///
+
+                ///Right
+                glColor3f(1.0f, 0.0f, 0.0f);
+
+                glVertex3f(mat_b[i-1][j].cx,mat_b[i-1][j].cz,mat_b[i-1][j].cy);
+                glVertex3f(mat_b[i][j-1].cx,mat_b[i][j-1].cz,mat_b[i][j-1].cy);
+                glVertex3f(p_b.cx, p_b.cz, p_b.cy);
+
+                glColor3f(0.0f, 1.0f, 0.0f);
+
+                glVertex3f(mat_b[i-1][j].cx,mat_b[i-1][j].cz,mat_b[i-1][j].cy);
+                glVertex3f(mat_b[i-1][j-1].cx,mat_b[i-1][j-1].cz,mat_b[i-1][j-1].cy);
+                glVertex3f(mat_b[i][j-1].cx,mat_b[i][j-1].cz,mat_b[i][j-1].cy);
+                ///
+
+                ///front
+                glColor3f(0.2f, 0.2f, 1.0f);
+                
+                glVertex3f(mat_b[i-1][j].cy,mat_b[i-1][j].cx,mat_b[i-1][j].cz);
+                glVertex3f(mat_b[i][j-1].cy,mat_b[i][j-1].cx,mat_b[i][j-1].cz);
+                glVertex3f(p_b.cy, p_b.cx, p_b.cz);
+
+                glColor3f(0.2f, 0.5f, 0.2f);
+
+                glVertex3f(mat_b[i-1][j].cy,mat_b[i-1][j].cx,mat_b[i-1][j].cz);
+                glVertex3f(mat_b[i-1][j-1].cy,mat_b[i-1][j-1].cx,mat_b[i-1][j-1].cz);
+                glVertex3f(mat_b[i][j-1].cy,mat_b[i][j-1].cx,mat_b[i][j-1].cz);
+                ///
+
+
+                ///Top
+                glColor3f(0.5f, 0.2f, 0.2f);
+                
+                glVertex3f(mat_t[i-1][j].cx,mat_t[i-1][j].cy,mat_t[i-1][j].cz);
+                glVertex3f(mat_t[i][j-1].cx,mat_t[i][j-1].cy,mat_t[i][j-1].cz);
+                glVertex3f(p_t.cx, p_t.cy, p_t.cz);
+
+                glColor3f(0.2f, 0.2f, 0.5f);
+
+                glVertex3f(mat_t[i-1][j].cx,mat_t[i-1][j].cy,mat_t[i-1][j].cz);
+                glVertex3f(mat_t[i-1][j-1].cx,mat_t[i-1][j-1].cy,mat_t[i-1][j-1].cz);
+                glVertex3f(mat_t[i][j-1].cx,mat_t[i][j-1].cy,mat_t[i][j-1].cz);
+                ///
+
+                ///Left
+                glColor3f(1.0f, 0.0f, 0.0f);
+
+                glVertex3f(mat_t[i-1][j].cx,mat_t[i-1][j].cz,mat_t[i-1][j].cy);
+                glVertex3f(p_t.cx, p_t.cz, p_t.cy);
+                glVertex3f(mat_t[i][j-1].cx,mat_t[i][j-1].cz,mat_t[i][j-1].cy);
+
+                glColor3f(0.0f, 1.0f, 0.0f);
+
+                glVertex3f(mat_t[i-1][j].cx,mat_t[i-1][j].cz,mat_t[i-1][j].cy);
+                glVertex3f(mat_t[i][j-1].cx,mat_t[i][j-1].cz,mat_t[i][j-1].cy);
+                glVertex3f(mat_t[i-1][j-1].cx,mat_t[i-1][j-1].cz,mat_t[i-1][j-1].cy);
+                ///
+
+                ///Back
+                glColor3f(0.2f, 0.2f, 1.0f);
+                
+                glVertex3f(mat_t[i-1][j].cy,mat_t[i-1][j].cx,mat_t[i-1][j].cz);
+                glVertex3f(p_t.cy, p_t.cx, p_t.cz);
+                glVertex3f(mat_t[i][j-1].cy,mat_t[i][j-1].cx,mat_t[i][j-1].cz);
+
+                glColor3f(0.2f, 0.5f, 0.2f);
+
+                glVertex3f(mat_t[i-1][j].cy,mat_t[i-1][j].cx,mat_t[i-1][j].cz);
+                glVertex3f(mat_t[i][j-1].cy,mat_t[i][j-1].cx,mat_t[i][j-1].cz);
+                glVertex3f(mat_t[i-1][j-1].cy,mat_t[i-1][j-1].cx,mat_t[i-1][j-1].cz);
+                ///
+            }
+        }
+        cz += incr;
+        cx = 0;
+    }
+
+    glEnd();
+
+}
+
 
 void renderScene(void) {
 
@@ -279,7 +425,7 @@ void renderScene(void) {
 	
 
 // put drawing instructions here
-	drawCone(1,3,5,5);
+	drawPlane(3,3);
 
 
 	// End of frame
