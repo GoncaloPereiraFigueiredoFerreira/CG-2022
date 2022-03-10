@@ -7,20 +7,8 @@
     <ClCompile Include="..\AuxiliarMethods.cpp">
       <Filter>Source Files\Auxiliares</Filter>
     </ClCompile>
-    <ClCompile Include="..\Sphere.cpp">
-      <Filter>Source Files\Objetos</Filter>
-    </ClCompile>
     <ClCompile Include="..\Point.cpp">
-      <Filter>Source Files\Objetos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Plane.cpp">
-      <Filter>Source Files\Objetos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Cone.cpp">
-      <Filter>Source Files\Objetos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Box.cpp">
-      <Filter>Source Files\Objetos</Filter>
+      <Filter>Source Files\Solids</Filter>
     </ClCompile>
     <ClCompile Include="..\BoxGenerator.cpp">
       <Filter>Source Files\Generator\Box</Filter>
@@ -40,6 +28,21 @@
     <ClCompile Include="Drawings.cpp">
       <Filter>Source Files\Drawings</Filter>
     </ClCompile>
+    <ClCompile Include="..\Box.cpp">
+      <Filter>Source Files\Solids\Box</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cone.cpp">
+      <Filter>Source Files\Solids\Cone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Plane.cpp">
+      <Filter>Source Files\Solids\Plane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sphere.cpp">
+      <Filter>Source Files\Solids\Sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="Solid.cpp">
+      <Filter>Source Files\Solids</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\CMakeLists.txt" />
@@ -53,9 +56,6 @@
     </Filter>
     <Filter Include="Source Files\Auxiliares">
       <UniqueIdentifier>{ea7e042f-54b4-4211-bfea-5ebc4d4ba7f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Objetos">
-      <UniqueIdentifier>{e73bc12e-9da0-426b-8026-afc357878f7d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Generator\Box">
       <UniqueIdentifier>{3df6c22b-4805-4049-919e-92f8b3c82d18}</UniqueIdentifier>
@@ -75,6 +75,21 @@
     <Filter Include="Source Files\Drawings">
       <UniqueIdentifier>{2012c55a-dfc5-492d-87fc-b1ddcf72f1b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Solids">
+      <UniqueIdentifier>{e73bc12e-9da0-426b-8026-afc357878f7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Solids\Box">
+      <UniqueIdentifier>{aa8b8441-ac6b-4878-9952-ee041d80848b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Solids\Cone">
+      <UniqueIdentifier>{068be7c8-df68-43d0-9a4b-4e40a7dc5adf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Solids\Plane">
+      <UniqueIdentifier>{a485e913-1de4-44c8-ab66-14e96616d573}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Solids\Sphere">
+      <UniqueIdentifier>{d52205f1-c408-4a56-b1d5-6a79414d21c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Generator.h">
@@ -83,20 +98,8 @@
     <ClInclude Include="..\AuxiliarMethods.h">
       <Filter>Source Files\Auxiliares</Filter>
     </ClInclude>
-    <ClInclude Include="..\Sphere.h">
-      <Filter>Source Files\Objetos</Filter>
-    </ClInclude>
     <ClInclude Include="..\Point.h">
-      <Filter>Source Files\Objetos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Plane.h">
-      <Filter>Source Files\Objetos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Cone.h">
-      <Filter>Source Files\Objetos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Box.h">
-      <Filter>Source Files\Objetos</Filter>
+      <Filter>Source Files\Solids</Filter>
     </ClInclude>
     <ClInclude Include="..\BoxGenerator.h">
       <Filter>Source Files\Generator\Box</Filter>
@@ -117,8 +120,23 @@
     <ClInclude Include="Drawings.h">
       <Filter>Source Files\Drawings</Filter>
     </ClInclude>
-    <ClInclude Include="Objetos.h">
-      <Filter>Source Files\Objetos</Filter>
+    <ClInclude Include="Solids.h">
+      <Filter>Source Files\Solids</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Box.h">
+      <Filter>Source Files\Solids\Box</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cone.h">
+      <Filter>Source Files\Solids\Cone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Plane.h">
+      <Filter>Source Files\Solids\Plane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sphere.h">
+      <Filter>Source Files\Solids\Sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="Solid.h">
+      <Filter>Source Files\Solids</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -326,6 +326,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="..\xmlReader.cpp" />
     <ClCompile Include="C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\Engine.cpp" />
     <ClCompile Include="Drawings.cpp" />
+    <ClCompile Include="Solid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\build\ZERO_CHECK.vcxproj">
@@ -349,7 +350,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="..\SphereGenerator.h" />
     <ClInclude Include="..\xmlReader.hpp" />
     <ClInclude Include="Drawings.h" />
-    <ClInclude Include="Objetos.h" />
+    <ClInclude Include="Solid.h" />
+    <ClInclude Include="Solids.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
