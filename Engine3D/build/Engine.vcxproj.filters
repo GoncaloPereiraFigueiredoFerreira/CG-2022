@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AuxiliarMethods.cpp">
+      <Filter>Source Files\Auxiliares</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Sphere.cpp">
+      <Filter>Source Files\Objetos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Point.cpp">
+      <Filter>Source Files\Objetos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Plane.cpp">
+      <Filter>Source Files\Objetos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Cone.cpp">
+      <Filter>Source Files\Objetos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Box.cpp">
+      <Filter>Source Files\Objetos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\BoxGenerator.cpp">
+      <Filter>Source Files\Generator\Box</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ConeGenerator.cpp">
+      <Filter>Source Files\Generator\Cone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PlaneGenerator.cpp">
+      <Filter>Source Files\Generator\Plane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SphereGenerator.cpp">
+      <Filter>Source Files\Generator\Sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xmlReader.cpp">
+      <Filter>Source Files\XMLReader</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{855CEE11-ABF5-3FCE-A8E3-6B14F800E9E4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Generator">
+      <UniqueIdentifier>{6b54e6b1-6519-4844-b233-e77af2c88597}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Auxiliares">
+      <UniqueIdentifier>{ea7e042f-54b4-4211-bfea-5ebc4d4ba7f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objetos">
+      <UniqueIdentifier>{e73bc12e-9da0-426b-8026-afc357878f7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Generator\Box">
+      <UniqueIdentifier>{3df6c22b-4805-4049-919e-92f8b3c82d18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Generator\Cone">
+      <UniqueIdentifier>{8b80894d-9c41-485d-ad66-e51c4ca11c7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Generator\Plane">
+      <UniqueIdentifier>{025c0b6a-ca50-4ec0-a143-b3c210012672}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Generator\Sphere">
+      <UniqueIdentifier>{508f8341-5383-4590-8d3a-e4315a964149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\XMLReader">
+      <UniqueIdentifier>{d1f5f04a-e22a-4457-9ff3-53c42f0e2382}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Generator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AuxiliarMethods.h">
+      <Filter>Source Files\Auxiliares</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Sphere.h">
+      <Filter>Source Files\Objetos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Point.h">
+      <Filter>Source Files\Objetos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Plane.h">
+      <Filter>Source Files\Objetos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Cone.h">
+      <Filter>Source Files\Objetos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Box.h">
+      <Filter>Source Files\Objetos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\BoxGenerator.h">
+      <Filter>Source Files\Generator\Box</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ConeGenerator.h">
+      <Filter>Source Files\Generator\Cone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PlaneGenerator.h">
+      <Filter>Source Files\Generator\Plane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SphereGenerator.h">
+      <Filter>Source Files\Generator\Sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xmlReader.hpp">
+      <Filter>Source Files\XMLReader</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
