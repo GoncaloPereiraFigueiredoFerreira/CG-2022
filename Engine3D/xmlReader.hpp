@@ -125,13 +125,21 @@ class Model{
 };
 
 
+class Group{
+	public:
+	Transform transforms;
+	std::vector<Model> modelList;
+	std::vector<Group> groupChildren;
+
+};
+
+
 class xmlInfo{
 	public:
 	Camera cameraInfo;
 	Lights lightsList;
-	Transform transforms; // only one entry for each type of transform
-						   // Order is relevant
-	std::vector<Model> modelList;
+	Group groups;
+
 };
 
 xmlInfo readXML(std::string filename);

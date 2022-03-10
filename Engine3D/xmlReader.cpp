@@ -32,9 +32,151 @@ char* readFile(string filename){
 }
 
 
+
+ 
+Group captureGroups (xml_node<char> * root){
+    Group main;
+    xml_node<char> * t1;
+    xml_node<char> * t2;
+
+    t1 = root->first_node("transform");
+   
+    if (t1==0) throw new exception;
+    
+    
+    int i=0;
+    
+    // Capture Transformations
+    for (t1 = t1->first_node(); t1; i++,t1 = t1->next_sibling()){
+        string s(t1->name());
+        if (s == "translate"){
+            Translate t;
+            t.order=i;
+            t.x = atoi(t1->first_attribute("X")->value());
+            t.y = atoi(t1->first_attribute("Y")->value());
+            t.z = atoi(t1->first_attribute("Z")->value());
+            main.transforms.transl =t;
+        }
+        else if ( s == "rotate"){
+            Rotate r;
+            r.order=i;
+            r.angle= atoi(t1->first_attribute("angle")->value());
+            r.x =atoi(t1->first_attribute("axisX")->value());
+            r.y =atoi(t1->first_attribute("axisY")->value());
+            r.z =atoi(t1->first_attribute("axisZ")->value());
+            main.transforms.rotate =r;
+        }
+        else if ( s== "scale"){
+            Scale s;
+            s.order=i;
+            s.x =atoi(t1->first_attribute("X")->value());
+            s.y =atoi(t1->first_attribute("Y")->value());
+            s.z =atoi(t1->first_attribute("Z")->value());
+            
+            main.transforms.scale =s;
+        }
+    }
+
+        // Capture Models (optional)
+        t1 = root->first_node("models");
+        
+        if (t1!=0) {
+            t1 = t1->first_node("model");
+            
+            if (t1==0) throw new exception;
+            
+
+            for ( ; t1; t1 = t1->next_sibling()){
+
+
+                Model m;
+
+                m.sourceF = t1->first_attribute("file")->value();
+                m.textureF =  NULL;
+
+                //Setting the default values
+                m.color.diffuseR=200;
+                m.color.diffuseG=200;
+                m.color.diffuseB=200;
+                m.color.specularR=0;
+                m.color.specularG=0;
+                m.color.specularB=0;
+                m.color.emissiveR=0;
+                m.color.emissiveG=0;
+                m.color.emissiveB=0;
+                m.color.ambientR=50;
+                m.color.ambientG=50;
+                m.color.ambientB=50;
+                m.color.shine=0;
+
+                t2 = t1->first_node();
+                if (t2!=0) {
+
+
+                string name(t2->name());
+                if (name == "texture"){
+                    m.textureF = t2->first_attribute()->value();
+                    t2= t2->next_sibling();
+                    if (t2) name.assign(t2->name());
+                }
+                if (name == "color"){
+                    t2 = t2->first_node("diffuse");
+
+                    m.color.diffuseR = atoi(t2->first_attribute("R")->value());
+                    m.color.diffuseG = atoi(t2->first_attribute("G")->value());
+                    m.color.diffuseB = atoi(t2->first_attribute("B")->value());
+
+                    t2 = t2->next_sibling("ambient");
+
+                    m.color.ambientR = atoi(t2->first_attribute("R")->value()); 
+
+
+
+                    m.color.ambientG = atoi(t2->first_attribute("G")->value());
+                    m.color.ambientB = atoi(t2->first_attribute("B")->value());
+
+                    t2 = t2->next_sibling("specular");
+
+                    m.color.specularR = atoi(t2->first_attribute("R")->value());
+                    m.color.specularG = atoi(t2->first_attribute("G")->value());
+                    m.color.specularB = atoi(t2->first_attribute("B")->value());
+
+                    t2 = t2->next_sibling("emissive");
+
+                    m.color.emissiveR = atoi(t2->first_attribute("R")->value());
+                    m.color.emissiveG = atoi(t2->first_attribute("G")->value());
+                    m.color.emissiveB = atoi(t2->first_attribute("B")->value());
+
+                    t2 = t2->next_sibling("shininess");
+                    m.color.shine =  atoi(t2->first_attribute("value")->value());
+
+                }
+                }
+
+                main.modelList.push_back(m);
+            }
+        }
+        // Capture other nested groups
+        for (t1 = root->first_node("group"); t1; t1= t1->next_sibling()){
+            string name(t1->name());
+            if (name == "group"){
+                Group temp = captureGroups(t1);
+                main.groupChildren.push_back(temp);
+            
+            }
+        }
+
+        return main;
+    
+}
+
+
+
 xmlInfo readXML(string filename){
     xml_document<> doc;
+    
     char *fds = readFile(filename);
+   
     xmlInfo xml;        
     bool flag = true;
         if (fds && flag){
@@ -50,7 +192,7 @@ xmlInfo readXML(string filename){
         root = doc.first_node("world");
         if (root==0)throw new exception();
         
-
+        
         t1 = root->first_node("camera");
         if (t1==0) throw new exception();
         
@@ -58,12 +200,13 @@ xmlInfo readXML(string filename){
         if (t2==0) throw new exception();
         
 
-
+        //Capture X Y and Z Camera Positions
 
         xml.cameraInfo.xPos = atoi(t2->first_attribute("x")->value());
         xml.cameraInfo.yPos = atoi(t2->first_attribute("y")->value());
         xml.cameraInfo.zPos = atoi(t2->first_attribute("z")->value());
 
+        //Capture X Y and Z LookAt Positions
 
         t2 = t2->next_sibling();
         if (t2==0) throw new exception();
@@ -71,23 +214,35 @@ xmlInfo readXML(string filename){
         xml.cameraInfo.yLook = atoi(t2->first_attribute("y")->value());
         xml.cameraInfo.zLook = atoi(t2->first_attribute("z")->value());
 
+        //Default Values for Up and Projection
+        xml.cameraInfo.xUp = 0;
+        xml.cameraInfo.yUp = 1;
+        xml.cameraInfo.zUp = 0;
+        xml.cameraInfo.fov = 60;
+        xml.cameraInfo.near = 1;
+        xml.cameraInfo.far = 1000;
+
+        //Capture optional Up and Projection
         t2 = t2->next_sibling();
-        if (t2==0) throw new exception();
-        string t(t2->name());
-
-        if (t== "up"){
-            xml.cameraInfo.xUp = atoi(t2->first_attribute("x")->value());
-            xml.cameraInfo.yUp = atoi(t2->first_attribute("y")->value());
-            xml.cameraInfo.zUp = atoi(t2->first_attribute("z")->value());
-            t2 = t2->next_sibling();
-            if (t2) t.assign(t2->name());
+        if (t2!=0) {
+            string t(t2->name());
+    
+            if (t== "up"){
+                xml.cameraInfo.xUp = atoi(t2->first_attribute("x")->value());
+                xml.cameraInfo.yUp = atoi(t2->first_attribute("y")->value());
+                xml.cameraInfo.zUp = atoi(t2->first_attribute("z")->value());
+                t2 = t2->next_sibling();
+                if (t2) t.assign(t2->name());
+            }
+            if (t== "projection"){
+                xml.cameraInfo.fov = atoi(t2->first_attribute("fov")->value());
+                xml.cameraInfo.near = atoi(t2->first_attribute("near")->value());
+                xml.cameraInfo.far = atoi(t2->first_attribute("far")->value());
+            }
         }
-        if (t== "projection"){
-            xml.cameraInfo.fov = atoi(t2->first_attribute("fov")->value());
-            xml.cameraInfo.near = atoi(t2->first_attribute("near")->value());
-            xml.cameraInfo.far = atoi(t2->first_attribute("far")->value());
-        }
 
+
+        // Capture Lights
         t1 = root->first_node("lights");
         if (t1==0) throw new exception();
         t2 = t1->first_node("light");
@@ -122,120 +277,16 @@ xmlInfo readXML(string filename){
                 xml.lightsList.spotL.push_back(ls);
             }
         }
-        t1 = root->first_node("group");
-        if (t1==0) throw new exception();
-        t2 = t1->first_node("transform");
-        if (t2==0) throw new exception();
-        i=0;
-    
-        for (t2 = t2->first_node(); t2; i++,t2 = t2->next_sibling()){
-            string s(t2->name());
-            if (s == "translate"){
-                Translate t;
-                t.order=i;
-                t.x = atoi(t2->first_attribute("X")->value());
-                t.y = atoi(t2->first_attribute("Y")->value());
-                t.z = atoi(t2->first_attribute("Z")->value());
-                xml.transforms.transl =t;
-            }
-            else if ( s == "rotate"){
-                Rotate r;
-                r.order=i;
-                r.angle= atoi(t2->first_attribute("angle")->value());
-                r.x =atoi(t2->first_attribute("axisX")->value());
-                r.y =atoi(t2->first_attribute("axisY")->value());
-                r.z =atoi(t2->first_attribute("axisZ")->value());
-                xml.transforms.rotate =r;
-            }
-            else if ( s== "scale"){
-                Scale s;
-                s.order=i;
-                s.x =atoi(t2->first_attribute("X")->value());
-                s.y =atoi(t2->first_attribute("Y")->value());
-                s.z =atoi(t2->first_attribute("Z")->value());
-                xml.transforms.scale =s;
-            }
-        }
+
+        //Capture groups
+        xml.groups = captureGroups(root->first_node("group"));
 
 
-        t1 = t1->first_node("models");
-        if (t1==0) throw new exception();
-        t2 = t1->first_node("model");
-        if (t2==0) throw new exception();
-        
-        for ( ; t2; t2 = t2->next_sibling()){
-            Color defaultC;
-            defaultC.diffuseR=200;
-            defaultC.diffuseG=200;
-            defaultC.diffuseB=200;
-            defaultC.specularR=0;
-            defaultC.specularG=0;
-            defaultC.specularB=0;
-            defaultC.emissiveR=0;
-            defaultC.emissiveG=0;
-            defaultC.emissiveB=0;
-            defaultC.ambientR=50;
-            defaultC.ambientG=50;
-            defaultC.ambientB=50;
-            defaultC.shine=0;
-            
-            Model m;
-            m.color=defaultC;
-            m.sourceF = t2->first_attribute("file")->value();
-            m.textureF =  NULL;
-            m.color = defaultC;
-            
-            t3 = t2->first_node();
-            if (t3!=0) {
-
-
-            string name(t3->name());
-            if (name == "texture"){
-                m.textureF = t3->first_attribute()->value();
-                t3= t3->next_sibling();
-                if (t3) name.assign(t3->name());
-            }
-            if (name == "color"){
-                t3 = t3->first_node("diffuse");
-
-                m.color.diffuseR = atoi(t3->first_attribute("R")->value());
-                m.color.diffuseG = atoi(t3->first_attribute("G")->value());
-                m.color.diffuseB = atoi(t3->first_attribute("B")->value());
-
-                t3 = t3->next_sibling("ambient");
-
-                m.color.ambientR = atoi(t3->first_attribute("R")->value()); 
-
-
-
-                m.color.ambientG = atoi(t3->first_attribute("G")->value());
-                m.color.ambientB = atoi(t3->first_attribute("B")->value());
-
-                t3 = t3->next_sibling("specular");
-
-                m.color.specularR = atoi(t3->first_attribute("R")->value());
-                m.color.specularG = atoi(t3->first_attribute("G")->value());
-                m.color.specularB = atoi(t3->first_attribute("B")->value());
-
-                t3 = t3->next_sibling("emissive");
-
-                m.color.emissiveR = atoi(t3->first_attribute("R")->value());
-                m.color.emissiveG = atoi(t3->first_attribute("G")->value());
-                m.color.emissiveB = atoi(t3->first_attribute("B")->value());
-
-                t3 = t3->next_sibling("shininess");
-                m.color.shine =  atoi(t3->first_attribute("value")->value());
-
-            }
-            }
-
-            xml.modelList.push_back(m);
-        }
 
     
+/*
 
-
-        /*
+ 
         cout <<"Far:" <<xml.cameraInfo.far << "\n";
         cout <<"xPos:" <<xml.cameraInfo.xPos << "\n";
         cout <<"yPos:" <<xml.cameraInfo.yPos << "\n";
@@ -248,30 +299,32 @@ xmlInfo readXML(string filename){
 
         cout <<"pointsX:" <<xml.lightsList.points[0].posX << "\n\n";
 
-        cout <<"angle:" <<xml.transforms.rotate.angle << "\n\n";
+        cout <<"angle:" <<xml.groups.transforms.rotate.angle << "\n\n";
 
-        cout <<"angle:" <<xml.transforms.transl.order << "\n\n";
+        cout <<"angle:" <<xml.groups.transforms.transl.order << "\n\n";
 
-        cout <<"angle:" <<xml.transforms.scale.order << "\n\n";
-
-
+        cout <<"angle:" <<xml.groups.transforms.scale.order << "\n\n";
 
 
-        cout  <<xml.modelList[0].sourceF << "\n\n";
+        cout <<"SHEEEEEESh: " <<xml.groups.groupChildren[0].transforms.scale.order << "\n\n";
+        cout <<"SHEEEEEESh: " <<xml.groups.groupChildren[0].transforms.scale.x << "\n\n";
 
-        cout  <<xml.modelList[0].color.shine << "\n\n";
+        cout  <<xml.groups.modelList[0].sourceF << "\n\n";
 
-        cout  <<xml.modelList[0].color.ambientB << "\n\n";
+        cout  <<xml.groups.modelList[0].color.shine << "\n\n";
 
-    */
+        cout  <<xml.groups.modelList[0].color.ambientB << "\n\n";
+*/
         }
         return xml;
 
     }
 
-    /*
+    
     int main(int argc, char **argv){
-       xmlInfo x = readXML();
-       cout<< x.modelList[0].sourceF << "\n";
+        
+
+       xmlInfo x = readXML("xml_syntax.xml");
+      // cout<< x.modelList[0].sourceF << "\n";
     }
-    */
+    
