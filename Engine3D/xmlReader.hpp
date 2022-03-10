@@ -64,7 +64,7 @@ class Translate {
 	int x;
 	int y;
 	int z;
-	int order;
+	int order; //defines the order of the transformations // if its -1, it means its not referenced in the xml file
 };
 
 class Rotate {
@@ -73,7 +73,7 @@ class Rotate {
 	int x;
 	int y;
 	int z;
-	int order;
+	int order; //defines the order of the transformations // if its -1, it means its not referenced in the xml file
 };
 
 class Scale {
@@ -81,7 +81,7 @@ class Scale {
 	int x;
 	int y;
 	int z;
-	int order;
+	int order; //defines the order of the transformations // if its -1, it means its not referenced in the xml file
 };
 
 

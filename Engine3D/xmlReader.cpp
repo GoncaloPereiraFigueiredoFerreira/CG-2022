@@ -42,7 +42,9 @@ Group captureGroups (xml_node<char> * root){
     t1 = root->first_node("transform");
    
     if (t1==0) throw new exception;
-    
+    main.transforms.rotate.order=-1;
+    main.transforms.transl.order=-1;
+    main.transforms.scale.order =-1;
     
     int i=0;
     
@@ -239,42 +241,40 @@ xmlInfo readXML(string filename){
         }
 
 
-        // Capture Lights
+        // Capture Lights //optional
         t1 = root->first_node("lights");
-        if (t1==0) throw new exception();
-        t2 = t1->first_node("light");
-
-
-        int i=0;
-        for (; i<8 && t2; i++,t2= t2->next_sibling()){
-            string s( t2->first_attribute("type")->value());
-            if (s == "point"){
-                LPoint lp;
-                lp.posX = atoi(t2->first_attribute("posX")->value());
-                lp.posY = atoi(t2->first_attribute("posY")->value());
-                lp.posZ = atoi(t2->first_attribute("posZ")->value());
-                xml.lightsList.points.push_back(lp);
-            }
-            else if (s== "directional"){
-                LDirec ld;
-                ld.dirX =atoi(t2->first_attribute("dirX")->value());
-                ld.dirY =atoi(t2->first_attribute("dirY")->value());
-                ld.dirZ =atoi(t2->first_attribute("dirZ")->value());
-                xml.lightsList.direct.push_back(ld);
-            }
-            else if (s=="spotlight"){
-                LSpotl ls;
-                ls.posX = atoi(t2->first_attribute("posX")->value());
-                ls.posY = atoi(t2->first_attribute("posY")->value());
-                ls.posZ = atoi(t2->first_attribute("posZ")->value());
-                ls.dirX = atoi(t2->first_attribute("dirX")->value());
-                ls.dirY = atoi(t2->first_attribute("dirY")->value());
-                ls.dirZ = atoi(t2->first_attribute("dirZ")->value());
-                ls.cutoff = atoi(t2->first_attribute("cutoff")->value());
-                xml.lightsList.spotL.push_back(ls);
+        if (t1!=0) {
+            t2 = t1->first_node("light");
+            int i=0;
+            for (; i<8 && t2; i++,t2= t2->next_sibling()){
+                string s( t2->first_attribute("type")->value());
+                if (s == "point"){
+                    LPoint lp;
+                    lp.posX = atoi(t2->first_attribute("posX")->value());
+                    lp.posY = atoi(t2->first_attribute("posY")->value());
+                    lp.posZ = atoi(t2->first_attribute("posZ")->value());
+                    xml.lightsList.points.push_back(lp);
+                }
+                else if (s== "directional"){
+                    LDirec ld;
+                    ld.dirX =atoi(t2->first_attribute("dirX")->value());
+                    ld.dirY =atoi(t2->first_attribute("dirY")->value());
+                    ld.dirZ =atoi(t2->first_attribute("dirZ")->value());
+                    xml.lightsList.direct.push_back(ld);
+                }
+                else if (s=="spotlight"){
+                    LSpotl ls;
+                    ls.posX = atoi(t2->first_attribute("posX")->value());
+                    ls.posY = atoi(t2->first_attribute("posY")->value());
+                    ls.posZ = atoi(t2->first_attribute("posZ")->value());
+                    ls.dirX = atoi(t2->first_attribute("dirX")->value());
+                    ls.dirY = atoi(t2->first_attribute("dirY")->value());
+                    ls.dirZ = atoi(t2->first_attribute("dirZ")->value());
+                    ls.cutoff = atoi(t2->first_attribute("cutoff")->value());
+                    xml.lightsList.spotL.push_back(ls);
+                }
             }
         }
-
         //Capture groups
         xml.groups = captureGroups(root->first_node("group"));
 
@@ -321,11 +321,11 @@ xmlInfo readXML(string filename){
 
     
 
-    /*
+    
     int main(int argc, char **argv){
         
 
        xmlInfo x = readXML("xml_syntax.xml");
       // cout<< x.modelList[0].sourceF << "\n";
     }
-    */
+    
