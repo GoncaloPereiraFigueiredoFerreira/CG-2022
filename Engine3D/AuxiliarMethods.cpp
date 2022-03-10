@@ -3,11 +3,11 @@
 using namespace std;
 
 Point** mallocMatrix(int linhas, int colunas) {
-    Point** mat = (Point**)malloc(sizeof(Point*) * linhas);
+    Point** mat = (Point**) malloc(sizeof(Point*) * linhas);
 
     if (mat != NULL)
         for (int i = 0; i < linhas; i++)
-            mat[i] = (Point*)malloc(sizeof(Point) * colunas);
+            mat[i] = (Point*) malloc(sizeof(Point) * colunas);
 
     return mat;
 }

@@ -130,7 +130,6 @@ class Group{
 	Transform transforms;
 	std::vector<Model> modelList;
 	std::vector<Group> groupChildren;
-
 };
 
 

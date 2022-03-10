@@ -37,6 +37,9 @@
     <ClCompile Include="..\xmlReader.cpp">
       <Filter>Source Files\XMLReader</Filter>
     </ClCompile>
+    <ClCompile Include="Drawings.cpp">
+      <Filter>Source Files\Drawings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\CMakeLists.txt" />
@@ -68,6 +71,9 @@
     </Filter>
     <Filter Include="Source Files\XMLReader">
       <UniqueIdentifier>{d1f5f04a-e22a-4457-9ff3-53c42f0e2382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawings">
+      <UniqueIdentifier>{2012c55a-dfc5-492d-87fc-b1ddcf72f1b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -107,5 +113,15 @@
     <ClInclude Include="..\xmlReader.hpp">
       <Filter>Source Files\XMLReader</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Drawings.h">
+      <Filter>Source Files\Drawings</Filter>
+    </ClInclude>
+    <ClInclude Include="Objetos.h">
+      <Filter>Source Files\Objetos</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Engine.rc" />
   </ItemGroup>
 </Project>

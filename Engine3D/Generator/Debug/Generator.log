@@ -1,26 +1,7 @@
-﻿  AuxiliarMethods.cpp
-  Box.cpp
-  BoxGenerator.cpp
-  Cone.cpp
-  ConeGenerator.cpp
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\ConeGenerator.cpp(8,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\ConeGenerator.cpp(94,22): warning C4018: '<': signed/unsigned mismatch
-  Plane.cpp
-  PlaneGenerator.cpp
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\PlaneGenerator.cpp(81,22): warning C4018: '<': signed/unsigned mismatch
-  Point.cpp
-  SolidGenerator.cpp
+﻿  SolidGenerator.cpp
 C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SolidGenerator.cpp(8,44): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SolidGenerator.cpp(8,29): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SolidGenerator.cpp(22,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SolidGenerator.cpp(36,32): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SolidGenerator.cpp(50,28): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  Sphere.cpp
-  SphereGenerator.cpp
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SphereGenerator.cpp(9,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SphereGenerator.cpp(10,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SphereGenerator.cpp(14,19): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SphereGenerator.cpp(15,14): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SphereGenerator.cpp(113,22): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
+C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SolidGenerator.cpp(12,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SolidGenerator.cpp(17,32): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\SolidGenerator.cpp(21,20): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Generator.vcxproj -> C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\build\Debug\Generator.exe

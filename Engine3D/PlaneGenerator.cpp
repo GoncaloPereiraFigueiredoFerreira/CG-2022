@@ -2,24 +2,6 @@
 #include "PlaneGenerator.h"
 using namespace std;
 
-Plane generatePlane(float length, int div) {
-	float cx = 0, cy = 0, cz = 0;
-	float incr = length / div; //side increment value
-	Point** mat = mallocMatrix(div + 1, div + 1);
-
-	for (int i = 0; i <= div;i++) {
-		for (int j = 0;j <= div;j++) {
-			Point p = Point(cx, cy, cz);
-			mat[i][j] = p;
-			cx += incr;
-		}
-		cz += incr;
-		cx = 0;
-	}
-	//freeMatrix(mat, div + 1);
-	return Plane(length, div, mat);
-}
-
 void generatePlaneFile(string filename, Plane plane) {
 	ofstream fich;
 	fich.open(filename, ios::out);
@@ -37,7 +19,7 @@ void generatePlaneFile(string filename, Plane plane) {
 
 	fich << plane.length << ";" << plane.divisions << "\n";
 
-	Point** mat = plane.mat; Point p;
+	auto mat = plane.mat; Point p;
 
 	for (int i = 0; i < plane.divisions; i++) { //Percorrer eixo dos Z's
 
@@ -55,7 +37,7 @@ void generatePlaneFile(string filename, Plane plane) {
 Plane* readPlaneFromFile(std::ifstream& fd) {
 	float length;
 	int divisions;
-	Point** mat;
+	std::vector<std::vector<Point>> mat;
 
 	if (!fd.is_open()) cout << "Open: No such file!";
 	else {
@@ -69,26 +51,25 @@ Plane* readPlaneFromFile(std::ifstream& fd) {
 
 		length = stof(tokens[0]);
 		divisions = stoi(tokens[1]);
+		mat.reserve(divisions + 1);
 
 
 		vector<string> coords;
 
-		mat = mallocMatrix(divisions + 1, divisions + 1);
-
 		for (int i = 0; getline(fd, line); i++) {
+			std::vector<Point> l;
+			l.reserve(divisions + 1);
 			tokens = parseLine(line, delimiter);
 
 			for (int j = 0; j < tokens.size(); j++) {
 				coords = parseLine(tokens[j], ",");
-				mat[i][j] = Point(stof(coords[0]), stof(coords[1]), stof(coords[2]));
+				l.push_back(Point(stof(coords[0]), stof(coords[1]), stof(coords[2])));
 			}
+
+			mat.push_back(l);
 		}
 
-		Plane* p = (Plane*)malloc(sizeof(Plane));
-		if (p != NULL)
-			(*p) = Plane(length, divisions, mat);
-
-		return p;
+		return new Plane(length, divisions, mat);
 	}
 
 	return NULL;

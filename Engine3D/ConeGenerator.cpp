@@ -2,33 +2,6 @@
 #include "ConeGenerator.h"
 using namespace std;
 
-Cone generateCone(float base, float height, int slices, int stacks) {
-	float cx = 0.0f, cy = 0.0f, cz = 0.0f;
-	Point** mat = mallocMatrix(stacks, slices);
-	float angInc = 2 * M_PI / slices, //angle increment value
-		heightInc = height / stacks,
-		radiusDec = base / stacks;
-	float ang, h, r;
-
-	for (int i = 0; i < stacks; i++) {
-		h = cz + heightInc * i;
-		r = base - radiusDec * i;
-
-		ang = 0;
-		Point p = Point(cx + r * cos(ang), cy + r * sin(ang), h);
-		mat[i][0] = p;
-
-		for (int j = 1; j < slices; j++) {
-			ang = angInc * j;
-			Point p = Point(cx + r * cos(ang), cy + r * sin(ang), h);
-			mat[i][j] = p;
-		}
-	}
-
-	//freeMatrix(mat, stacks);
-	return Cone(base, height, slices, stacks, mat);
-}
-
 void generateConeFile(string filename, Cone cone) {
 	ofstream fich;
 	fich.open(filename, ios::out);
@@ -45,9 +18,9 @@ void generateConeFile(string filename, Cone cone) {
 	fich << "cone" << "\n";
 	fich << cone.base << ";" << cone.height << ";" << cone.slices << ";" << cone.stacks << "\n";
 
-	Point** mat = cone.mat; Point p;
+	auto mat = cone.mat; Point p;
 
-	for (int i = 0; i < cone.stacks - 1; i++) {
+	for (int i = 0; i < cone.stacks; i++) {
 
 		for (int j = 0; j < cone.slices - 1; j++) {
 			p = mat[i][j];
@@ -65,7 +38,7 @@ Cone* readConeFromFile(std::ifstream& fd) {
 	float height;
 	int slices;
 	int stacks;
-	Point** mat;
+	std::vector<std::vector<Point>> mat;
 
 	if (!fd.is_open()) cout << "Open: No such file!";
 	else {
@@ -86,22 +59,22 @@ Cone* readConeFromFile(std::ifstream& fd) {
 		vector<string> coords;
 
 		//Read and parse each row of points that divide 2 different stacks
-		mat = mallocMatrix(stacks - 1, slices);
+		mat.reserve(stacks);
 
 		for (int i = 0; getline(fd, line); i++) {
+			std::vector<Point> l;
+			l.reserve(slices);
 			tokens = parseLine(line, delimiter);
 
 			for (int j = 0; j < tokens.size(); j++) {
 				coords = parseLine(tokens[j], ",");
-				mat[i][j] = Point(stof(coords[0]), stof(coords[1]), stof(coords[2]));
+				l.push_back(Point(stof(coords[0]), stof(coords[1]), stof(coords[2])));
 			}
+
+			mat.push_back(l);
 		}
 
-		Cone* c = (Cone*)malloc(sizeof(Cone));
-		if (c != NULL)
-			(*c) = Cone(base, height, slices, stacks, mat);
-
-		return c;
+		return new Cone(base, height, slices, stacks, mat);
 	}
 
 	return NULL;

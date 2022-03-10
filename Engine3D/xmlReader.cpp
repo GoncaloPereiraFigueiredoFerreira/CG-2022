@@ -129,9 +129,6 @@ Group captureGroups (xml_node<char> * root){
                     t2 = t2->next_sibling("ambient");
 
                     m.color.ambientR = atoi(t2->first_attribute("R")->value()); 
-
-
-
                     m.color.ambientG = atoi(t2->first_attribute("G")->value());
                     m.color.ambientB = atoi(t2->first_attribute("B")->value());
 
@@ -236,7 +233,7 @@ xmlInfo readXML(string filename){
             }
             if (t== "projection"){
                 xml.cameraInfo.fov = atoi(t2->first_attribute("fov")->value());
-                xml.cameraInfo.near = atoi(t2->first_attribute("near")->value());
+                xml.cameraInfo.near= atoi(t2->first_attribute("near")->value());
                 xml.cameraInfo.far = atoi(t2->first_attribute("far")->value());
             }
         }
@@ -270,9 +267,9 @@ xmlInfo readXML(string filename){
                 ls.posX = atoi(t2->first_attribute("posX")->value());
                 ls.posY = atoi(t2->first_attribute("posY")->value());
                 ls.posZ = atoi(t2->first_attribute("posZ")->value());
-                ls.dirX =atoi(t2->first_attribute("dirX")->value());
-                ls.dirY =atoi(t2->first_attribute("dirY")->value());
-                ls.dirZ =atoi(t2->first_attribute("dirZ")->value());
+                ls.dirX = atoi(t2->first_attribute("dirX")->value());
+                ls.dirY = atoi(t2->first_attribute("dirY")->value());
+                ls.dirZ = atoi(t2->first_attribute("dirZ")->value());
                 ls.cutoff = atoi(t2->first_attribute("cutoff")->value());
                 xml.lightsList.spotL.push_back(ls);
             }
@@ -320,11 +317,15 @@ xmlInfo readXML(string filename){
 
     }
 
+
+
     
+
+    /*
     int main(int argc, char **argv){
         
 
        xmlInfo x = readXML("xml_syntax.xml");
       // cout<< x.modelList[0].sourceF << "\n";
     }
-    
+    */

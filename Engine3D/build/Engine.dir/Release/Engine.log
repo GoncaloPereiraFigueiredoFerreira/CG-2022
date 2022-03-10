@@ -1,2 +1,4 @@
-﻿  Engine.cpp
+﻿  ConeGenerator.cpp
+C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\Cone.h(31,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+..\ConeGenerator.cpp(69,22): warning C4018: '<': signed/unsigned mismatch
   Engine.vcxproj -> C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\build\Release\Engine.exe
