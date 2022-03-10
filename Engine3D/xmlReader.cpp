@@ -40,133 +40,114 @@ Group captureGroups (xml_node<char> * root){
     xml_node<char> * t2;
 
     t1 = root->first_node("transform");
-   
-    if (t1==0) throw new exception;
+    
     main.transforms.rotate.order=-1;
     main.transforms.transl.order=-1;
     main.transforms.scale.order =-1;
-    
-    int i=0;
-    
-    // Capture Transformations
-    for (t1 = t1->first_node(); t1; i++,t1 = t1->next_sibling()){
-        string s(t1->name());
-        if (s == "translate"){
-            Translate t;
-            t.order=i;
-            t.x = atoi(t1->first_attribute("X")->value());
-            t.y = atoi(t1->first_attribute("Y")->value());
-            t.z = atoi(t1->first_attribute("Z")->value());
-            main.transforms.transl =t;
-        }
-        else if ( s == "rotate"){
-            Rotate r;
-            r.order=i;
-            r.angle= atoi(t1->first_attribute("angle")->value());
-            r.x =atoi(t1->first_attribute("axisX")->value());
-            r.y =atoi(t1->first_attribute("axisY")->value());
-            r.z =atoi(t1->first_attribute("axisZ")->value());
-            main.transforms.rotate =r;
-        }
-        else if ( s== "scale"){
-            Scale s;
-            s.order=i;
-            s.x =atoi(t1->first_attribute("X")->value());
-            s.y =atoi(t1->first_attribute("Y")->value());
-            s.z =atoi(t1->first_attribute("Z")->value());
-            
-            main.transforms.scale =s;
+    if (t1!=0) {
+        int i=0;
+        // Capture Transformations
+        for (t1 = t1->first_node(); t1; i++,t1 = t1->next_sibling()){
+            string s(t1->name());
+            if (s == "translate"){
+                Translate t;
+                t.order=i;
+                t.x = atoi(t1->first_attribute("X")->value());
+                t.y = atoi(t1->first_attribute("Y")->value());
+                t.z = atoi(t1->first_attribute("Z")->value());
+                main.transforms.transl =t;
+            }
+            else if ( s == "rotate"){
+                Rotate r;
+                r.order=i;
+                r.angle= atoi(t1->first_attribute("angle")->value());
+                r.x =atoi(t1->first_attribute("axisX")->value());
+                r.y =atoi(t1->first_attribute("axisY")->value());
+                r.z =atoi(t1->first_attribute("axisZ")->value());
+                main.transforms.rotate =r;
+            }
+            else if ( s== "scale"){
+                Scale s;
+                s.order=i;
+                s.x =atoi(t1->first_attribute("X")->value());
+                s.y =atoi(t1->first_attribute("Y")->value());
+                s.z =atoi(t1->first_attribute("Z")->value());            
+                main.transforms.scale =s;
+            }   
         }
     }
 
-        // Capture Models (optional)
-        t1 = root->first_node("models");
+    // Capture Models (optional)
+    t1 = root->first_node("models");
         
-        if (t1!=0) {
-            t1 = t1->first_node("model");
+    if (t1!=0) {
+        t1 = t1->first_node("model");
             
-            if (t1==0) throw new exception;
+        if (t1==0) throw new exception;
             
 
-            for ( ; t1; t1 = t1->next_sibling()){
-
-
-                Model m;
-
-                m.sourceF = t1->first_attribute("file")->value();
-                m.textureF =  NULL;
-
-                //Setting the default values
-                m.color.diffuseR=200;
-                m.color.diffuseG=200;
-                m.color.diffuseB=200;
-                m.color.specularR=0;
-                m.color.specularG=0;
-                m.color.specularB=0;
-                m.color.emissiveR=0;
-                m.color.emissiveG=0;
-                m.color.emissiveB=0;
-                m.color.ambientR=50;
-                m.color.ambientG=50;
-                m.color.ambientB=50;
-                m.color.shine=0;
-
-                t2 = t1->first_node();
-                if (t2!=0) {
-
-
-                string name(t2->name());
-                if (name == "texture"){
-                    m.textureF = t2->first_attribute()->value();
-                    t2= t2->next_sibling();
-                    if (t2) name.assign(t2->name());
-                }
-                if (name == "color"){
-                    t2 = t2->first_node("diffuse");
-
-                    m.color.diffuseR = atoi(t2->first_attribute("R")->value());
-                    m.color.diffuseG = atoi(t2->first_attribute("G")->value());
-                    m.color.diffuseB = atoi(t2->first_attribute("B")->value());
-
-                    t2 = t2->next_sibling("ambient");
-
-                    m.color.ambientR = atoi(t2->first_attribute("R")->value()); 
-                    m.color.ambientG = atoi(t2->first_attribute("G")->value());
-                    m.color.ambientB = atoi(t2->first_attribute("B")->value());
-
-                    t2 = t2->next_sibling("specular");
-
-                    m.color.specularR = atoi(t2->first_attribute("R")->value());
-                    m.color.specularG = atoi(t2->first_attribute("G")->value());
-                    m.color.specularB = atoi(t2->first_attribute("B")->value());
-
-                    t2 = t2->next_sibling("emissive");
-
-                    m.color.emissiveR = atoi(t2->first_attribute("R")->value());
-                    m.color.emissiveG = atoi(t2->first_attribute("G")->value());
-                    m.color.emissiveB = atoi(t2->first_attribute("B")->value());
-
-                    t2 = t2->next_sibling("shininess");
-                    m.color.shine =  atoi(t2->first_attribute("value")->value());
-
-                }
-                }
-
-                main.modelList.push_back(m);
+        for ( ; t1; t1 = t1->next_sibling()){
+            Model m;
+            m.sourceF = t1->first_attribute("file")->value();
+            m.textureF =  NULL;
+             
+             //Setting the default values
+            m.color.diffuseR=200;
+            m.color.diffuseG=200;
+            m.color.diffuseB=200;
+            m.color.specularR=0;
+            m.color.specularG=0;
+            m.color.specularB=0;
+            m.color.emissiveR=0;
+            m.color.emissiveG=0;
+            m.color.emissiveB=0;
+            m.color.ambientR=50;
+            m.color.ambientG=50;
+            m.color.ambientB=50;
+            m.color.shine=0;
+            t2 = t1->first_node();
+            if (t2!=0) {
+            string name(t2->name());
+            if (name == "texture"){
+                m.textureF = t2->first_attribute()->value();
+                t2= t2->next_sibling();
+                if (t2) name.assign(t2->name());
             }
-        }
-        // Capture other nested groups
-        for (t1 = root->first_node("group"); t1; t1= t1->next_sibling()){
-            string name(t1->name());
-            if (name == "group"){
-                Group temp = captureGroups(t1);
-                main.groupChildren.push_back(temp);
-            
+            if (name == "color"){
+                t2 = t2->first_node("diffuse");
+                m.color.diffuseR = atoi(t2->first_attribute("R")->value());
+                m.color.diffuseG = atoi(t2->first_attribute("G")->value());
+                m.color.diffuseB = atoi(t2->first_attribute("B")->value());
+                t2 = t2->next_sibling("ambient");
+                m.color.ambientR = atoi(t2->first_attribute("R")->value()); 
+                m.color.ambientG = atoi(t2->first_attribute("G")->value());
+                m.color.ambientB = atoi(t2->first_attribute("B")->value());
+                t2 = t2->next_sibling("specular");
+                m.color.specularR = atoi(t2->first_attribute("R")->value());
+                m.color.specularG = atoi(t2->first_attribute("G")->value());
+                m.color.specularB = atoi(t2->first_attribute("B")->value());
+                t2 = t2->next_sibling("emissive");
+                m.color.emissiveR = atoi(t2->first_attribute("R")->value());
+                m.color.emissiveG = atoi(t2->first_attribute("G")->value());
+                m.color.emissiveB = atoi(t2->first_attribute("B")->value());
+                t2 = t2->next_sibling("shininess");
+                m.color.shine =  atoi(t2->first_attribute("value")->value());
             }
+            }
+            main.modelList.push_back(m);
         }
+    }
+    // Capture other nested groups
+    for (t1 = root->first_node("group"); t1; t1= t1->next_sibling()){
+        string name(t1->name());
+        if (name == "group"){
+            Group temp = captureGroups(t1);
+            main.groupChildren.push_back(temp);
+            
+        }
+    }
 
-        return main;
-    
+    return main;    
 }
 
 
@@ -187,14 +168,15 @@ xmlInfo readXML(string filename){
         xml_node<> * t3;
 
 
-        
+        // Mandatory
         root = doc.first_node("world");
         if (root==0)throw new exception();
         
-        
+        // Mandatory
         t1 = root->first_node("camera");
         if (t1==0) throw new exception();
         
+        // Mandatory
         t2 = t1->first_node("position");
         if (t2==0) throw new exception();
         
