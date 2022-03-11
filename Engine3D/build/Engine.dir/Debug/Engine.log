@@ -1,7 +1,0 @@
-﻿  SphereGenerator.cpp
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\Sphere.h(91,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\Sphere.h(92,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\Sphere.h(100,20): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\Sphere.h(101,15): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-..\SphereGenerator.cpp(85,22): warning C4018: '<': signed/unsigned mismatch
-  Engine.vcxproj -> C:\Users\Alexandr___of\Desktop\UM\Ano3\Semestre2\CG\TP\CG-2022\Engine3D\build\Debug\Engine.exe
