@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -14,7 +15,6 @@
 #include "../Auxiliar/AuxiliarMethods.h"
 #include "../Generator/Generator.h"
 #include "../XMLReader/xmlReader.hpp"
-#include "unistd.h"
 using namespace std;
 
 float angle_y = 0.0f;
@@ -213,15 +213,10 @@ int main(int argc, char** argv) {
 	}
     */
 
-
-    char buffer[PATH_MAX];
-   if (getcwd(buffer, sizeof(buffer)) != NULL) {
-       printf("Current working directory : %s\n", buffer);
-   }
 	std::ifstream fd;
 	string line;
 
-	fd.open("plane.3d", ios::in);
+	fd.open("cone.3d", ios::in);
 	getline(fd, line);
 	if (!line.compare("cone"))
 		m = readConeFromFile(fd);
