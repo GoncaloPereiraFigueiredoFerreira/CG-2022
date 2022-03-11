@@ -1,2 +1,5 @@
-
-Engine3D/build/.vs/Engine/v17/Browse.VC.opendb
+*.idea/*
+*.idea
+*cmake-build-release
+*cmake-build-release/*
+*nohup.out*
