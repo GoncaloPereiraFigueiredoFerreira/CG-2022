@@ -20,7 +20,7 @@ public:
 
 	Plane(float length, int div) {
 		this->length = length;
-		this->divisions = divisions;
+		this->divisions = div;
 
 		float cx = 0, cy = 0, cz = 0;
 		float incr = length / div; //side increment value

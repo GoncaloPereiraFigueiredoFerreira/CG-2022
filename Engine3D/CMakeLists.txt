@@ -7,7 +7,10 @@ set(OpenGL_GL_PREFERENCE LEGACY)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+#Basta comentar uma das linhas 'add_executable' e tirar a outra de comentário para alterar entre os executaveis
 add_executable(${PROJECT_NAME} Engine/Engine.cpp Generator/BoxGenerator.cpp Generator/BoxGenerator.h Generator/ConeGenerator.cpp Generator/ConeGenerator.h Generator/Generator.h Generator/PlaneGenerator.cpp Generator/PlaneGenerator.h Generator/SphereGenerator.cpp Generator/SphereGenerator.h Models/Box.h Models/Cone.h Models/Model.cpp Models/Model.h Models/Models.h Models/Plane.h Models/Point.h Models/Sphere.h XMLReader/xmlReader.cpp XMLReader/xmlReader.hpp Auxiliar/AuxiliarMethods.cpp Auxiliar/AuxiliarMethods.h Models/Cone.cpp Models/Plane.cpp Models/Sphere.cpp Models/Box.cpp)
+#add_executable(${PROJECT_NAME}  Generator/BoxGenerator.cpp Generator/BoxGenerator.h Generator/ConeGenerator.cpp Generator/ConeGenerator.h Generator/Generator.h Generator/PlaneGenerator.cpp Generator/PlaneGenerator.h Generator/SphereGenerator.cpp Generator/SphereGenerator.h Models/Box.h Models/Cone.h Models/Model.cpp Models/Model.h Models/Models.h Models/Plane.h Models/Point.h Models/Sphere.h XMLReader/xmlReader.cpp XMLReader/xmlReader.hpp Auxiliar/AuxiliarMethods.cpp Auxiliar/AuxiliarMethods.h Models/Cone.cpp Models/Plane.cpp Models/Sphere.cpp Models/Box.cpp)
+
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})

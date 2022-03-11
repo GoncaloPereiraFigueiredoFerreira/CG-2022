@@ -10,10 +10,11 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <climits>
 #include "../Auxiliar/AuxiliarMethods.h"
 #include "../Generator/Generator.h"
 #include "../XMLReader/xmlReader.hpp"
-
+#include "unistd.h"
 using namespace std;
 
 float angle_y = 0.0f;
@@ -24,7 +25,7 @@ float xx = 0.0f, zz = 0.0f;
 xmlInfo info;
 vector<Group> groups;
 vector<Model*> solids;
-Sphere *m;
+Model *m;
 
 void changeSize(int w, int h) {
 
@@ -213,19 +214,23 @@ int main(int argc, char** argv) {
     */
 
 
+    char buffer[PATH_MAX];
+   if (getcwd(buffer, sizeof(buffer)) != NULL) {
+       printf("Current working directory : %s\n", buffer);
+   }
 	std::ifstream fd;
 	string line;
 
-	fd.open("sphere.3d", ios::in);
+	fd.open("plane.3d", ios::in);
 	getline(fd, line);
-	/*if (!line.compare("cone"))
+	if (!line.compare("cone"))
 		m = readConeFromFile(fd);
-    else*/ if (!line.compare("sphere"))
+    else if (!line.compare("sphere"))
 		m = readSphereFromFile(fd);
-    /*else if (!line.compare("plane"))
+    else if (!line.compare("plane"))
 		m = readPlaneFromFile(fd);
     else if (!line.compare("box"))
-		m = readBoxFromFile(fd);*/
+		m = readBoxFromFile(fd);
 	fd.close();
 
 	// init GLUT and the window
