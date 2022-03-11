@@ -17,6 +17,12 @@ void generateConeFile(string filename, Cone cone) {
 	fich << "cone" << "\n";
 	fich << cone.base << ";" << cone.height << ";" << cone.slices << ";" << cone.stacks << "\n";
 
+	//3rd line is the point with lowest y
+	fich << cone.lowestP.cx << "," << cone.lowestP.cy << "," << cone.lowestP.cz << "\n";
+
+	//4th line is the point with highest z
+	fich << cone.highestP.cx << "," << cone.highestP.cy << "," << cone.highestP.cz << "\n";
+
 	auto mat = cone.mat; Point p;
 
 	for (int i = 0; i < cone.stacks; i++) {
@@ -54,8 +60,21 @@ Cone* readConeFromFile(std::ifstream& fd) {
 		slices = stoi(tokens[2]);
 		stacks = stoi(tokens[3]);
 
-
 		vector<string> coords;
+
+		//Read and parse lowest point
+		getline(fd, line);
+		tokens = parseLine(line, delimiter);
+		coords = parseLine(tokens[0], ",");
+		Point lowestP = Point(stof(coords[0]), stof(coords[1]), stof(coords[2]));
+
+
+		//Read and parse highest point
+		getline(fd, line);
+		tokens = parseLine(line, delimiter);
+		coords = parseLine(tokens[0], ",");
+		Point highestP = Point(stof(coords[0]), stof(coords[1]), stof(coords[2]));
+
 
 		//Read and parse each row of points that divide 2 different stacks
 		mat.reserve(stacks);
@@ -73,7 +92,7 @@ Cone* readConeFromFile(std::ifstream& fd) {
 			mat.push_back(l);
 		}
 
-		return new Cone(base, height, slices, stacks, mat);
+		return new Cone(base, height, slices, stacks, lowestP, highestP, mat);
 	}
 
 	return NULL;

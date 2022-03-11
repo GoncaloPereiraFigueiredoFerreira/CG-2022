@@ -9,7 +9,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 #Basta comentar uma das linhas 'add_executable' e tirar a outra de comentário para alterar entre os executaveis
 add_executable(${PROJECT_NAME} Engine/Engine.cpp Generator/BoxGenerator.cpp Generator/BoxGenerator.h Generator/ConeGenerator.cpp Generator/ConeGenerator.h Generator/Generator.h Generator/PlaneGenerator.cpp Generator/PlaneGenerator.h Generator/SphereGenerator.cpp Generator/SphereGenerator.h Models/Box.h Models/Cone.h Models/Model.cpp Models/Model.h Models/Models.h Models/Plane.h Models/Point.h Models/Sphere.h XMLReader/xmlReader.cpp XMLReader/xmlReader.hpp Auxiliar/AuxiliarMethods.cpp Auxiliar/AuxiliarMethods.h Models/Cone.cpp Models/Plane.cpp Models/Sphere.cpp Models/Box.cpp)
-#add_executable(${PROJECT_NAME}  Generator/BoxGenerator.cpp Generator/BoxGenerator.h Generator/ConeGenerator.cpp Generator/ConeGenerator.h Generator/Generator.h Generator/PlaneGenerator.cpp Generator/PlaneGenerator.h Generator/SphereGenerator.cpp Generator/SphereGenerator.h Models/Box.h Models/Cone.h Models/Model.cpp Models/Model.h Models/Models.h Models/Plane.h Models/Point.h Models/Sphere.h XMLReader/xmlReader.cpp XMLReader/xmlReader.hpp Auxiliar/AuxiliarMethods.cpp Auxiliar/AuxiliarMethods.h Models/Cone.cpp Models/Plane.cpp Models/Sphere.cpp Models/Box.cpp)
+add_executable(Generator  Generator/BoxGenerator.cpp Generator/BoxGenerator.h Generator/ConeGenerator.cpp Generator/ConeGenerator.h Generator/Generator.h Generator/Generator.cpp Generator/PlaneGenerator.cpp Generator/PlaneGenerator.h Generator/SphereGenerator.cpp Generator/SphereGenerator.h Models/Box.h Models/Cone.h Models/Model.cpp Models/Model.h Models/Models.h Models/Plane.h Models/Point.h Models/Sphere.h XMLReader/xmlReader.cpp XMLReader/xmlReader.hpp Auxiliar/AuxiliarMethods.cpp Auxiliar/AuxiliarMethods.h Models/Cone.cpp Models/Plane.cpp Models/Sphere.cpp Models/Box.cpp)
 
 
 find_package(OpenGL REQUIRED)
@@ -34,6 +34,8 @@ if  (WIN32)
 	include_directories(${TOOLKITS_FOLDER}/glut )
 	target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} 
 										  ${TOOLKITS_FOLDER}/glut/glut32.lib)
+	target_link_libraries(Generator ${OPENGL_LIBRARIES} 
+										  ${TOOLKITS_FOLDER}/glut/glut32.lib)
 	
 	if (EXISTS "${TOOLKITS_FOLDER}/glut/glut32.dll" )
 		file(COPY ${TOOLKITS_FOLDER}/glut/glut32.dll DESTINATION ${CMAKE_BINARY_DIR})
@@ -50,6 +52,7 @@ else (WIN32) #Linux and Mac
 	add_definitions(${GLUT_DEFINITIONS})
 	
 	target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
+	target_link_libraries(Generator ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
 	if(NOT GLUT_FOUND)
 	   message(ERROR ": GLUT not found!")
 	endif(NOT GLUT_FOUND)

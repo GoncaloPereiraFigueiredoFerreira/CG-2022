@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 			Box b = Box(atof(argv[2]), atoi(argv[3]));
 			generateBoxFile(argv[4], b);
 
-			std::ifstream fd; //debugging
+			/*std::ifstream fd; //debugging
 			string line;
 			fd.open(argv[4], ios::in);
 			getline(fd, line);
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 				cout << "A ler box\n";
 				b = *readBoxFromFile(fd);
 				generateBoxFile("boxteste.3d", b);
-			}//debugging
+			}//debugging*/
 		}
 	}
 	else {

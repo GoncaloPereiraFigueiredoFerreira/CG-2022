@@ -216,7 +216,8 @@ int main(int argc, char** argv) {
 	std::ifstream fd;
 	string line;
 
-	fd.open("cone.3d", ios::in);
+	fd.open("box.3d", ios::in);
+	if(!fd)std::cout<<"fail"<<std::endl;
 	getline(fd, line);
 	if (!line.compare("cone"))
 		m = readConeFromFile(fd);
@@ -227,6 +228,7 @@ int main(int argc, char** argv) {
     else if (!line.compare("box"))
 		m = readBoxFromFile(fd);
 	fd.close();
+
 
 	// init GLUT and the window
 	glutInit(&argc, argv);

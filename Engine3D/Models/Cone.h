@@ -16,13 +16,17 @@ public:
 	float height;
 	int slices;
 	int stacks;
+	Point lowestP;
+	Point highestP;
 	std::vector<std::vector<Point>> mat;
 
-	Cone(float base, float height, int slices, int stacks, std::vector<std::vector<Point>> mat) {
+	Cone(float base, float height, int slices, int stacks, Point lowestP, Point highestP, std::vector<std::vector<Point>> mat) {
 		this->base = base;
 		this->height = height;
 		this->slices = slices;
 		this->stacks = stacks;
+		this->lowestP = lowestP;
+		this->highestP = highestP;
 		this->mat = mat;
 	}
 
@@ -47,7 +51,7 @@ public:
 
 			for (int j = 0; j < slices; j++) {
 				ang = angInc * j;
-				l.push_back(Point(r * cos(ang), r * sin(ang), h));
+				l.push_back(Point(r * cos(ang), h , r * sin(ang)));
 			}
 
 			mat.push_back(l);

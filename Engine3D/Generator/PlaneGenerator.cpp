@@ -20,9 +20,9 @@ void generatePlaneFile(string filename, Plane plane) {
 
 	auto mat = plane.mat; Point p;
 
-	for (int i = 0; i < plane.divisions; i++) { //Percorrer eixo dos Z's
+	for (int i = 0; i <= plane.divisions ; i++) { //Percorrer eixo dos Z's
 
-		for (int j = 0; j < plane.divisions - 1; j++) { //Percorrer eixo dos X's
+		for (int j = 0; j <= plane.divisions ; j++) { //Percorrer eixo dos X's
 			p = mat[i][j];
 			fich << p.cx << "," << p.cy << "," << p.cz << ";";
 		}
