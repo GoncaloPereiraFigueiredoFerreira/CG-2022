@@ -216,7 +216,7 @@ int main(int argc, char** argv) {
 	std::ifstream fd;
 	string line;
 
-	fd.open("plane.3d", ios::in);
+	fd.open("sphere.3d", ios::in);
 	getline(fd, line);
 	/*if (!line.compare("cone"))
 		m = readConeFromFile(fd);
