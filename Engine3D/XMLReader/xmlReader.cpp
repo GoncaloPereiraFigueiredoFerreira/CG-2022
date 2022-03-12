@@ -52,26 +52,26 @@ Group captureGroups (xml_node<char> * root){
             if (s == "translate"){
                 Translate t;
                 t.order=i;
-                t.x = atoi(t1->first_attribute("X")->value());
-                t.y = atoi(t1->first_attribute("Y")->value());
-                t.z = atoi(t1->first_attribute("Z")->value());
+                t.x = std::stod(t1->first_attribute("X")->value());
+                t.y = std::stod(t1->first_attribute("Y")->value());
+                t.z = std::stod(t1->first_attribute("Z")->value());
                 main.transforms.transl =t;
             }
             else if ( s == "rotate"){
                 Rotate r;
                 r.order=i;
-                r.angle= atoi(t1->first_attribute("angle")->value());
-                r.x =atoi(t1->first_attribute("axisX")->value());
-                r.y =atoi(t1->first_attribute("axisY")->value());
-                r.z =atoi(t1->first_attribute("axisZ")->value());
+                r.angle= std::stod(t1->first_attribute("angle")->value());
+                r.x =std::stod(t1->first_attribute("axisX")->value());
+                r.y =std::stod(t1->first_attribute("axisY")->value());
+                r.z =std::stod(t1->first_attribute("axisZ")->value());
                 main.transforms.rotate =r;
             }
             else if ( s== "scale"){
                 Scale s;
                 s.order=i;
-                s.x =atoi(t1->first_attribute("X")->value());
-                s.y =atoi(t1->first_attribute("Y")->value());
-                s.z =atoi(t1->first_attribute("Z")->value());            
+                s.x =std::stod(t1->first_attribute("X")->value());
+                s.y =std::stod(t1->first_attribute("Y")->value());
+                s.z =std::stod(t1->first_attribute("Z")->value());            
                 main.transforms.scale =s;
             }   
         }
@@ -115,23 +115,23 @@ Group captureGroups (xml_node<char> * root){
             }
             if (name == "color"){
                 t2 = t2->first_node("diffuse");
-                m.color.diffuseR = atoi(t2->first_attribute("R")->value());
-                m.color.diffuseG = atoi(t2->first_attribute("G")->value());
-                m.color.diffuseB = atoi(t2->first_attribute("B")->value());
+                m.color.diffuseR = std::stod(t2->first_attribute("R")->value());
+                m.color.diffuseG = std::stod(t2->first_attribute("G")->value());
+                m.color.diffuseB = std::stod(t2->first_attribute("B")->value());
                 t2 = t2->next_sibling("ambient");
-                m.color.ambientR = atoi(t2->first_attribute("R")->value()); 
-                m.color.ambientG = atoi(t2->first_attribute("G")->value());
-                m.color.ambientB = atoi(t2->first_attribute("B")->value());
+                m.color.ambientR = std::stod(t2->first_attribute("R")->value()); 
+                m.color.ambientG = std::stod(t2->first_attribute("G")->value());
+                m.color.ambientB = std::stod(t2->first_attribute("B")->value());
                 t2 = t2->next_sibling("specular");
-                m.color.specularR = atoi(t2->first_attribute("R")->value());
-                m.color.specularG = atoi(t2->first_attribute("G")->value());
-                m.color.specularB = atoi(t2->first_attribute("B")->value());
+                m.color.specularR = std::stod(t2->first_attribute("R")->value());
+                m.color.specularG = std::stod(t2->first_attribute("G")->value());
+                m.color.specularB = std::stod(t2->first_attribute("B")->value());
                 t2 = t2->next_sibling("emissive");
-                m.color.emissiveR = atoi(t2->first_attribute("R")->value());
-                m.color.emissiveG = atoi(t2->first_attribute("G")->value());
-                m.color.emissiveB = atoi(t2->first_attribute("B")->value());
+                m.color.emissiveR = std::stod(t2->first_attribute("R")->value());
+                m.color.emissiveG = std::stod(t2->first_attribute("G")->value());
+                m.color.emissiveB = std::stod(t2->first_attribute("B")->value());
                 t2 = t2->next_sibling("shininess");
-                m.color.shine =  atoi(t2->first_attribute("value")->value());
+                m.color.shine =  std::stod(t2->first_attribute("value")->value());
             }
             }
             main.modelList.push_back(m);
@@ -183,17 +183,17 @@ xmlInfo readXML(string filename){
 
         //Capture X Y and Z Camera Positions
 
-        xml.cameraInfo.xPos = atoi(t2->first_attribute("x")->value());
-        xml.cameraInfo.yPos = atoi(t2->first_attribute("y")->value());
-        xml.cameraInfo.zPos = atoi(t2->first_attribute("z")->value());
+        xml.cameraInfo.xPos = std::stod(t2->first_attribute("x")->value());
+        xml.cameraInfo.yPos = std::stod(t2->first_attribute("y")->value());
+        xml.cameraInfo.zPos = std::stod(t2->first_attribute("z")->value());
 
         //Capture X Y and Z LookAt Positions
 
         t2 = t2->next_sibling();
         if (t2==0) throw new exception();
-        xml.cameraInfo.xLook = atoi(t2->first_attribute("x")->value());
-        xml.cameraInfo.yLook = atoi(t2->first_attribute("y")->value());
-        xml.cameraInfo.zLook = atoi(t2->first_attribute("z")->value());
+        xml.cameraInfo.xLook = std::stod(t2->first_attribute("x")->value());
+        xml.cameraInfo.yLook = std::stod(t2->first_attribute("y")->value());
+        xml.cameraInfo.zLook = std::stod(t2->first_attribute("z")->value());
 
         //Default Values for Up and Projection
         xml.cameraInfo.xUp = 0;
@@ -209,16 +209,16 @@ xmlInfo readXML(string filename){
             string t(t2->name());
     
             if (t== "up"){
-                xml.cameraInfo.xUp = atoi(t2->first_attribute("x")->value());
-                xml.cameraInfo.yUp = atoi(t2->first_attribute("y")->value());
-                xml.cameraInfo.zUp = atoi(t2->first_attribute("z")->value());
+                xml.cameraInfo.xUp = std::stod(t2->first_attribute("x")->value());
+                xml.cameraInfo.yUp = std::stod(t2->first_attribute("y")->value());
+                xml.cameraInfo.zUp = std::stod(t2->first_attribute("z")->value());
                 t2 = t2->next_sibling();
                 if (t2) t.assign(t2->name());
             }
             if (t== "projection"){
-                xml.cameraInfo.fov = atoi(t2->first_attribute("fov")->value());
-                xml.cameraInfo.near= atoi(t2->first_attribute("near")->value());
-                xml.cameraInfo.far = atoi(t2->first_attribute("far")->value());
+                xml.cameraInfo.fov = std::stod(t2->first_attribute("fov")->value());
+                xml.cameraInfo.near= std::stod(t2->first_attribute("near")->value());
+                xml.cameraInfo.far = std::stod(t2->first_attribute("far")->value());
             }
         }
 
@@ -232,27 +232,27 @@ xmlInfo readXML(string filename){
                 string s( t2->first_attribute("type")->value());
                 if (s == "point"){
                     LPoint lp;
-                    lp.posX = atoi(t2->first_attribute("posX")->value());
-                    lp.posY = atoi(t2->first_attribute("posY")->value());
-                    lp.posZ = atoi(t2->first_attribute("posZ")->value());
+                    lp.posX = std::stod(t2->first_attribute("posX")->value());
+                    lp.posY = std::stod(t2->first_attribute("posY")->value());
+                    lp.posZ = std::stod(t2->first_attribute("posZ")->value());
                     xml.lightsList.points.push_back(lp);
                 }
                 else if (s== "directional"){
                     LDirec ld;
-                    ld.dirX =atoi(t2->first_attribute("dirX")->value());
-                    ld.dirY =atoi(t2->first_attribute("dirY")->value());
-                    ld.dirZ =atoi(t2->first_attribute("dirZ")->value());
+                    ld.dirX =std::stod(t2->first_attribute("dirX")->value());
+                    ld.dirY =std::stod(t2->first_attribute("dirY")->value());
+                    ld.dirZ =std::stod(t2->first_attribute("dirZ")->value());
                     xml.lightsList.direct.push_back(ld);
                 }
                 else if (s=="spotlight"){
                     LSpotl ls;
-                    ls.posX = atoi(t2->first_attribute("posX")->value());
-                    ls.posY = atoi(t2->first_attribute("posY")->value());
-                    ls.posZ = atoi(t2->first_attribute("posZ")->value());
-                    ls.dirX = atoi(t2->first_attribute("dirX")->value());
-                    ls.dirY = atoi(t2->first_attribute("dirY")->value());
-                    ls.dirZ = atoi(t2->first_attribute("dirZ")->value());
-                    ls.cutoff = atoi(t2->first_attribute("cutoff")->value());
+                    ls.posX = std::stod(t2->first_attribute("posX")->value());
+                    ls.posY = std::stod(t2->first_attribute("posY")->value());
+                    ls.posZ = std::stod(t2->first_attribute("posZ")->value());
+                    ls.dirX = std::stod(t2->first_attribute("dirX")->value());
+                    ls.dirY = std::stod(t2->first_attribute("dirY")->value());
+                    ls.dirZ = std::stod(t2->first_attribute("dirZ")->value());
+                    ls.cutoff = std::stod(t2->first_attribute("cutoff")->value());
                     xml.lightsList.spotL.push_back(ls);
                 }
             }
@@ -303,11 +303,25 @@ xmlInfo readXML(string filename){
 
     
 
-    /*
+    
     int main(int argc, char **argv){
         
 
-       xmlInfo x = readXML("xml_syntax.xml");
+       xmlInfo x = readXML("test_1_5.xml");
+       cout << "XPOS " <<x.cameraInfo.xPos << "\n";
+       cout << "yPOS " <<x.cameraInfo.yPos << "\n";
+       cout << "zPOS " <<x.cameraInfo.zPos << "\n";
+       cout << "lookX " <<x.cameraInfo.xLook << "\n";
+       cout << "looky " <<x.cameraInfo.yLook << "\n";
+       cout << "lookz " <<x.cameraInfo.zLook << "\n";
+       cout << "upX " <<x.cameraInfo.xUp << "\n";
+       cout << "upY " <<x.cameraInfo.yUp << "\n";
+       cout << "upZ " <<x.cameraInfo.zUp << "\n";
+       cout << "fov " <<x.cameraInfo.fov << "\n";
+       cout << "near " <<x.cameraInfo.near << "\n";
+       cout << "far " <<x.cameraInfo.far << "\n";
+       cout << "Model "<< x.groups.modelList[0].sourceF << "\n";
+       if (x.groups.modelList.size() == 2)  cout << "Model "<< x.groups.modelList[1].sourceF << "\n";
       // cout<< x.modelList[0].sourceF << "\n";
     }
-    */
+    

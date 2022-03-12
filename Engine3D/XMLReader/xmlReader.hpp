@@ -9,47 +9,47 @@
 
 class Camera{
 	public:
-	int xPos;
-	int yPos;
-	int zPos;
+	double xPos;
+	double yPos;
+	double zPos;
 	
-	int xLook;
-	int yLook;
-	int zLook;
+	double xLook;
+	double yLook;
+	double zLook;
 
-	int xUp;
-	int yUp;
-	int zUp;
+	double xUp;
+	double yUp;
+	double zUp;
 
-	int fov;
-	int near;
-	int far;
+	double fov;
+	double near;
+	double far;
 };
 
 
 class LPoint{
 	public:
-	int posX;
-	int posY;
-	int posZ;
+	double posX;
+	double posY;
+	double posZ;
 };
 
 class LDirec{
 	public:
-	int dirX;
-	int dirY;
-	int dirZ;
+	double dirX;
+	double dirY;
+	double dirZ;
 };
 
 class LSpotl{
 	public:
-	int posX;
-	int posY;
-	int posZ;
-	int dirX;
-	int dirY;
-	int dirZ;
-	int cutoff;
+	double posX;
+	double posY;
+	double posZ;
+	double dirX;
+	double dirY;
+	double dirZ;
+	double cutoff;
 };
 
 
@@ -64,26 +64,26 @@ class Lights{
 
 class Translate {
 	public:
-	int x;
-	int y;
-	int z;
+	double x;
+	double y;
+	double z;
 	int order; //defines the order of the transformations // if its -1, it means its not referenced in the xml file
 };
 
 class Rotate {
 	public:
-	int angle;
-	int x;
-	int y;
-	int z;
+	double angle;
+	double x;
+	double y;
+	double z;
 	int order; //defines the order of the transformations // if its -1, it means its not referenced in the xml file
 };
 
 class Scale {
 	public:
-	int x;
-	int y;
-	int z;
+	double x;
+	double y;
+	double z;
 	int order; //defines the order of the transformations // if its -1, it means its not referenced in the xml file
 };
 
@@ -100,23 +100,23 @@ class Transform{
 
 class Color{
 	public:
-	int diffuseR;
-	int diffuseG;
-	int diffuseB;
+	double diffuseR;
+	double diffuseG;
+	double diffuseB;
 
-	int ambientR;
-	int ambientG;
-	int ambientB;
+	double ambientR;
+	double ambientG;
+	double ambientB;
 
-	int specularR;
-	int specularG;
-	int specularB;
+	double specularR;
+	double specularG;
+	double specularB;
 
-	int emissiveR;
-	int emissiveG;
-	int emissiveB;
+	double emissiveR;
+	double emissiveG;
+	double emissiveB;
 
-	int shine;
+	double shine;
 
 };
 
