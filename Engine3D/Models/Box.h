@@ -34,10 +34,11 @@
 			length = len;
 			divisions = divs;
 
-			float cx = 0, cz = 0;
+			float half_lengh = length / 2;
+			float cx, cxi = cx = -half_lengh, cz = -half_lengh;
 			float incr = length / divisions; //side increment value
-			float cy_b = 0; //bottom y
-			float cy_t = incr * divisions; //top y
+			float cy_b = -half_lengh; //bottom y
+			float cy_t = incr * divisions - half_lengh; //top y
 
 			for (int i = 0; i <= divisions; i++) {
 				std::vector<Point> l_u, l_t, l_f, l_b, l_r, l_l;
@@ -57,7 +58,7 @@
 					cx += incr;
 				}
 				cz += incr;
-				cx = 0;
+				cx = cxi;
 				mat_u.push_back(l_u);
 				mat_t.push_back(l_t);
 				mat_f.push_back(l_f);

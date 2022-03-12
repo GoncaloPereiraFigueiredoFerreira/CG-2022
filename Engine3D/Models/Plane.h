@@ -22,7 +22,7 @@ public:
 		this->length = length;
 		this->divisions = div;
 
-		float cx = 0, cy = 0, cz = 0;
+		float cxi = -(length/2), cx = cxi, cy = 0, cz = -(length/2);
 		float incr = length / div; //side increment value
 		mat.reserve(div + 1);
 
@@ -35,7 +35,7 @@ public:
 				cx += incr;
 			}
 			cz += incr;
-			cx = 0;
+			cx = cxi;
 
 			mat.push_back(l);
 		}
