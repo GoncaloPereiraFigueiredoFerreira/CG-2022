@@ -303,7 +303,7 @@ xmlInfo readXML(string filename){
 
     
 
-    
+    /*
     int main(int argc, char **argv){
         
 
@@ -324,4 +324,5 @@ xmlInfo readXML(string filename){
        if (x.groups.modelList.size() == 2)  cout << "Model "<< x.groups.modelList[1].sourceF << "\n";
       // cout<< x.modelList[0].sourceF << "\n";
     }
+    */
     
