@@ -13,6 +13,7 @@
 #include <string>
 #include <climits>
 #include <unordered_map>
+#include <stdexcept>
 #include "../Auxiliar/AuxiliarMethods.h"
 #include "../Generator/Generator.h"
 #include "../XMLReader/xmlReader.hpp"
@@ -29,38 +30,54 @@ unordered_map<char*, Model*> modelDic;
 vector<Model*> solids;
 Model *m;
 
-void generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
+int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) { //TODO  iterar os groups
 		Model* m;
-		std::ifstream fd;
-		fd.open(tmpGroup.modelList[i].sourceF, ios::in);
-		string line;
-		getline(fd, line);
 
-		if (line == "sphere") { //read Sphere
-			m = readSphereFromFile(fd);
+		FILE* file;
+
+		/*first check if the file exists...*/
+		file = fopen(tmpGroup.modelList[i].sourceF, "r");
+		if (file == NULL) {
+			cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
+			return 0;
 		}
-		else if (line == "plane") { //read plane
-			m = readPlaneFromFile(fd);
+		else {
+			std::ifstream fd;
+			fd.open(tmpGroup.modelList[i].sourceF, ios::in);
+			//if(fd.) cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
+			string line;
+			getline(fd, line);
+
+			if (line == "sphere") { //read Sphere
+				m = readSphereFromFile(fd);
+			}
+			else if (line == "plane") { //read plane
+				m = readPlaneFromFile(fd);
+			}
+			else if (line == "box") { //read boxgzvg
+				m = readBoxFromFile(fd);
+			}
+			else if (line == "cone") { //read cone
+				m = readConeFromFile(fd);
+			}
+			fclose(file);
 		}
-		else if (line == "box") { //read box
-			m = readBoxFromFile(fd);
-		}
-		else if (line == "cone") { //read cone
-			m = readConeFromFile(fd);
-		}
-		fd.close();
 		mapa->insert(pair<char*, Model*>(tmpGroup.modelList[i].sourceF, m));
 	}
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
 		generateDicAux(tmpGroup.groupChildren[i], mapa);
 	}
+	return 1;
 }
 
-unordered_map<char*, Model*> generateDic(xmlInfo xmlinfo) {
+int generateDic(xmlInfo xmlinfo) {
 	unordered_map<char*, Model*> *mapa = new unordered_map<char*, Model*>;
-	generateDicAux(xmlinfo.groups, mapa);
-	return *mapa;
+	if (!generateDicAux(xmlinfo.groups, mapa)) {
+		return 0;
+	};
+	modelDic = *mapa;
+	return 1;
 }
 
 void changeSize(int w, int h) {
@@ -97,9 +114,9 @@ void recursiveDraw(Group tmpGroup) {
 		modelDic[info.groups.modelList[i].sourceF]->draw();
 	}
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
-		//Reset transformations?
 		recursiveDraw(tmpGroup.groupChildren[i]);
 	}
+		//reverse transformations
 }
 
 void renderScene(void) {
@@ -199,7 +216,9 @@ void specialKeyFunc(int key_code, int x, int y) {
 int main(int argc, char** argv) {
     
 	info = readXML(argv[1]);
-	modelDic = generateDic(info);
+	if (!generateDic(info)) {
+		return -1;
+	};
 
 	// init GLUT and the window
 	glutInit(&argc, argv);
