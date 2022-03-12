@@ -29,43 +29,38 @@ unordered_map<char*, Model*> modelDic;
 vector<Model*> solids;
 Model *m;
 
-unordered_map<char*, Model*> generateDic(xmlInfo xmlinfo) {
-	unordered_map<char*, Model*> mapa;
-	for (int i = 0; i < xmlinfo.groups.modelList.size(); i++) { //TODO  iterar os groups
-		Model *m;
+void generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
+	for (int i = 0; i < tmpGroup.modelList.size(); i++) { //TODO  iterar os groups
+		Model* m;
 		std::ifstream fd;
-		fd.open(xmlinfo.groups.modelList[i].sourceF, ios::in);
+		fd.open(tmpGroup.modelList[i].sourceF, ios::in);
 		string line;
 		getline(fd, line);
-		
-		if (line == "sphere") {
-			//read Sphere
-			Sphere* au1 = readSphereFromFile(fd);
-			//adicionar a estrutura de dados
-			m = dynamic_cast<Sphere*>(au1);
+
+		if (line == "sphere") { //read Sphere
+			m = readSphereFromFile(fd);
 		}
-		else if (line == "plane") {
-			//read plane
-			Plane* au2 = readPlaneFromFile(fd);
-			//adicionar a estrutura de dados
-			m = dynamic_cast<Plane*>(au2);
+		else if (line == "plane") { //read plane
+			m = readPlaneFromFile(fd);
 		}
-		else if (line == "box") {
-			//read box
-			Box* au3 = readBoxFromFile(fd);
-			//adicionar a estrutura de dados
-			m = dynamic_cast<Box*>(au3);
+		else if (line == "box") { //read box
+			m = readBoxFromFile(fd);
 		}
-		else if (line == "cone") {
-			//read cone
-			Cone* au4 = readConeFromFile(fd);
-			//adicionar a estrutura de dados
-			m = dynamic_cast<Cone*>(au4);
+		else if (line == "cone") { //read cone
+			m = readConeFromFile(fd);
 		}
 		fd.close();
-		mapa.insert(pair<char*, Model*>(xmlinfo.groups.modelList[i].sourceF, m));
+		mapa->insert(pair<char*, Model*>(tmpGroup.modelList[i].sourceF, m));
 	}
-	return mapa;
+	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
+		generateDicAux(tmpGroup.groupChildren[i], mapa);
+	}
+}
+
+unordered_map<char*, Model*> generateDic(xmlInfo xmlinfo) {
+	unordered_map<char*, Model*> *mapa = new unordered_map<char*, Model*>;
+	generateDicAux(xmlinfo.groups, mapa);
+	return *mapa;
 }
 
 void changeSize(int w, int h) {
@@ -87,10 +82,24 @@ void changeSize(int w, int h) {
 	glViewport(0, 0, w, h);
 
 	// Set perspective
-	gluPerspective(45.0f, ratio, 1.0f, 1000.0f);
+	gluPerspective(info.cameraInfo.fov,
+		ratio, //aspect
+		info.cameraInfo.near,
+		info.cameraInfo.far);
 
 	// return to the model view matrix mode
 	glMatrixMode(GL_MODELVIEW);
+}
+
+void recursiveDraw(Group tmpGroup) {
+	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
+		//Transformations
+		modelDic[info.groups.modelList[i].sourceF]->draw();
+	}
+	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
+		//Reset transformations?
+		recursiveDraw(tmpGroup.groupChildren[i]);
+	}
 }
 
 void renderScene(void) {
@@ -100,24 +109,11 @@ void renderScene(void) {
 
 
 	// set the camera
-
 	glLoadIdentity();
-
-	/*
-	gluLookAt(5.0, 5.0, 5.0,
-		0.0, 0.0, 0.0,
-		0.0f, 1.0f, 0.0f);
-	*/
 	gluLookAt(info.cameraInfo.xPos, info.cameraInfo.yPos, info.cameraInfo.zPos,
-			  info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
-			  info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
-
-	gluPerspective(info.cameraInfo.fov,
-				   0.0, //aspect
-				   info.cameraInfo.near,
-				   info.cameraInfo.far);
-   
-
+		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
+		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
+	/*
 	glBegin(GL_LINES);
 	// X axis in red
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -132,7 +128,7 @@ void renderScene(void) {
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 100.0f);
 	glEnd();
-
+	*/
 
 	// put the geometric transformations here
 
@@ -142,11 +138,7 @@ void renderScene(void) {
 	glTranslatef(xx, 0.0f, zz);
 	glScalef(scale, scale, scale);
 
-
-	// put drawing instructions here
-	for (int i = 0; i < info.groups.modelList.size(); i++) { //TODO  iterar os groups
-		modelDic[info.groups.modelList[i].sourceF]->draw();
-	}
+	recursiveDraw(info.groups);
 
 	// End of frame
 	glutSwapBuffers();
