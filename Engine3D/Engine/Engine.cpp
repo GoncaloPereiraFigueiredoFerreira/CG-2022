@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include <climits>
+#include <unordered_map>
 #include "../Auxiliar/AuxiliarMethods.h"
 #include "../Generator/Generator.h"
 #include "../XMLReader/xmlReader.hpp"
@@ -24,8 +25,48 @@ float scale = 1.0f;
 float xx = 0.0f, zz = 0.0f;
 xmlInfo info;
 vector<Group> groups;
+unordered_map<char*, Model*> modelDic;
 vector<Model*> solids;
 Model *m;
+
+unordered_map<char*, Model*> generateDic(xmlInfo xmlinfo) {
+	unordered_map<char*, Model*> mapa;
+	for (int i = 0; i < xmlinfo.groups.modelList.size(); i++) { //TODO  iterar os groups
+		Model *m;
+		std::ifstream fd;
+		fd.open(xmlinfo.groups.modelList[i].sourceF, ios::in);
+		string line;
+		getline(fd, line);
+		
+		if (line == "sphere") {
+			//read Sphere
+			Sphere* au1 = readSphereFromFile(fd);
+			//adicionar a estrutura de dados
+			m = dynamic_cast<Sphere*>(au1);
+		}
+		else if (line == "plane") {
+			//read plane
+			Plane* au2 = readPlaneFromFile(fd);
+			//adicionar a estrutura de dados
+			m = dynamic_cast<Plane*>(au2);
+		}
+		else if (line == "box") {
+			//read box
+			Box* au3 = readBoxFromFile(fd);
+			//adicionar a estrutura de dados
+			m = dynamic_cast<Box*>(au3);
+		}
+		else if (line == "cone") {
+			//read cone
+			Cone* au4 = readConeFromFile(fd);
+			//adicionar a estrutura de dados
+			m = dynamic_cast<Cone*>(au4);
+		}
+		fd.close();
+		mapa.insert(pair<char*, Model*>(xmlinfo.groups.modelList[i].sourceF, m));
+	}
+	return mapa;
+}
 
 void changeSize(int w, int h) {
 
@@ -59,22 +100,23 @@ void renderScene(void) {
 
 
 	// set the camera
+
 	glLoadIdentity();
 
-
+	/*
 	gluLookAt(5.0, 5.0, 5.0,
 		0.0, 0.0, 0.0,
 		0.0f, 1.0f, 0.0f);
-	/*
+	*/
 	gluLookAt(info.cameraInfo.xPos, info.cameraInfo.yPos, info.cameraInfo.zPos,
 			  info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
 			  info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
 
 	gluPerspective(info.cameraInfo.fov,
-				   1.0, //aspect
+				   0.0, //aspect
 				   info.cameraInfo.near,
 				   info.cameraInfo.far);
-    */
+   
 
 	glBegin(GL_LINES);
 	// X axis in red
@@ -102,12 +144,9 @@ void renderScene(void) {
 
 
 	// put drawing instructions here
-    /*
-	for (int i = 0;i < solids.size();i++) {
-		solids[i]->draw();
+	for (int i = 0; i < info.groups.modelList.size(); i++) { //TODO  iterar os groups
+		modelDic[info.groups.modelList[i].sourceF]->draw();
 	}
-     */
-    m->draw();
 
 	// End of frame
 	glutSwapBuffers();
@@ -166,69 +205,9 @@ void specialKeyFunc(int key_code, int x, int y) {
 }
 
 int main(int argc, char** argv) {
-    /*
-	xmlInfo info = readXML(argv[1]);
-	std::ifstream fd;
-
-	// For now (Phase 1) we will only look at the 3d files contained in the first group, avoiding nested group models
-	vector<string> files3d;
-	vector<ModelXML> x = info.groups.modelList;
-	for (int i=0; i < x.size(); i++){
-		files3d.push_back(x[i].sourceF);
-	}
-
-	for (int i=0; i < files3d.size(); i++){
-		fd.open(files3d[i], ios::in);
-		string line;
-		getline(fd, line);
-
-		if (line == "sphere"){
-			//read Sphere
-			Sphere* au1 = readSphereFromFile(fd);
-			//adicionar a estrutura de dados
-			//solids.push_back(dynamic_cast<Sphere*>(au1));
-            solids.push_back(au1);
-		}
-		else if (line == "plane"){
-			//read plane
-			Plane* au2 = readPlaneFromFile(fd);
-			//adicionar a estrutura de dados
-			solids.push_back(dynamic_cast<Plane*>(au2));
-		}
-		else if (line == "box"){
-			//read box
-			Box* au3 = readBoxFromFile(fd);
-			//adicionar a estrutura de dados
-			solids.push_back(dynamic_cast<Box*>(au3));
-		}
-		else if  (line == "cone"){
-			//read cone
-			Cone* au4 = readConeFromFile(fd);
-			//adicionar a estrutura de dados
-			solids.push_back(dynamic_cast<Cone*>(au4));
-		}
-
-		fd.close();
-
-	}
-    */
-
-	std::ifstream fd;
-	string line;
-
-	fd.open("box.3d", ios::in);
-	if(!fd)std::cout<<"fail"<<std::endl;
-	getline(fd, line);
-	if (!line.compare("cone"))
-		m = readConeFromFile(fd);
-    else if (!line.compare("sphere"))
-		m = readSphereFromFile(fd);
-    else if (!line.compare("plane"))
-		m = readPlaneFromFile(fd);
-    else if (!line.compare("box"))
-		m = readBoxFromFile(fd);
-	fd.close();
-
+    
+	info = readXML(argv[1]);
+	modelDic = generateDic(info);
 
 	// init GLUT and the window
 	glutInit(&argc, argv);
