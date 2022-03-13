@@ -6,7 +6,7 @@
 class Model
 {
 public:
-	virtual void draw();
+	virtual void draw() = 0;
 };
 
 #endif

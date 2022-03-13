@@ -72,7 +72,7 @@ int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
 }
 
 int generateDic(xmlInfo xmlinfo) {
-	unordered_map<char*, Model*> *mapa = new unordered_map<char*, Model*>;
+	auto *mapa = new unordered_map<char*, Model*>;
 	if (!generateDicAux(xmlinfo.groups, mapa)) {
 		return 0;
 	};
@@ -215,7 +215,15 @@ void specialKeyFunc(int key_code, int x, int y) {
 
 int main(int argc, char** argv) {
     
-	info = readXML(argv[1]);
+    if(argc == 2){
+        //Reads XML file
+        info = readXML(argv[1]);
+    }
+    else{
+        cout << "Invalid arguments" << endl;
+        return -1;
+    }
+
 	if (!generateDic(info)) {
 		return -1;
 	};

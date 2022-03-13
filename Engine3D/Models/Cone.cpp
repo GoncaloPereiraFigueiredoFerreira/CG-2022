@@ -9,22 +9,22 @@ void Cone::draw() {
 
 			if (i) {
 				glVertex3f(mat[i - 1][j].cx, mat[i - 1][j].cy, mat[i - 1][j].cz);
-				glVertex3f(mat[i][j - 1].cx, mat[i][j - 1].cy, mat[i][j - 1].cz);
+				glVertex3f(mat[i - 1][j - 1].cx, mat[i - 1][j - 1].cy, mat[i - 1][j - 1].cz);
 				glVertex3f(mat[i][j].cx, mat[i][j].cy, mat[i][j].cz);
 
-				glVertex3f(mat[i - 1][j].cx, mat[i - 1][j].cy, mat[i - 1][j].cz);
 				glVertex3f(mat[i - 1][j - 1].cx, mat[i - 1][j - 1].cy, mat[i - 1][j - 1].cz);
 				glVertex3f(mat[i][j - 1].cx, mat[i][j - 1].cy, mat[i][j - 1].cz);
+				glVertex3f(mat[i][j].cx, mat[i][j].cy, mat[i][j].cz);
 			}
 		}
 
 		//dar a volta aos indices
 		if (i) {
-			glVertex3f(mat[i][0].cx, mat[i][0].cy, mat[i][0].cz);
 			glVertex3f(mat[i - 1][0].cx, mat[i - 1][0].cy, mat[i - 1][0].cz);
-			glVertex3f(mat[i][slices - 1].cx, mat[i][slices - 1].cy, mat[i][slices - 1].cz);
+			glVertex3f(mat[i - 1][slices - 1].cx, mat[i - 1][slices - 1].cy, mat[i - 1][slices - 1].cz);
+            glVertex3f(mat[i][0].cx, mat[i][0].cy, mat[i][0].cz);
 
-			glVertex3f(mat[i - 1][0].cx, mat[i - 1][0].cy, mat[i - 1][0].cz);
+			glVertex3f(mat[i][0].cx, mat[i][0].cy, mat[i][0].cz);
 			glVertex3f(mat[i - 1][slices - 1].cx, mat[i - 1][slices - 1].cy, mat[i - 1][slices - 1].cz);
 			glVertex3f(mat[i][slices - 1].cx, mat[i][slices - 1].cy, mat[i][slices - 1].cz);
 		}
