@@ -47,7 +47,7 @@ public:
 
 			for (int j = 0; j < slices; j++) {
 				ang = slicesAngInc * j;
-				l.push_back(Point(r * cos(ang), height, r * sin(ang)));
+				l.push_back(Point(r * sin(ang), height, r * cos(ang)));
 			}
 
 			mat.push_back(l);

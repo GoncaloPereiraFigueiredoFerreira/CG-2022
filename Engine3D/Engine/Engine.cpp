@@ -38,7 +38,7 @@ int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
 
 		/*first check if the file exists...*/
 		file = fopen(tmpGroup.modelList[i].sourceF, "r");
-		if (file == NULL) {
+		if (file == nullptr) {
 			cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
 			return 0;
 		}
@@ -108,9 +108,9 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+//Faltam as transformacoes
 void recursiveDraw(Group tmpGroup) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
-		//Transformations
 		modelDic[info.groups.modelList[i].sourceF]->draw();
 	}
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
@@ -124,31 +124,13 @@ void renderScene(void) {
 	// clear buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
 	// set the camera
 	glLoadIdentity();
 	gluLookAt(info.cameraInfo.xPos, info.cameraInfo.yPos, info.cameraInfo.zPos,
 		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
 		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
-	/*
-	glBegin(GL_LINES);
-	// X axis in red
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(100.0f, 0.0f, 0.0f);
-	// Y Axis in Green
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 100.0f, 0.0f);
-	// Z Axis in Blue
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 100.0f);
-	glEnd();
-	*/
 
-	// put the geometric transformations here
-
+	// Geometric transformations
 	glRotatef(angle_y, 0.0f, 1.0f, 0.0f);
 	glRotatef(angle_x, 1.0f, 0.0f, 0.0f);
 	glRotatef(angle_z, 0.0f, 0.0f, 1.0f);
@@ -233,17 +215,15 @@ int main(int argc, char** argv) {
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(800, 800);
-	glutCreateWindow("CG@DI-UM");
+	glutCreateWindow("CG@G13");
 
 	// Required callback registry
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
 
-
 	// put here the registration of the keyboard callbacks
 	glutKeyboardFunc(defaultKeyFunc);
 	glutSpecialFunc(specialKeyFunc);
-
 
 	//  OpenGL settings
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
