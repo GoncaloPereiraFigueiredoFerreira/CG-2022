@@ -32,38 +32,40 @@ Model *m;
 
 int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) { //TODO  iterar os groups
-		Model* m;
+		if ((*mapa).find(tmpGroup.modelList[i].sourceF) == (*mapa).end()) {
+			Model* m;
 
-		FILE* file;
+			FILE* file;
 
-		/*first check if the file exists...*/
-		file = fopen(tmpGroup.modelList[i].sourceF, "r");
-		if (file == nullptr) {
-			cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
-			return 0;
+			/*first check if the file exists...*/
+			file = fopen(tmpGroup.modelList[i].sourceF, "r");
+			if (file == nullptr) {
+				cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
+				return 0;
+			}
+			else {
+				std::ifstream fd;
+				fd.open(tmpGroup.modelList[i].sourceF, ios::in);
+				//if(fd.) cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
+				string line;
+				getline(fd, line);
+
+				if (line == "sphere") { //read Sphere
+					m = readSphereFromFile(fd);
+				}
+				else if (line == "plane") { //read plane
+					m = readPlaneFromFile(fd);
+				}
+				else if (line == "box") { //read box
+					m = readBoxFromFile(fd);
+				}
+				else if (line == "cone") { //read cone
+					m = readConeFromFile(fd);
+				}
+				fclose(file);
+			}
+			mapa->insert(pair<char*, Model*>(tmpGroup.modelList[i].sourceF, m));
 		}
-		else {
-			std::ifstream fd;
-			fd.open(tmpGroup.modelList[i].sourceF, ios::in);
-			//if(fd.) cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
-			string line;
-			getline(fd, line);
-
-			if (line == "sphere") { //read Sphere
-				m = readSphereFromFile(fd);
-			}
-			else if (line == "plane") { //read plane
-				m = readPlaneFromFile(fd);
-			}
-			else if (line == "box") { //read boxgzvg
-				m = readBoxFromFile(fd);
-			}
-			else if (line == "cone") { //read cone
-				m = readConeFromFile(fd);
-			}
-			fclose(file);
-		}
-		mapa->insert(pair<char*, Model*>(tmpGroup.modelList[i].sourceF, m));
 	}
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
 		generateDicAux(tmpGroup.groupChildren[i], mapa);
@@ -110,13 +112,14 @@ void changeSize(int w, int h) {
 
 //Faltam as transformacoes
 void recursiveDraw(Group tmpGroup) {
+	//push matrix
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
 		modelDic[info.groups.modelList[i].sourceF]->draw();
 	}
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
 		recursiveDraw(tmpGroup.groupChildren[i]);
 	}
-		//reverse transformations
+	//pop matrix
 }
 
 void renderScene(void) {
