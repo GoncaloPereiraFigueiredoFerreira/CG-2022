@@ -46,22 +46,22 @@ Group captureGroups (xml_node<char> * root){
         for (t1 = t1->first_node(); t1; t1 = t1->next_sibling()){
             string s(t1->name());
             if (s == "translate"){
-                auto translate = new Translate(std::stod(t1->first_attribute("X")->value()),
-                                       std::stod(t1->first_attribute("Y")->value()),
-                                       std::stod(t1->first_attribute("Z")->value()));
+                auto translate = new Translate(std::stod(t1->first_attribute("X",0,false)->value()),
+                                       std::stod(t1->first_attribute("Y", 0, false)->value()),
+                                       std::stod(t1->first_attribute("Z", 0, false)->value()));
                 main.transforms.push_back(translate);
             }
             else if ( s == "rotate"){
-                auto rotate = new Rotate(std::stod(t1->first_attribute("axisX")->value()),
-                                    std::stod(t1->first_attribute("axisY")->value()),
-                                    std::stod(t1->first_attribute("axisZ")->value()),
-                                    std::stod(t1->first_attribute("angle")->value()));
+                auto rotate = new Rotate(std::stod(t1->first_attribute("X", 0, false)->value()), //Check for axisX/y/z in case of error 
+                                    std::stod(t1->first_attribute("Y", 0, false)->value()), //TODO se arranjarmos forma fazemos um ou para este caso
+                                    std::stod(t1->first_attribute("Z", 0, false)->value()),
+                                    std::stod(t1->first_attribute("angle",0,false)->value()));
                 main.transforms.push_back(rotate);
             }
             else if ( s == "scale"){
-                auto scale = new Scale(std::stod(t1->first_attribute("X")->value()),
-                                   std::stod(t1->first_attribute("Y")->value()),
-                                   std::stod(t1->first_attribute("Z")->value()));
+                auto scale = new Scale(std::stod(t1->first_attribute("X", 0, false)->value()),
+                                   std::stod(t1->first_attribute("Y", 0, false)->value()),
+                                   std::stod(t1->first_attribute("Z", 0, false)->value()));
                 main.transforms.push_back(scale);
             }   
         }
@@ -238,7 +238,7 @@ xmlInfo readXML(string filename){
             }
             //Capture groups
             xml.groups = captureGroups(root->first_node("group"));
-
+            cout << "yo\n";
 
 
 

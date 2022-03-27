@@ -28,11 +28,11 @@ xmlInfo info;
 vector<Group> groups;
 unordered_map<char*, Model*> modelDic;
 vector<Model*> solids;
-Model *m;
+Model* m;
 
 int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) { //TODO  iterar os groups
-		if ((*mapa).find(tmpGroup.modelList[i].sourceF) == (*mapa).end()) {
+		if ((*mapa).find(tmpGroup.modelList[i].sourceF) == (*mapa).end()) {  //Verificar se o elemento ja esta no mapa
 			Model* m;
 
 			FILE* file;
@@ -52,15 +52,19 @@ int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
 
 				if (line == "sphere") { //read Sphere
 					m = readSphereFromFile(fd);
+					cout << "sphere\n";
 				}
 				else if (line == "plane") { //read plane
 					m = readPlaneFromFile(fd);
+					cout << "plane\n";
 				}
 				else if (line == "box") { //read box
 					m = readBoxFromFile(fd);
+					cout << "box\n";
 				}
 				else if (line == "cone") { //read cone
 					m = readConeFromFile(fd);
+					cout << "cone\n";
 				}
 				fclose(file);
 			}
@@ -74,7 +78,7 @@ int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
 }
 
 int generateDic(xmlInfo xmlinfo) {
-	auto *mapa = new unordered_map<char*, Model*>;
+	auto* mapa = new unordered_map<char*, Model*>;
 	if (!generateDicAux(xmlinfo.groups, mapa)) {
 		return 0;
 	};
@@ -112,18 +116,23 @@ void changeSize(int w, int h) {
 
 //Faltam as transformacoes
 void recursiveDraw(Group tmpGroup) {
-	//push matrix
+	glPushMatrix();
+	for (int i = 0; i < tmpGroup.transforms.size(); i++) {
+		tmpGroup.transforms[i]->apply();
+		cout << "apply\n";
+	}
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
-		modelDic[info.groups.modelList[i].sourceF]->draw();
+		cout << "gonna draw\n";
+		modelDic[tmpGroup.modelList[i].sourceF]->draw();
+		cout << "drawn\n";
 	}
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
 		recursiveDraw(tmpGroup.groupChildren[i]);
 	}
-	//pop matrix
+	glPopMatrix();
 }
 
 void renderScene(void) {
-
 	// clear buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -133,6 +142,22 @@ void renderScene(void) {
 		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
 		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
 
+	//Desenho dos eixos
+	glBegin(GL_LINES);
+	// X axis in red
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(-100.0f, 0.0f, 0.0f);
+	glVertex3f(100.0f, 0.0f, 0.0f);
+	// Y Axis in Green
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, -100.0f, 0.0f);
+	glVertex3f(0.0f, 100.0f, 0.0f);
+	// Z Axis in Blue
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, -100.0f);
+	glVertex3f(0.0f, 0.0f, 100.0f);
+	glEnd();
+
 	// Geometric transformations
 	glRotatef(angle_y, 0.0f, 1.0f, 0.0f);
 	glRotatef(angle_x, 1.0f, 0.0f, 0.0f);
@@ -140,6 +165,7 @@ void renderScene(void) {
 	glTranslatef(xx, 0.0f, zz);
 	glScalef(scale, scale, scale);
 
+	glColor3f(1.0f, 1.0f, 1.0f);
 	recursiveDraw(info.groups);
 
 	// End of frame
@@ -199,15 +225,15 @@ void specialKeyFunc(int key_code, int x, int y) {
 }
 
 int main(int argc, char** argv) {
-    
-    if(argc == 2){
-        //Reads XML file
-        info = readXML(argv[1]);
-    }
-    else{
-        cout << "Invalid arguments" << endl;
-        return -1;
-    }
+	if (argc == 2) {
+		//Reads XML file
+		info = readXML(argv[1]);
+		cout << "xml complete\n";
+	}
+	else {
+		cout << "Invalid arguments" << endl;
+		return -1;
+	}
 
 	if (!generateDic(info)) {
 		return -1;

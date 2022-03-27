@@ -1,6 +1,13 @@
 #ifndef XMLREADER_H
 #define XMLREADER_H
 
+#include <stdlib.h>
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
+
 #include "lib/rapidxml-1.13/rapidxml.hpp"
 #include <stdio.h>
 #include <vector>
@@ -87,7 +94,7 @@ class Transform{
     double x{};
     double y{};
     double z{};
-    virtual void f() {};
+    virtual void apply() {};
 };
 
 class Translate : public Transform {
@@ -97,6 +104,9 @@ class Translate : public Transform {
         this->y = y;
         this->z = z;
     }
+	void apply() {
+		glTranslatef(this->x, this->y, this->z);
+	}
 };
 
 class Rotate : public Transform {
@@ -108,6 +118,9 @@ class Rotate : public Transform {
         this->z = z;
         this->angle = angle;
     }
+	void apply() {
+		glRotatef(this->angle, this->x, this->y, this->z);
+	}
 };
 
 class Scale : public Transform {
@@ -117,6 +130,9 @@ class Scale : public Transform {
         this->y = y;
         this->z = z;
     }
+	void apply() {
+		glScalef(this->x, this->y, this->z);
+	}
 };
 
 
