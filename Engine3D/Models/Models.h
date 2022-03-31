@@ -6,6 +6,7 @@
 #include "Plane.h"
 #include "Cone.h"
 #include "Box.h"
+#include "Torus.h"
 #include "Model.h"
 
 #endif

@@ -66,6 +66,10 @@ int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
 					m = readConeFromFile(fd);
 					cout << "cone\n";
 				}
+				else if (line == "torus") { //read cone
+					m = readTorusFromFile(fd);
+					cout << "torus\n";
+				}
 				fclose(file);
 			}
 			mapa->insert(pair<char*, Model*>(tmpGroup.modelList[i].sourceF, m));
@@ -119,12 +123,12 @@ void recursiveDraw(Group tmpGroup) {
 	glPushMatrix();
 	for (int i = 0; i < tmpGroup.transforms.size(); i++) {
 		tmpGroup.transforms[i]->apply();
-		cout << "apply\n";
+		//cout << "apply\n";
 	}
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
-		cout << "gonna draw\n";
+		//cout << "gonna draw\n";
 		modelDic[tmpGroup.modelList[i].sourceF]->draw();
-		cout << "drawn\n";
+		//cout << "drawn\n";
 	}
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
 		recursiveDraw(tmpGroup.groupChildren[i]);
@@ -136,27 +140,28 @@ void renderScene(void) {
 	// clear buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//Desenho dos eixos
+	glBegin(GL_LINES);
+	// X axis in red
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(100.0f, 0.0f, 0.0f);
+	// Y Axis in Green
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 100.0f, 0.0f);
+	// Z Axis in Blue
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 100.0f);
+	glEnd();
+
 	// set the camera
 	glLoadIdentity();
 	gluLookAt(info.cameraInfo.xPos, info.cameraInfo.yPos, info.cameraInfo.zPos,
 		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
 		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
 
-	//Desenho dos eixos
-	glBegin(GL_LINES);
-	// X axis in red
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(-100.0f, 0.0f, 0.0f);
-	glVertex3f(100.0f, 0.0f, 0.0f);
-	// Y Axis in Green
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.0f, -100.0f, 0.0f);
-	glVertex3f(0.0f, 100.0f, 0.0f);
-	// Z Axis in Blue
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, -100.0f);
-	glVertex3f(0.0f, 0.0f, 100.0f);
-	glEnd();
 
 	// Geometric transformations
 	glRotatef(angle_y, 0.0f, 1.0f, 0.0f);

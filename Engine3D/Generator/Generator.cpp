@@ -4,9 +4,15 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	if (argc == 7 && strcmp(argv[1], "cone") == 0) { //CONE GENERATOR
-		Cone c = Cone(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]));
-		generateConeFile(argv[6], c);
+	if (argc == 7) { 
+		if(strcmp(argv[1], "cone") == 0){//CONE GENERATOR
+			Cone c = Cone(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]));
+			generateConeFile(argv[6], c);
+		}
+		else if(strcmp(argv[1], "torus") == 0){//TORUS GENERATOR
+			Torus c = Torus(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]));
+			generateTorusFile(argv[6], c);
+		}
 	}
 	else if (argc == 6 && strcmp(argv[1], "sphere") == 0) { //SPHERE GENERATOR
 		Sphere s = Sphere(atof(argv[2]), atoi(argv[3]), atoi(argv[4]));

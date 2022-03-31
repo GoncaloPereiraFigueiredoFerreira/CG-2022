@@ -8,6 +8,7 @@
 #include "SphereGenerator.h"
 #include "PlaneGenerator.h"
 #include "BoxGenerator.h"
+#include "TorusGenerator.h"
 #include <vector>
 #include "../Models/Models.h"
 #include "string.h"
