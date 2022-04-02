@@ -20,7 +20,7 @@
 using namespace std;
 
 int startX, startY, tracking = 0;
-float alpha, beta, r;
+float alpha, beta1, r;
 
 xmlInfo info;
 vector<Group> groups;
@@ -180,7 +180,7 @@ void processMouseButtons(int button, int state, int xx, int yy) {
 	else if (state == GLUT_UP) {
 		if (tracking == 1) {
 			alpha += (xx - startX);
-			beta += (yy - startY);
+			beta1 += (yy - startY);
 		}
 		else if (tracking == 2) {
 
@@ -209,7 +209,7 @@ void processMouseMotion(int xx, int yy) {
 
 
 		alphaAux = alpha + deltaX;
-		betaAux = beta + deltaY;
+		betaAux = beta1 + deltaY;
 
 		if (betaAux > 85.0)
 			betaAux = 85.0;
@@ -221,7 +221,7 @@ void processMouseMotion(int xx, int yy) {
 	else if (tracking == 2) {
 
 		alphaAux = alpha;
-		betaAux = beta;
+		betaAux = beta1;
 		rAux = r - deltaY;
 		if (rAux < 3)
 			rAux = 3;
@@ -296,7 +296,7 @@ int main(int argc, char** argv) {
 		info = readXML(argv[1]);
         r = sqrt(pow(info.cameraInfo.xPos, 2) + pow(info.cameraInfo.yPos, 2) + pow(info.cameraInfo.zPos, 2));
         alpha = atan(info.cameraInfo.xPos / info.cameraInfo.zPos) * 180 / M_PI;
-        beta = asin(info.cameraInfo.yPos / r) * 180 / M_PI;
+        beta1 = asin(info.cameraInfo.yPos / r) * 180 / M_PI;
 	}
 	else {
 		cout << "Invalid arguments" << endl;
