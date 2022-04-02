@@ -237,57 +237,56 @@ void processMouseMotion(int xx, int yy) {
 // function to process keyboard events
 
 void defaultKeyFunc(unsigned char key, int x, int y) {
-        float Dx = info.cameraInfo.xLook - info.cameraInfo.xPos,
-          Dz = info.cameraInfo.zLook - info.cameraInfo.zPos;
+	float Dx = info.cameraInfo.xLook - info.cameraInfo.xPos,
+  	Dz = info.cameraInfo.zLook - info.cameraInfo.zPos;
 
     float normD = sqrt(pow(Dx,2) + pow(Dz, 2));
 
     //Transforming in unit vector
-    Dx /= normD;
-    Dz /= normD;
+	Dx /= normD;
+  	Dz /= normD;
 
     //Movements of
 	if (key == 'w' || key == 'W') {
 		info.cameraInfo.xLook += Dx;
-        info.cameraInfo.zLook += Dz;
-        info.cameraInfo.xPos += Dx;
-        info.cameraInfo.zPos += Dz;
+	        info.cameraInfo.zLook += Dz;
+	        info.cameraInfo.xPos += Dx;
+	        info.cameraInfo.zPos += Dz;
 		glutPostRedisplay();
 	}
 	else if (key == 's' || key == 'S') {
 		info.cameraInfo.xLook -= Dx;
-        info.cameraInfo.zLook -= Dz;
-        info.cameraInfo.xPos -= Dx;
-        info.cameraInfo.zPos -= Dz;
+	        info.cameraInfo.zLook -= Dz;
+	        info.cameraInfo.xPos -= Dx;
+	        info.cameraInfo.zPos -= Dz;
 		glutPostRedisplay();
 	}
 	else if (key == 'd' || key == 'D') {
 		info.cameraInfo.xLook -= Dz;
-        info.cameraInfo.zLook += Dx;
-        info.cameraInfo.xPos -= Dz;
-        info.cameraInfo.zPos += Dx;
+	        info.cameraInfo.zLook += Dx;
+	        info.cameraInfo.xPos -= Dz;
+	        info.cameraInfo.zPos += Dx;
 		glutPostRedisplay();
 	}
 	else if (key == 'a' || key == 'A') {
 		info.cameraInfo.xLook += Dz;
-        info.cameraInfo.zLook -= Dx;
-        info.cameraInfo.xPos += Dz;
-        info.cameraInfo.zPos -= Dx;
+	        info.cameraInfo.zLook -= Dx;
+	        info.cameraInfo.xPos += Dz;
+	        info.cameraInfo.zPos -= Dx;
 		glutPostRedisplay();
 	}
 }
 
 void specialKeyFunc(int key_code, int x, int y) {
-        if (key_code == GLUT_KEY_UP) {
+    if (key_code == GLUT_KEY_UP) {
 		info.cameraInfo.yLook += 1;
-        info.cameraInfo.yPos += 1;
-		glutPostRedisplay();
+       	info.cameraInfo.yPos += 1;
 	}
 	else if (key_code == GLUT_KEY_DOWN) {
 		info.cameraInfo.yLook -= 1;
         info.cameraInfo.yPos -= 1;
-		glutPostRedisplay();
 	}
+	glutPostRedisplay();
 }
 
 int main(int argc, char** argv) {

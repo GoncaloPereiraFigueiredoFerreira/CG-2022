@@ -5,25 +5,25 @@ using namespace std;
 int main(int argc, char** argv)
 {
 	if (argc == 7) { 
-		if(strcmp(argv[1], "cone") == 0){//CONE GENERATOR
+		if(strcmp(argv[1], "cone") == 0 && atoi(argv[5]) >= 1 && atoi(argv[4]) >= 1){//CONE GENERATOR
 			Cone c = Cone(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]));
 			generateConeFile(argv[6], c);
 		}
-		else if(strcmp(argv[1], "torus") == 0){//TORUS GENERATOR
+		else if(strcmp(argv[1], "torus") == 0 && atoi(argv[5]) >= 1 && atoi(argv[4]) >= 1){//TORUS GENERATOR
 			Torus c = Torus(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]));
 			generateTorusFile(argv[6], c);
 		}
 	}
-	else if (argc == 6 && strcmp(argv[1], "sphere") == 0) { //SPHERE GENERATOR
+	else if (argc == 6 && strcmp(argv[1], "sphere") == 0 && atoi(argv[3]) >= 1 && atoi(argv[4]) >= 1) { //SPHERE GENERATOR
 		Sphere s = Sphere(atof(argv[2]), atoi(argv[3]), atoi(argv[4]));
 		generateSphereFile(argv[5], s);
 	}
 	else if (argc == 5) {
-		if (strcmp(argv[1], "plane") == 0) { //PLANE GENERATOR
+		if (strcmp(argv[1], "plane") == 0 && atoi(argv[3]) >= 1) { //PLANE GENERATOR
 			Plane p = Plane(atof(argv[2]), atoi(argv[3]));
 			generatePlaneFile(argv[4], p);
 		}
-		else if (strcmp(argv[1], "box") == 0) { //BOX GENERATOR
+		else if (strcmp(argv[1], "box") == 0 && atoi(argv[3]) >= 1) { //BOX GENERATOR
 			Box b = Box(atof(argv[2]), atoi(argv[3]));
 			generateBoxFile(argv[4], b);
 
