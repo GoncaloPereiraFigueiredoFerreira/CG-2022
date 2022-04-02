@@ -1,5 +1,4 @@
 #include "Generator.h"
-
 using namespace std;
 
 int main(int argc, char** argv)
@@ -12,7 +11,7 @@ int main(int argc, char** argv)
 		else if(strcmp(argv[1], "torus") == 0 && atoi(argv[5]) >= 1 && atoi(argv[4]) >= 1){//TORUS GENERATOR
 			Torus c = Torus(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]));
 			generateTorusFile(argv[6], c);
-		}
+		}else printf("Invalid arguments!\n");
 	}
 	else if (argc == 6 && strcmp(argv[1], "sphere") == 0 && atoi(argv[3]) >= 1 && atoi(argv[4]) >= 1) { //SPHERE GENERATOR
 		Sphere s = Sphere(atof(argv[2]), atoi(argv[3]), atoi(argv[4]));
@@ -36,7 +35,7 @@ int main(int argc, char** argv)
 				b = *readBoxFromFile(fd);
 				generateBoxFile("boxteste.3d", b);
 			}//debugging*/
-		}
+		}else printf("Invalid arguments!\n");
 	}
 	else {
 		//Write help code here
