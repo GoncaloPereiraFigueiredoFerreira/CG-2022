@@ -19,11 +19,9 @@
 #include "../XMLReader/xmlReader.hpp"
 using namespace std;
 
-float angle_y = 0.0f;
-float angle_x = 0.0f;
-float angle_z = 0.0f;
-float scale = 1.0f;
-float xx = 0.0f, zz = 0.0f;
+int startX, startY, tracking = 0;
+float alpha, beta, r;
+
 xmlInfo info;
 vector<Group> groups;
 unordered_map<char*, Model*> modelDic;
@@ -31,7 +29,7 @@ vector<Model*> solids;
 Model* m;
 
 int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
-	for (int i = 0; i < tmpGroup.modelList.size(); i++) { //TODO  iterar os groups
+	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
 		if ((*mapa).find(tmpGroup.modelList[i].sourceF) == (*mapa).end()) {  //Verificar se o elemento ja esta no mapa
 			Model* m;
 
@@ -52,23 +50,18 @@ int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
 
 				if (line == "sphere") { //read Sphere
 					m = readSphereFromFile(fd);
-					cout << "sphere\n";
 				}
 				else if (line == "plane") { //read plane
 					m = readPlaneFromFile(fd);
-					cout << "plane\n";
 				}
 				else if (line == "box") { //read box
 					m = readBoxFromFile(fd);
-					cout << "box\n";
 				}
 				else if (line == "cone") { //read cone
 					m = readConeFromFile(fd);
-					cout << "cone\n";
 				}
-				else if (line == "torus") { //read cone
+				else if (line == "torus") { //read torus
 					m = readTorusFromFile(fd);
-					cout << "torus\n";
 				}
 				fclose(file);
 			}
@@ -140,7 +133,14 @@ void renderScene(void) {
 	// clear buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//Desenho dos eixos
+	// set the camera
+	glLoadIdentity();
+	gluLookAt(info.cameraInfo.xPos, info.cameraInfo.yPos, info.cameraInfo.zPos,
+		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
+		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
+
+
+    //Desenho dos eixos
 	glBegin(GL_LINES);
 	// X axis in red
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -156,20 +156,6 @@ void renderScene(void) {
 	glVertex3f(0.0f, 0.0f, 100.0f);
 	glEnd();
 
-	// set the camera
-	glLoadIdentity();
-	gluLookAt(info.cameraInfo.xPos, info.cameraInfo.yPos, info.cameraInfo.zPos,
-		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
-		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
-
-
-	// Geometric transformations
-	glRotatef(angle_y, 0.0f, 1.0f, 0.0f);
-	glRotatef(angle_x, 1.0f, 0.0f, 0.0f);
-	glRotatef(angle_z, 0.0f, 0.0f, 1.0f);
-	glTranslatef(xx, 0.0f, zz);
-	glScalef(scale, scale, scale);
-
 	glColor3f(1.0f, 1.0f, 1.0f);
 	recursiveDraw(info.groups);
 
@@ -178,53 +164,128 @@ void renderScene(void) {
 }
 
 
+// functions to process mouse events
+void processMouseButtons(int button, int state, int xx, int yy) {
 
-// write function to process keyboard events
+	if (state == GLUT_DOWN)  {
+		startX = xx;
+		startY = yy;
+		if (button == GLUT_LEFT_BUTTON)
+			tracking = 1;
+		else if (button == GLUT_RIGHT_BUTTON)
+			tracking = 2;
+		else
+			tracking = 0;
+	}
+	else if (state == GLUT_UP) {
+		if (tracking == 1) {
+			alpha += (xx - startX);
+			beta += (yy - startY);
+		}
+		else if (tracking == 2) {
+
+			r -= yy - startY;
+			if (r < 3)
+				r = 3.0;
+		}
+		tracking = 0;
+	}
+}
+
+
+void processMouseMotion(int xx, int yy) {
+
+	float deltaX, deltaY;
+	float alphaAux, betaAux;
+	float rAux;
+
+	if (!tracking)
+		return;
+
+	deltaX = xx - startX;
+	deltaY = yy - startY;
+
+	if (tracking == 1) {
+
+
+		alphaAux = alpha + deltaX;
+		betaAux = beta + deltaY;
+
+		if (betaAux > 85.0)
+			betaAux = 85.0;
+		else if (betaAux < -85.0)
+			betaAux = -85.0;
+
+		rAux = r;
+	}
+	else if (tracking == 2) {
+
+		alphaAux = alpha;
+		betaAux = beta;
+		rAux = r - deltaY;
+		if (rAux < 3)
+			rAux = 3;
+	}
+
+	info.cameraInfo.xPos = info.cameraInfo.xLook + rAux * sin(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
+	info.cameraInfo.zPos = info.cameraInfo.zLook + rAux * cos(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
+	info.cameraInfo.yPos = info.cameraInfo.yLook + rAux * sin(betaAux * 3.14 / 180.0);
+
+    glutPostRedisplay();
+}
+
+// function to process keyboard events
 
 void defaultKeyFunc(unsigned char key, int x, int y) {
-	if (key == 'a' || key == 'A') {
-		angle_y = angle_y + 5;
-		glutPostRedisplay();
-	}
-	else if (key == 'd' || key == 'D') {
-		angle_y = angle_y - 5;
-		glutPostRedisplay();
-	}
-	else if (key == 'w' || key == 'W') {
-		angle_x = angle_x + 5;
+        float Dx = info.cameraInfo.xLook - info.cameraInfo.xPos,
+          Dz = info.cameraInfo.zLook - info.cameraInfo.zPos;
+
+    float normD = sqrt(pow(Dx,2) + pow(Dz, 2));
+
+    //Transforming in unit vector
+    Dx /= normD;
+    Dz /= normD;
+
+    //Movements of
+	if (key == 'w' || key == 'W') {
+		info.cameraInfo.xLook += Dx;
+        info.cameraInfo.zLook += Dz;
+        info.cameraInfo.xPos += Dx;
+        info.cameraInfo.zPos += Dz;
 		glutPostRedisplay();
 	}
 	else if (key == 's' || key == 'S') {
-		angle_x = angle_x - 5;
+		info.cameraInfo.xLook -= Dx;
+        info.cameraInfo.zLook -= Dz;
+        info.cameraInfo.xPos -= Dx;
+        info.cameraInfo.zPos -= Dz;
 		glutPostRedisplay();
 	}
-	else if (key == 'i' || key == 'I') {
-		scale += 0.05f;
+	else if (key == 'd' || key == 'D') {
+		info.cameraInfo.xLook -= Dz;
+        info.cameraInfo.zLook += Dx;
+        info.cameraInfo.xPos -= Dz;
+        info.cameraInfo.zPos += Dx;
 		glutPostRedisplay();
 	}
-	else if (key == 'o' || key == 'O') {
-		if (scale > 0.05f) {
-			scale -= 0.05f;
-			glutPostRedisplay();
-		}
+	else if (key == 'a' || key == 'A') {
+		info.cameraInfo.xLook += Dz;
+        info.cameraInfo.zLook -= Dx;
+        info.cameraInfo.xPos += Dz;
+        info.cameraInfo.zPos -= Dx;
+		glutPostRedisplay();
 	}
 }
 
 void specialKeyFunc(int key_code, int x, int y) {
-	if (key_code == GLUT_KEY_UP) {
-		zz -= 0.1f;
+        if (key_code == GLUT_KEY_UP) {
+		info.cameraInfo.yLook += 1;
+        info.cameraInfo.yPos += 1;
 		glutPostRedisplay();
 	}
 	else if (key_code == GLUT_KEY_DOWN) {
-		zz += 0.1f;
-		glutPostRedisplay();
-	}
-	else if (key_code == GLUT_KEY_RIGHT) {
-		xx += 0.1f;
-		glutPostRedisplay();
-	}
-	else if (key_code == GLUT_KEY_LEFT) {
-		xx -= 0.1f;
+		info.cameraInfo.yLook -= 1;
+        info.cameraInfo.yPos -= 1;
 		glutPostRedisplay();
 	}
 }
@@ -233,7 +294,9 @@ int main(int argc, char** argv) {
 	if (argc == 2) {
 		//Reads XML file
 		info = readXML(argv[1]);
-		cout << "xml complete\n";
+        r = sqrt(pow(info.cameraInfo.xPos, 2) + pow(info.cameraInfo.yPos, 2) + pow(info.cameraInfo.zPos, 2));
+        alpha = atan(info.cameraInfo.xPos / info.cameraInfo.zPos) * 180 / M_PI;
+        beta = asin(info.cameraInfo.yPos / r) * 180 / M_PI;
 	}
 	else {
 		cout << "Invalid arguments" << endl;
@@ -255,8 +318,10 @@ int main(int argc, char** argv) {
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
 
-	// put here the registration of the keyboard callbacks
-	glutKeyboardFunc(defaultKeyFunc);
+	// Registration of the keyboard and mouse callbacks
+	glutMouseFunc(processMouseButtons);
+    glutMotionFunc(processMouseMotion);
+    glutKeyboardFunc(defaultKeyFunc);
 	glutSpecialFunc(specialKeyFunc);
 
 	//  OpenGL settings

@@ -1,0 +1,304 @@
+<world>
+    <camera> 
+        <position x="3" y="3" z="3" />
+        <lookAt x="0" y="0" z="0" />
+        <up x="0" y="1" z="0" />
+        <projection fov="60" near="1" far="1000" />
+    </camera>
+
+    <group>
+        <models> 
+            <model file="sphere.3d" /> <!-- SOL -->
+        </models>
+        <group> <!-- Mercurio -->
+            <transform> 
+                <rotate angle="83" x="0" y ="1" z = "0" />
+                <translate x="2" y="0" z="0" />
+                <scale x="0.025" y="0.025" z="0.025" />
+            </transform>
+            <models> 
+                <model file="sphere.3d" />
+            </models>
+        </group>
+        <group> <!-- Venus -->
+            <transform> 
+                <rotate angle="62" x="0" y ="1" z = "0" />
+                <translate x="3" y="0" z="0" />
+                <scale x="0.075" y="0.075" z="0.075" />
+            </transform>
+            <models> 
+                <model file="sphere.3d" />
+            </models>
+        </group>
+        <group> <!-- Terra -->
+            <transform> 
+                <rotate angle="260" x="0" y ="1" z = "0" />
+                <translate x="4" y="0" z="0" />
+                <scale x="0.070" y="0.070" z="0.070" />
+            </transform>
+            <models> 
+                <model file="sphere.3d" />
+            </models>
+            <group> <!-- Luas -->
+                <transform> 
+                    <rotate angle="229" x="0" y ="1" z = "0" />
+                    <translate x="2" y="0" z="0" />
+                    <scale x="0.2" y="0.2" z="0.2" />
+                </transform>
+                <models> 
+                  <model file="sphere.3d" />
+                </models>
+            </group>
+        </group>
+        <group> <!-- Marte -->
+            <transform> 
+                <rotate angle="99" x="0" y ="1" z = "0" />
+                <translate x="5" y="0" z="0" />
+                <scale x="0.060" y="0.060" z="0.060" />
+            </transform>
+            <models> 
+                <model file="sphere.3d" />
+            </models>
+            <group> <!-- Luas -->
+                <group> <!-- Lua 1 -->
+                    <transform> 
+                        <rotate angle="183" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="2" />
+                        <scale x="0.2" y="0.2" z="0.2" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" />
+                    </models>
+                </group>
+                <group> <!-- Lua 2 -->
+                    <transform> 
+                        <rotate angle="346" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="2" />
+                        <scale x="0.2" y="0.2" z="0.2" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+            </group>
+        </group>
+        <group> <!-- Jupiter -->
+            <transform> 
+                <rotate angle="164" x="0" y ="1" z = "0" />
+                <translate x="8" y="0" z="0" />
+                <scale x="0.40" y="0.40" z="0.40" />
+            </transform>
+            <models> 
+                <model file="sphere.3d" />
+            </models>
+            <group> <!-- Luas -->
+                <group> <!-- Lua 1 -->
+                    <transform> 
+                        <rotate angle="321" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 2 -->
+                    <transform> 
+                        <rotate angle="21" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 3 -->
+                    <transform> 
+                        <rotate angle="55" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 4 -->
+                    <transform> 
+                        <rotate angle="247" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 5 -->
+                    <transform> 
+                        <rotate angle="180" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+            </group>
+        </group>
+        <group> <!-- Saturno -->
+            <transform> 
+                <rotate angle="302" x="0" y ="1" z = "0" />
+                <translate x="11" y="0" z="0" />
+                <scale x="0.35" y="0.35" z="0.35" />
+            </transform>
+            <models> 
+                <model file="sphere.3d" /> 
+            </models>
+            <group> <!-- Luas -->
+                <group> <!-- Lua 1 -->
+                    <transform> 
+                        <rotate angle="303" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 2 -->
+                    <transform> 
+                        <rotate angle="137" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 3 -->
+                    <transform> 
+                        <rotate angle="245" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 4 -->
+                    <transform> 
+                        <rotate angle="146" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 5 -->
+                    <transform> 
+                        <rotate angle="206" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+            </group>
+        </group>
+        <group> <!-- Urano -->
+            <transform> 
+                <rotate angle="50" x="0" y ="1" z = "0" />
+                <translate x="14" y="0" z="0" />
+                <scale x="0.20" y="0.20" z="0.20" />
+            </transform>
+            <models> 
+                <model file="sphere.3d" /> 
+            </models>
+            <group> <!-- Luas -->
+                <group> <!-- Lua 1 -->
+                    <transform> 
+                        <rotate angle="136" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 2 -->
+                    <transform> 
+                        <rotate angle="189" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 3 -->
+                    <transform> 
+                        <rotate angle="268" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+            </group>
+        </group>
+        <group> <!-- Neptuno -->
+            <transform> 
+                <rotate angle="260" x="0" y ="1" z = "0" />
+                <translate x="16" y="0" z="0" />
+                <scale x="0.20" y="0.20" z="0.20" />
+            </transform>
+            <models> 
+                <model file="sphere.3d" /> 
+            </models>
+            <group> <!-- Luas -->
+                <group> <!-- Lua 1 -->
+                    <transform> 
+                        <rotate angle="21" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 2 -->
+                    <transform> 
+                        <rotate angle="227" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+                <group> <!-- Lua 3 -->
+                    <transform> 
+                        <rotate angle="108" x="0" y ="1" z = "0" />
+                        <translate x="0" y="0" z="1.5" />
+                        <scale x="0.05" y="0.05" z="0.05" />
+                    </transform>
+                    <models> 
+                        <model file="sphere.3d" /> 
+                    </models>
+                </group>
+            </group>
+        </group>
+        <group> <!-- NOT A PLANET -->
+            <transform> 
+                <rotate angle="123" x="0" y ="1" z = "0" />
+                <translate x="25" y="0" z="0" />
+                <scale x="0.02" y="0.02" z="0.02" />
+            </transform>
+            <models> 
+                <model file="sphere.3d" /> 
+            </models>
+        </group>
+    </group>
+</world>

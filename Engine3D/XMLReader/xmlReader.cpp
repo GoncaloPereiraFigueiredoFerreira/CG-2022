@@ -238,8 +238,6 @@ xmlInfo readXML(string filename){
             }
             //Capture groups
             xml.groups = captureGroups(root->first_node("group"));
-            cout << "yo\n";
-
 
 
             /*
