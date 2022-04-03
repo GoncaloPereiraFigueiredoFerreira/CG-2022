@@ -22,7 +22,7 @@ using namespace std;
 int cameraMode = 0;
 
 int startX, startY, tracking = 0;
-float alpha, beta1, r;
+float alpha, beta1, r,sensibility = 0.01;
 
 xmlInfo info;
 vector<Group> groups;
@@ -33,21 +33,12 @@ Model* m;
 
 void calculatePolarCoordinates(){
     float xAux, yAux, zAux;
-    if(cameraMode == 0) {
-        xAux = info.cameraInfo.xPos - info.cameraInfo.xLook;
-        yAux = info.cameraInfo.yPos - info.cameraInfo.yLook;
-        zAux = info.cameraInfo.zPos - info.cameraInfo.zLook;
-        r = sqrt(pow(xAux, 2) + pow(yAux, 2) + pow(zAux, 2));
-        alpha = atan(xAux / zAux) * 180 / M_PI;
-        beta1 = asin(yAux / r) * 180 / M_PI;
-    }else{
-        xAux = info.cameraInfo.xLook - info.cameraInfo.xPos;
-        yAux = info.cameraInfo.yLook - info.cameraInfo.yPos;
-        zAux = info.cameraInfo.zLook - info.cameraInfo.zPos;
-        r = sqrt(pow(xAux, 2) + pow(yAux, 2) + pow(zAux, 2));
-        alpha = atan(xAux / zAux) * 180 / M_PI;
-        beta1 = asin(yAux / r) * 180 / M_PI;
-    }
+    xAux = info.cameraInfo.xPos - info.cameraInfo.xLook;
+    yAux = info.cameraInfo.yPos - info.cameraInfo.yLook;
+    zAux = info.cameraInfo.zPos - info.cameraInfo.zLook;
+    r = sqrt(pow(xAux, 2) + pow(yAux, 2) + pow(zAux, 2));
+    alpha = atan(xAux / zAux);
+    beta1 = asin(yAux / r);
 }
 
 /* ------- Generate Dictionary Of Models ------- */
@@ -202,8 +193,13 @@ void processMouseButtons(int button, int state, int xx, int yy) {
 	}
 	else if (state == GLUT_UP) {
 		if (tracking == 1) {
-			alpha += (startX - xx);
-			beta1 += (startY - yy);
+			alpha += (startX - xx) * sensibility;
+			beta1 += (startY - yy) * sensibility;
+
+			if (beta1 > M_PI_2-0.1)
+				beta1 = M_PI_2-0.1;
+			else if (beta1 < -M_PI_2+0.1)
+				beta1 = -M_PI_2+0.1;
 		}
 		else if (tracking == 2) {
 
@@ -230,13 +226,13 @@ void processMouseMotion(int xx, int yy) {
 
 	if (tracking == 1) {
 
-		alphaAux = alpha + deltaX;
-		betaAux = beta1 + deltaY;
+		alphaAux = alpha + deltaX * sensibility;
+		betaAux = beta1 + deltaY * sensibility;
 
-		if (betaAux > 85.0)
-			betaAux = 85.0;
-		else if (betaAux < -85.0)
-			betaAux = -85.0;
+		if (betaAux > M_PI_2-0.1)
+			betaAux = M_PI_2-0.1;
+		else if (betaAux < -M_PI_2+0.1)
+			betaAux = -M_PI_2+0.1;
 
 		rAux = r;
 	}
@@ -250,14 +246,14 @@ void processMouseMotion(int xx, int yy) {
 	}
 
     if(cameraMode == 0) {
-        info.cameraInfo.xPos = info.cameraInfo.xLook + rAux * sin(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
-        info.cameraInfo.zPos = info.cameraInfo.zLook + rAux * cos(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
-        info.cameraInfo.yPos = info.cameraInfo.yLook + rAux * sin(betaAux * 3.14 / 180.0);
+        info.cameraInfo.xPos = info.cameraInfo.xLook + rAux * sin(alphaAux) * cos(betaAux);
+        info.cameraInfo.zPos = info.cameraInfo.zLook + rAux * cos(alphaAux) * cos(betaAux);
+        info.cameraInfo.yPos = info.cameraInfo.yLook + rAux * sin(betaAux);
     }
     else if (tracking == 1){ //cameraMode == 1
-        info.cameraInfo.xLook = info.cameraInfo.xPos + rAux * sin(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
-        info.cameraInfo.zLook = info.cameraInfo.zPos + rAux * cos(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
-        info.cameraInfo.yLook = info.cameraInfo.yPos + rAux * sin(betaAux * 3.14 / 180.0);
+        info.cameraInfo.xLook = info.cameraInfo.xPos + rAux * sin(alphaAux + M_PI) * cos(-betaAux);
+        info.cameraInfo.zLook = info.cameraInfo.zPos + rAux * cos(alphaAux + M_PI) * cos(-betaAux);
+        info.cameraInfo.yLook = info.cameraInfo.yPos + rAux * sin(-betaAux);
     }
 
     glutPostRedisplay();
@@ -281,28 +277,24 @@ void defaultKeyFunc(unsigned char key, int x, int y) {
         info.cameraInfo.zLook += Dz;
         info.cameraInfo.xPos += Dx;
         info.cameraInfo.zPos += Dz;
-		glutPostRedisplay();
 	}
 	else if (key == 's' || key == 'S') {
 		info.cameraInfo.xLook -= Dx;
         info.cameraInfo.zLook -= Dz;
         info.cameraInfo.xPos -= Dx;
         info.cameraInfo.zPos -= Dz;
-		glutPostRedisplay();
 	}
 	else if (key == 'd' || key == 'D') {
 		info.cameraInfo.xLook -= Dz;
         info.cameraInfo.zLook += Dx;
         info.cameraInfo.xPos -= Dz;
         info.cameraInfo.zPos += Dx;
-		glutPostRedisplay();
 	}
 	else if (key == 'a' || key == 'A') {
 		info.cameraInfo.xLook += Dz;
         info.cameraInfo.zLook -= Dx;
         info.cameraInfo.xPos += Dz;
         info.cameraInfo.zPos -= Dx;
-		glutPostRedisplay();
 	}
     else if (key == 'm' || key == 'M') {
 		if(cameraMode == 0){
@@ -313,21 +305,20 @@ void defaultKeyFunc(unsigned char key, int x, int y) {
             cameraMode = 0;
             glutSetWindowTitle("CG@13");
         }
-        calculatePolarCoordinates();
 	}
+	glutPostRedisplay();
 }
 
 void specialKeyFunc(int key_code, int x, int y) {
     if (key_code == GLUT_KEY_UP) {
 		info.cameraInfo.yLook += 1;
        	info.cameraInfo.yPos += 1;
-        glutPostRedisplay();
 	}
 	else if (key_code == GLUT_KEY_DOWN) {
 		info.cameraInfo.yLook -= 1;
         info.cameraInfo.yPos -= 1;
-	    glutPostRedisplay();
     }
+    glutPostRedisplay();
 }
 
 int main(int argc, char** argv) {
