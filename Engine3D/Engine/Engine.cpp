@@ -19,6 +19,8 @@
 #include "../XMLReader/xmlReader.hpp"
 using namespace std;
 
+int cameraMode = 0;
+
 int startX, startY, tracking = 0;
 float alpha, beta1, r;
 
@@ -27,6 +29,28 @@ vector<Group> groups;
 unordered_map<char*, Model*> modelDic;
 vector<Model*> solids;
 Model* m;
+
+
+void calculatePolarCoordinates(){
+    float xAux, yAux, zAux;
+    if(cameraMode == 0) {
+        xAux = info.cameraInfo.xPos - info.cameraInfo.xLook;
+        yAux = info.cameraInfo.yPos - info.cameraInfo.yLook;
+        zAux = info.cameraInfo.zPos - info.cameraInfo.zLook;
+        r = sqrt(pow(xAux, 2) + pow(yAux, 2) + pow(zAux, 2));
+        alpha = atan(xAux / zAux) * 180 / M_PI;
+        beta1 = asin(yAux / r) * 180 / M_PI;
+    }else{
+        xAux = info.cameraInfo.xLook - info.cameraInfo.xPos;
+        yAux = info.cameraInfo.yLook - info.cameraInfo.yPos;
+        zAux = info.cameraInfo.zLook - info.cameraInfo.zPos;
+        r = sqrt(pow(xAux, 2) + pow(yAux, 2) + pow(zAux, 2));
+        alpha = atan(xAux / zAux) * 180 / M_PI;
+        beta1 = asin(yAux / r) * 180 / M_PI;
+    }
+}
+
+/* ------- Generate Dictionary Of Models ------- */
 
 int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
@@ -111,7 +135,6 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-//Faltam as transformacoes
 void recursiveDraw(Group tmpGroup) {
 	glPushMatrix();
 	for (int i = 0; i < tmpGroup.transforms.size(); i++) {
@@ -179,14 +202,14 @@ void processMouseButtons(int button, int state, int xx, int yy) {
 	}
 	else if (state == GLUT_UP) {
 		if (tracking == 1) {
-			alpha += (xx - startX);
-			beta1 += (yy - startY);
+			alpha += (startX - xx);
+			beta1 += (startY - yy);
 		}
 		else if (tracking == 2) {
 
-			r -= yy - startY;
-			if (r < 3)
-				r = 3.0;
+			r -= startY - yy;
+			if (r < 1)
+				r = 1.0;
 		}
 		tracking = 0;
 	}
@@ -202,11 +225,10 @@ void processMouseMotion(int xx, int yy) {
 	if (!tracking)
 		return;
 
-	deltaX = xx - startX;
-	deltaY = yy - startY;
+	deltaX = startX - xx;
+	deltaY = startY - yy;
 
 	if (tracking == 1) {
-
 
 		alphaAux = alpha + deltaX;
 		betaAux = beta1 + deltaY;
@@ -223,13 +245,20 @@ void processMouseMotion(int xx, int yy) {
 		alphaAux = alpha;
 		betaAux = beta1;
 		rAux = r - deltaY;
-		if (rAux < 3)
-			rAux = 3;
+		if (rAux < 1)
+			rAux = 1;
 	}
 
-	info.cameraInfo.xPos = info.cameraInfo.xLook + rAux * sin(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
-	info.cameraInfo.zPos = info.cameraInfo.zLook + rAux * cos(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
-	info.cameraInfo.yPos = info.cameraInfo.yLook + rAux * sin(betaAux * 3.14 / 180.0);
+    if(cameraMode == 0) {
+        info.cameraInfo.xPos = info.cameraInfo.xLook + rAux * sin(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
+        info.cameraInfo.zPos = info.cameraInfo.zLook + rAux * cos(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
+        info.cameraInfo.yPos = info.cameraInfo.yLook + rAux * sin(betaAux * 3.14 / 180.0);
+    }
+    else if (tracking == 1){ //cameraMode == 1
+        info.cameraInfo.xLook = info.cameraInfo.xPos + rAux * sin(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
+        info.cameraInfo.zLook = info.cameraInfo.zPos + rAux * cos(alphaAux * 3.14 / 180.0) * cos(betaAux * 3.14 / 180.0);
+        info.cameraInfo.yLook = info.cameraInfo.yPos + rAux * sin(betaAux * 3.14 / 180.0);
+    }
 
     glutPostRedisplay();
 }
@@ -249,31 +278,42 @@ void defaultKeyFunc(unsigned char key, int x, int y) {
     //Movements of
 	if (key == 'w' || key == 'W') {
 		info.cameraInfo.xLook += Dx;
-	        info.cameraInfo.zLook += Dz;
-	        info.cameraInfo.xPos += Dx;
-	        info.cameraInfo.zPos += Dz;
+        info.cameraInfo.zLook += Dz;
+        info.cameraInfo.xPos += Dx;
+        info.cameraInfo.zPos += Dz;
 		glutPostRedisplay();
 	}
 	else if (key == 's' || key == 'S') {
 		info.cameraInfo.xLook -= Dx;
-	        info.cameraInfo.zLook -= Dz;
-	        info.cameraInfo.xPos -= Dx;
-	        info.cameraInfo.zPos -= Dz;
+        info.cameraInfo.zLook -= Dz;
+        info.cameraInfo.xPos -= Dx;
+        info.cameraInfo.zPos -= Dz;
 		glutPostRedisplay();
 	}
 	else if (key == 'd' || key == 'D') {
 		info.cameraInfo.xLook -= Dz;
-	        info.cameraInfo.zLook += Dx;
-	        info.cameraInfo.xPos -= Dz;
-	        info.cameraInfo.zPos += Dx;
+        info.cameraInfo.zLook += Dx;
+        info.cameraInfo.xPos -= Dz;
+        info.cameraInfo.zPos += Dx;
 		glutPostRedisplay();
 	}
 	else if (key == 'a' || key == 'A') {
 		info.cameraInfo.xLook += Dz;
-	        info.cameraInfo.zLook -= Dx;
-	        info.cameraInfo.xPos += Dz;
-	        info.cameraInfo.zPos -= Dx;
+        info.cameraInfo.zLook -= Dx;
+        info.cameraInfo.xPos += Dz;
+        info.cameraInfo.zPos -= Dx;
 		glutPostRedisplay();
+	}
+    else if (key == 'm' || key == 'M') {
+		if(cameraMode == 0){
+            cameraMode = 1;
+            glutSetWindowTitle("CG@13 - FPS Mode");
+        }
+        else{
+            cameraMode = 0;
+            glutSetWindowTitle("CG@13");
+        }
+        calculatePolarCoordinates();
 	}
 }
 
@@ -281,21 +321,20 @@ void specialKeyFunc(int key_code, int x, int y) {
     if (key_code == GLUT_KEY_UP) {
 		info.cameraInfo.yLook += 1;
        	info.cameraInfo.yPos += 1;
+        glutPostRedisplay();
 	}
 	else if (key_code == GLUT_KEY_DOWN) {
 		info.cameraInfo.yLook -= 1;
         info.cameraInfo.yPos -= 1;
-	}
-	glutPostRedisplay();
+	    glutPostRedisplay();
+    }
 }
 
 int main(int argc, char** argv) {
 	if (argc == 2) {
 		//Reads XML file
 		info = readXML(argv[1]);
-        r = sqrt(pow(info.cameraInfo.xPos, 2) + pow(info.cameraInfo.yPos, 2) + pow(info.cameraInfo.zPos, 2));
-        alpha = atan(info.cameraInfo.xPos / info.cameraInfo.zPos) * 180 / M_PI;
-        beta1 = asin(info.cameraInfo.yPos / r) * 180 / M_PI;
+        calculatePolarCoordinates();
 	}
 	else {
 		cout << "Invalid arguments" << endl;
