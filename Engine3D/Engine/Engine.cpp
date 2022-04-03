@@ -181,6 +181,9 @@ void renderScene(void) {
 // functions to process mouse events
 void processMouseButtons(int button, int state, int xx, int yy) {
 
+	if (cameraMode ==1)
+		yy = -yy;
+
 	if (state == GLUT_DOWN)  {
 		startX = xx;
 		startY = yy;
@@ -213,6 +216,11 @@ void processMouseButtons(int button, int state, int xx, int yy) {
 
 
 void processMouseMotion(int xx, int yy) {
+
+
+	if (cameraMode ==1)
+		yy = -yy;
+
 
 	float deltaX, deltaY;
 	float alphaAux, betaAux;
