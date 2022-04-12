@@ -13,6 +13,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include "../Models/Point.h"
 
 //Camera
 
@@ -97,9 +98,9 @@ class Transform{
     virtual void apply() {};
 };
 
-class Translate : public Transform {
+class TranslateS : public Transform {
 	public:
-    Translate(double x, double y, double z) : Transform(){
+    TranslateS(double x, double y, double z) : Transform(){
         this->x = x;
         this->y = y;
         this->z = z;
@@ -109,10 +110,30 @@ class Translate : public Transform {
 	}
 };
 
-class Rotate : public Transform {
+class TranslateD : public Transform {
+	public:
+	int time;
+    bool align;
+	vector<Point> points;
+    TranslateD(int time, bool align,vector<Point> points) : Transform(){
+        this->time = time;
+		this->align = align;
+		this->points = points;
+        
+    }
+	void apply() {
+		//glTranslatef(this->x, this->y, this->z);
+	}
+};
+
+
+
+
+
+class RotateS : public Transform {
 	public:
 	double angle;
-    Rotate(double x, double y, double z, double angle) : Transform(){
+    RotateS(double x, double y, double z, double angle) : Transform(){
         this->x = x;
         this->y = y;
         this->z = z;
@@ -120,6 +141,19 @@ class Rotate : public Transform {
     }
 	void apply() {
 		glRotatef(this->angle, this->x, this->y, this->z);
+	}
+};
+class RotateD : public Transform {
+	public:
+	double time;
+    RotateD(double x, double y, double z, double time) : Transform(){
+        this->x = x;
+        this->y = y;
+        this->z = z;
+        this->time = time;
+    }
+	void apply() {
+		//glRotatef(this->time, this->x, this->y, this->z);
 	}
 };
 

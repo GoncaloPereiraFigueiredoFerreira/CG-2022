@@ -46,17 +46,58 @@ Group captureGroups (xml_node<char> * root){
         for (t1 = t1->first_node(); t1; t1 = t1->next_sibling()){
             string s(t1->name());
             if (s == "translate"){
-                auto translate = new Translate(std::stod(t1->first_attribute("X",0,false)->value()),
-                                       std::stod(t1->first_attribute("Y", 0, false)->value()),
-                                       std::stod(t1->first_attribute("Z", 0, false)->value()));
-                main.transforms.push_back(translate);
+                if (t1->first_attribute("time",0,false) != 0){
+                    
+                    bool flag = t1->first_attribute("align",0,false)->value() == "True";
+                    t2 = t1->first_node();
+                    std::vector<Point> points;
+                    int counter =0;
+                    while (t2){
+                        if (t2->name() == "point"){
+                            float x =std::stof(t2->first_attribute("x",0,false)->value());
+                            float y =std::stof(t2->first_attribute("y",0,false)->value());
+                            float z =std::stof(t2->first_attribute("z",0,false)->value());
+                            points.push_back(Point(x,y,z));
+                            counter++;
+                            t2=t2->next_sibling();
+                           
+                        }
+                    }
+                    if (counter >= 4){
+                        auto translateD = new TranslateD(std::stoi(t1->first_attribute("time",0,false)->value()),flag,points);
+                        main.transforms.push_back(translateD);
+                    } 
+                    else {
+                        throw new exception();
+                    }
+
+                    
+                }
+                else {
+                    auto translateS = new TranslateS(std::stod(t1->first_attribute("X",0,false)->value()),
+                                                     std::stod(t1->first_attribute("Y", 0, false)->value()),
+                                                     std::stod(t1->first_attribute("Z", 0, false)->value()));
+                    main.transforms.push_back(translateS);
+                }
+                
             }
             else if ( s == "rotate"){
-                auto rotate = new Rotate(std::stod(t1->first_attribute("X", 0, false)->value()), //Check for axisX/y/z in case of error 
+                if (t1->first_attribute("time",0,false) != 0){
+                    auto rotate = new RotateD(std::stod(t1->first_attribute("X", 0, false)->value()), //Check for axisX/y/z in case of error 
+                                    std::stod(t1->first_attribute("Y", 0, false)->value()), //TODO se arranjarmos forma fazemos um ou para este caso
+                                    std::stod(t1->first_attribute("Z", 0, false)->value()),
+                                    std::stod(t1->first_attribute("time",0,false)->value()));
+                    main.transforms.push_back(rotate);
+                }
+                else{
+                    auto rotate = new RotateS(std::stod(t1->first_attribute("X", 0, false)->value()), //Check for axisX/y/z in case of error 
                                     std::stod(t1->first_attribute("Y", 0, false)->value()), //TODO se arranjarmos forma fazemos um ou para este caso
                                     std::stod(t1->first_attribute("Z", 0, false)->value()),
                                     std::stod(t1->first_attribute("angle",0,false)->value()));
-                main.transforms.push_back(rotate);
+                    main.transforms.push_back(rotate);
+                
+                }
+                
             }
             else if ( s == "scale"){
                 auto scale = new Scale(std::stod(t1->first_attribute("X", 0, false)->value()),
