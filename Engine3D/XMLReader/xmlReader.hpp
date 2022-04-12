@@ -114,8 +114,8 @@ class TranslateD : public Transform {
 	public:
 	int time;
     bool align;
-	vector<Point> points;
-    TranslateD(int time, bool align,vector<Point> points) : Transform(){
+	std::vector<Point> points;
+    TranslateD(int time, bool align,std::vector<Point> points) : Transform(){
         this->time = time;
 		this->align = align;
 		this->points = points;
