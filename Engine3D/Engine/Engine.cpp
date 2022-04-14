@@ -78,7 +78,8 @@ int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict) {
 	}
 
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++)
-		generateDic(tmpGroup.groupChildren[i], modelDict);
+		if(generateDic(tmpGroup.groupChildren[i], modelDict) == -1)
+            return -1;
 
 	return 1;
 }
