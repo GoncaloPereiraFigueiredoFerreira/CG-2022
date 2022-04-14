@@ -1,9 +1,6 @@
 #ifndef ENGINEEXE_POINT_H
 #define ENGINEEXE_POINT_H
 
-#ifndef MODELS_POINT_H
-#define MODELS_POINT_H
-
 class Point
 {
 public:
@@ -21,7 +18,5 @@ public:
         cz = z;
     }
 };
-
-#endif
 
 #endif //ENGINEEXE_POINT_H
