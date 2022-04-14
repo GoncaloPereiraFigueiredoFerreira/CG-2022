@@ -1,16 +1,10 @@
-#ifndef GENERATOR_H
-#define GENERATOR_H
+#ifndef ENGINEEXE_GENERATOR_H
+#define ENGINEEXE_GENERATOR_H
 
-#include <iostream>
-#include <fstream>
-#include <stdio.h>
-#include "ConeGenerator.h"
-#include "SphereGenerator.h"
-#include "PlaneGenerator.h"
-#include "BoxGenerator.h"
-#include "TorusGenerator.h"
 #include <vector>
-#include "../Models/Models.h"
-#include "string.h"
+#include <stdio.h>
+#include <string>
 
-#endif
+int readModelFromFile(std::string filename, std::vector<float>& vertexB, std::vector<unsigned int>& indexB);
+
+#endif //ENGINEEXE_GENERATOR_H

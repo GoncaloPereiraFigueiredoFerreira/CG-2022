@@ -2,12 +2,8 @@
 #define GENERATOR_SPHERE_H
 
 #include "../Auxiliar/AuxiliarMethods.h"
-#include "../Models/Sphere.h"
-#include <string>
 #include <vector>
-#include <fstream>
 
-void generateSphereFile(std::string filename, Sphere sphere);
-Sphere* readSphereFromFile(std::ifstream& fd);
+void sphere(float radius, int slices, int stacks, std::vector<float>& vertexB, std::vector<unsigned int>& indexB);
 
 #endif

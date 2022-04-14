@@ -1,119 +1,63 @@
 #include "BoxGenerator.h"
 using namespace std;
 
-void generateBoxFile(string filename, Box box) {
-	ofstream fich;
-	fich.open(filename, ios::out);
-	/*
-		Default separator of fields: ';'
-
-		1st line: type
-		2nd line: [;argument]
-			- [;argument] is optional, and can be repeated, in this case for plane, we should write the length and the number of divisions
-
-		Points format: "<coord x>,<coord y>,<coord z>
-	*/
-
-	fich << "box" << "\n";
-
-	fich << box.length << ";" << box.divisions << "\n";
-
-	std::vector<std::vector<Point>> mat_u = box.mat_u; 
-	std::vector<std::vector<Point>> mat_t = box.mat_t;
-	std::vector<std::vector<Point>> mat_f = box.mat_f;
-	std::vector<std::vector<Point>> mat_b = box.mat_b;
-	std::vector<std::vector<Point>> mat_r = box.mat_r;
-	std::vector<std::vector<Point>> mat_l = box.mat_l; 
-	Point p;
-
-	for (int i = 0; i <= box.divisions; i++) { //Percorrer eixo dos Z's
-
-		for (int j = 0; j <= box.divisions ; j++) { //Percorrer eixo dos X's
-			p = mat_u[i][j];
-			fich << p.cx << "," << p.cy << "," << p.cz << ";";
-			p = mat_t[i][j];
-			fich << p.cx << "," << p.cy << "," << p.cz << ";";
-			p = mat_f[i][j];
-			fich << p.cx << "," << p.cy << "," << p.cz << ";";
-			p = mat_b[i][j];
-			fich << p.cx << "," << p.cy << "," << p.cz << ";";
-			p = mat_r[i][j];
-			fich << p.cx << "," << p.cy << "," << p.cz << ";";
-			p = mat_l[i][j];
-			fich << p.cx << "," << p.cy << "," << p.cz << ";";
-		}
-		fich << std::endl;
-	}
-	fich.close();
+void insertCoordinates(vector<float>& vertexB, int index, float x, float y, float z){
+    vertexB[index] = x;
+    vertexB[index + 1] = y;
+    vertexB[index + 2] = z;
 }
 
-Box* readBoxFromFile(std::ifstream& fd){
-	float length;
-	int divisions;
-	std::vector<std::vector<Point>> mat_u;
-	std::vector<std::vector<Point>> mat_t;
-	std::vector<std::vector<Point>> mat_f;
-	std::vector<std::vector<Point>> mat_b;
-	std::vector<std::vector<Point>> mat_r;
-	std::vector<std::vector<Point>> mat_l;
+void box(float length, int divisions, vector<float>& vertexB, vector<unsigned int>& indexB) {
+    int verticesPerFace = (divisions + 1) * (divisions + 1);
+    vertexB.resize(verticesPerFace * 6 * 3);
 
+    float half_lengh = length / 2;
+    float cx, cxi = cx = -half_lengh, cz = -half_lengh;
+    float incr = length / divisions; //side increment value
+    float cy_b = -half_lengh; //bottom y
+    float cy_t = incr * divisions - half_lengh; //top y
 
-	if (!fd.is_open()) cout << "Open: No such file!";
-	else{
-		string line;
-		string delimiter = ";";
+    for (int i = 0; i <= divisions; i++) {
+        for (int j = 0; j <= divisions; j++) {
+            insertCoordinates(vertexB, (i * (divisions + 1) + j) * 3, cx, cy_b, cz); //under
+            insertCoordinates(vertexB, (verticesPerFace + i * (divisions + 1) + j) * 3, cy_t, cx , cz); //front
+            insertCoordinates(vertexB, (2 * verticesPerFace + i * (divisions + 1) + j) * 3, cx, cz, cy_t); //left
+            insertCoordinates(vertexB, (3 * verticesPerFace + i * (divisions + 1) + j) * 3, cx, cy_t, cz); //top
+            insertCoordinates(vertexB, (4 * verticesPerFace + i * (divisions + 1) + j) * 3, cy_b, cx, cz); //back
+            insertCoordinates(vertexB, (5 * verticesPerFace + i * (divisions + 1) + j) * 3, cx, cz, cy_b); //right
+            cx += incr;
+        }
+        cz += incr;
+        cx = cxi;
+    }
 
-		//Read and parse first line
-		getline(fd, line);
+    for (int i = 0; i <= divisions;i++) {
 
-		vector<string> tokens = parseLine(line, delimiter);
+		for (int j = 0;j <= divisions;j++) {
 
-		length = stof(tokens[0]);
-		divisions = stoi(tokens[1]);
+			if (i && j) {
+				///under & back & left
+				for(int offset = 0; offset <= 2 * verticesPerFace; offset += verticesPerFace) {
+                    indexB.push_back(offset + (i - 1) * (divisions + 1) + (j - 1));
+                    indexB.push_back(offset + i * (divisions + 1) + j);
+                    indexB.push_back(offset + i * (divisions + 1) + (j - 1));
 
-		mat_u.reserve(divisions + 1);
-		mat_t.reserve(divisions + 1);
-		mat_f.reserve(divisions + 1);
-		mat_b.reserve(divisions + 1);
-		mat_r.reserve(divisions + 1);
-		mat_l.reserve(divisions + 1);
+                    indexB.push_back(offset + (i - 1) * (divisions + 1) + (j - 1));
+                    indexB.push_back(offset + (i - 1) * (divisions + 1) + j);
+                    indexB.push_back(offset + i * (divisions + 1) + j);
+                }
 
-		vector<string> coords;
+				///top & front & right
+				for(int offset = 3 * verticesPerFace; offset <= 5 * verticesPerFace; offset += verticesPerFace) {
+                    indexB.push_back(offset + (i - 1) * (divisions + 1) + (j - 1));
+                    indexB.push_back(offset + i * (divisions + 1) + (j - 1));
+                    indexB.push_back(offset + i * (divisions + 1) + j);
 
-		for (int i = 0; getline(fd, line); i++){
-			std::vector<Point> l_u,l_t,l_f,l_b,l_r,l_l;
-			tokens = parseLine(line, delimiter);
-			for (int j = 0, tokenctr = 0; j <= divisions; j++) {
-				l_u.reserve(divisions);
-				l_t.reserve(divisions);
-				l_f.reserve(divisions);
-				l_b.reserve(divisions);
-				l_r.reserve(divisions);
-				l_l.reserve(divisions);
-
-				coords = parseLine(tokens[tokenctr++], ",");
-				l_u.push_back(Point(stof(coords[0]), stof(coords[1]), stof(coords[2])));
-				coords = parseLine(tokens[tokenctr++], ",");
-				l_t.push_back(Point(stof(coords[0]), stof(coords[1]), stof(coords[2])));
-				coords = parseLine(tokens[tokenctr++], ",");
-				l_f.push_back(Point(stof(coords[0]), stof(coords[1]), stof(coords[2])));
-				coords = parseLine(tokens[tokenctr++], ",");
-				l_b.push_back(Point(stof(coords[0]), stof(coords[1]), stof(coords[2])));
-				coords = parseLine(tokens[tokenctr++], ",");
-				l_r.push_back(Point(stof(coords[0]), stof(coords[1]), stof(coords[2])));
-				coords = parseLine(tokens[tokenctr++], ",");
-				l_l.push_back(Point(stof(coords[0]), stof(coords[1]), stof(coords[2])));
+                    indexB.push_back(offset + (i - 1) * (divisions + 1) + (j - 1));
+                    indexB.push_back(offset + i * (divisions + 1) + j);
+                    indexB.push_back(offset + (i - 1) * (divisions + 1) + j);
+                }
 			}
-			mat_u.push_back(l_u);
-			mat_t.push_back(l_t);
-			mat_f.push_back(l_f);
-			mat_b.push_back(l_b);
-			mat_r.push_back(l_r);
-			mat_l.push_back(l_l);
 		}
-
-		return new  Box(length, divisions, mat_u, mat_t, mat_f, mat_b , mat_r, mat_l);
 	}
-
-	return NULL;
 }
