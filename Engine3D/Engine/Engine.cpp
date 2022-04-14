@@ -322,21 +322,7 @@ void specialKeyFunc(int key_code, int x, int y) {
 }
 
 int main(int argc, char** argv) {
-	if (argc == 2) {
-		//Reads XML file
-		info = readXML(argv[1]);
-        calculatePolarCoordinates();
-	}
-	else {
-		cout << "Invalid arguments" << endl;
-		return -1;
-	}
 
-	if (!generateDic(info.groups, modelDict))
-		return -1;
-
-    //init GLEW
-    glewInit();
 
 	// init GLUT and the window
 	glutInit(&argc, argv);
@@ -344,6 +330,9 @@ int main(int argc, char** argv) {
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(800, 800);
 	glutCreateWindow("CG@G13");
+    
+    //init GLEW
+    glewInit();
 
 	// Required callback registry
 	glutDisplayFunc(renderScene);
@@ -363,8 +352,22 @@ int main(int argc, char** argv) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
+	if (argc == 2) {
+		//Reads XML file
+		info = readXML(argv[1]);
+        calculatePolarCoordinates();
+	}
+	else {
+		cout << "Invalid arguments" << endl;
+		return -1;
+	}
+
+	if (!generateDic(info.groups, modelDict))
+		return -1;
+
 	// enter GLUT's main cycle
 	glutMainLoop();
+
 
 	return 1;
 }
