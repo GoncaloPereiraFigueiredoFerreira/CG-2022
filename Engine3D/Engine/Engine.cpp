@@ -2,22 +2,28 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+#include <GL/glew.h>
 #include <GL/glut.h>
 #endif
 
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <iostream>
-#include <fstream>
 #include <vector>
-#include <string>
-#include <climits>
 #include <unordered_map>
-#include <stdexcept>
-#include "../Auxiliar/AuxiliarMethods.h"
-#include "../Generator/Generator.h"
+#include "../Generator/Model.h"
 #include "../XMLReader/xmlReader.hpp"
 using namespace std;
+
+class ModelVBO {
+public:
+    GLuint vertices, verticesCount, indices;
+    unsigned int indicesCount;
+
+    ModelVBO(GLuint vertices, GLuint verticesCount, GLuint indices, unsigned int indicesCount) : vertices(
+        vertices), verticesCount(verticesCount), indices(indices), indicesCount(indicesCount) {}
+};
+
 
 int cameraMode = 0;
 
@@ -26,10 +32,7 @@ float alpha, beta1, r,sensibility = 0.01;
 
 xmlInfo info;
 vector<Group> groups;
-unordered_map<char*, Model*> modelDic;
-vector<Model*> solids;
-Model* m;
-
+unordered_map<char*, ModelVBO*> modelDict;
 
 void calculatePolarCoordinates(){
     float xAux, yAux, zAux;
@@ -43,60 +46,45 @@ void calculatePolarCoordinates(){
 
 /* ------- Generate Dictionary Of Models ------- */
 
-int generateDicAux(Group tmpGroup, unordered_map<char*, Model*>* mapa) {
+int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
-		if ((*mapa).find(tmpGroup.modelList[i].sourceF) == (*mapa).end()) {  //Verificar se o elemento ja esta no mapa
-			Model* m;
+		if (modelDict.find(tmpGroup.modelList[i].sourceF) == modelDict.end()) {  //Verificar se o elemento ja esta no mapa
+            vector<float> vertexB; vector<unsigned int> indexB;
 
-			FILE* file;
-
-			/*first check if the file exists...*/
-			file = fopen(tmpGroup.modelList[i].sourceF, "r");
-			if (file == nullptr) {
+			if (readModelFromFile(tmpGroup.modelList[i].sourceF, vertexB, indexB) == -1) {
 				cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
-				return 0;
+				return -1;
 			}
 			else {
-				std::ifstream fd;
-				fd.open(tmpGroup.modelList[i].sourceF, ios::in);
-				//if(fd.) cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
-				string line;
-				getline(fd, line);
+                GLuint vertices, verticesCount = vertexB.size() / 3, indices;
+                unsigned int indicesCount = indexB.size();
 
-				if (line == "sphere") { //read Sphere
-					m = readSphereFromFile(fd);
-				}
-				else if (line == "plane") { //read plane
-					m = readPlaneFromFile(fd);
-				}
-				else if (line == "box") { //read box
-					m = readBoxFromFile(fd);
-				}
-				else if (line == "cone") { //read cone
-					m = readConeFromFile(fd);
-				}
-				else if (line == "torus") { //read torus
-					m = readTorusFromFile(fd);
-				}
-				fclose(file);
-			}
-			mapa->insert(pair<char*, Model*>(tmpGroup.modelList[i].sourceF, m));
+                //Create VBO
+                glGenBuffers(1, &vertices);
+
+                //Copy vector to graphics card
+                glBindBuffer(GL_ARRAY_BUFFER, vertices);
+                glBufferData(GL_ARRAY_BUFFER, vertexB.size() * sizeof(float), vertexB.data(), GL_STATIC_DRAW);
+
+                glGenBuffers(1, &indices);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indexB.size(), indexB.data(), GL_STATIC_DRAW);
+
+                //inserts pair of file's name and respective VBO information
+                auto m = new ModelVBO(vertices, verticesCount, indices, indicesCount);
+                modelDict.insert(std::make_pair(tmpGroup.modelList[i].sourceF, m));
+            }
 		}
 	}
-	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
-		generateDicAux(tmpGroup.groupChildren[i], mapa);
-	}
+
+	for (int i = 0; i < tmpGroup.groupChildren.size(); i++)
+		generateDic(tmpGroup.groupChildren[i], modelDict);
+
 	return 1;
 }
 
-int generateDic(xmlInfo xmlinfo) {
-	auto* mapa = new unordered_map<char*, Model*>;
-	if (!generateDicAux(xmlinfo.groups, mapa)) {
-		return 0;
-	};
-	modelDic = *mapa;
-	return 1;
-}
+/* ------------------------------------------------- */
+
 
 void changeSize(int w, int h) {
 
@@ -128,18 +116,21 @@ void changeSize(int w, int h) {
 
 void recursiveDraw(Group tmpGroup) {
 	glPushMatrix();
-	for (int i = 0; i < tmpGroup.transforms.size(); i++) {
+	for (int i = 0; i < tmpGroup.transforms.size(); i++)
 		tmpGroup.transforms[i]->apply();
-		//cout << "apply\n";
-	}
+
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
-		//cout << "gonna draw\n";
-		modelDic[tmpGroup.modelList[i].sourceF]->draw();
-		//cout << "drawn\n";
+		auto m = modelDict[tmpGroup.modelList[i].sourceF];
+
+        glBindBuffer(GL_ARRAY_BUFFER, m->vertices);
+        glVertexPointer(3, GL_FLOAT, 0, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices);
+        glDrawElements(GL_TRIANGLES, m->indicesCount, GL_UNSIGNED_INT, 0);
 	}
-	for (int i = 0; i < tmpGroup.groupChildren.size(); i++) {
+
+	for (int i = 0; i < tmpGroup.groupChildren.size(); i++)
 		recursiveDraw(tmpGroup.groupChildren[i]);
-	}
+
 	glPopMatrix();
 }
 
@@ -340,9 +331,11 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	if (!generateDic(info)) {
+	if (!generateDic(info.groups, modelDict))
 		return -1;
-	};
+
+    //init GLEW
+    glewInit();
 
 	// init GLUT and the window
 	glutInit(&argc, argv);
@@ -360,6 +353,9 @@ int main(int argc, char** argv) {
     glutMotionFunc(processMouseMotion);
     glutKeyboardFunc(defaultKeyFunc);
 	glutSpecialFunc(specialKeyFunc);
+
+    //Enabling Buffer of Vertex Functionality
+    glEnableClientState(GL_VERTEX_ARRAY);
 
 	//  OpenGL settings
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

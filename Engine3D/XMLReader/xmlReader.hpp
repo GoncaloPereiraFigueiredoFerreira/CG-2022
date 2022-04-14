@@ -13,7 +13,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "../Models/Point.h"
+#include "../Auxiliar/Point.h"
 
 //Camera
 
