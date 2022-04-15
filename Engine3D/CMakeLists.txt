@@ -8,8 +8,8 @@ set(OpenGL_GL_PREFERENCE LEGACY)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 #Basta comentar uma das linhas 'add_executable' e tirar a outra de comentário para alterar entre os executaveis
-add_executable(${PROJECT_NAME} Engine/Engine.cpp Generator/BoxGenerator.cpp Generator/BoxGenerator.h Generator/ConeGenerator.cpp Generator/ConeGenerator.h Generator/PlaneGenerator.cpp Generator/PlaneGenerator.h Generator/SphereGenerator.cpp Generator/TorusGenerator.cpp Generator/SphereGenerator.h Generator/TorusGenerator.h XMLReader/xmlReader.cpp XMLReader/xmlReader.hpp Auxiliar/AuxiliarMethods.cpp Auxiliar/AuxiliarMethods.h Auxiliar/Point.h Generator/Model.cpp Generator/Model.h)
-add_executable(GeneratorEXE  Generator/BoxGenerator.cpp Generator/BoxGenerator.h Generator/ConeGenerator.cpp Generator/ConeGenerator.h Generator/Generator.cpp Generator/PlaneGenerator.cpp Generator/PlaneGenerator.h Generator/SphereGenerator.cpp Generator/TorusGenerator.cpp Generator/SphereGenerator.h Generator/TorusGenerator.h Auxiliar/AuxiliarMethods.cpp Auxiliar/AuxiliarMethods.h Generator/Model.cpp Generator/Model.h)
+add_executable(${PROJECT_NAME} Engine/Engine.cpp Generator/BoxGenerator.cpp Generator/BoxGenerator.h Generator/ConeGenerator.cpp Generator/ConeGenerator.h Generator/BenzierGenerator Generator/PlaneGenerator.cpp Generator/PlaneGenerator.h Generator/SphereGenerator.cpp Generator/TorusGenerator.cpp Generator/SphereGenerator.h Generator/TorusGenerator.h Generator/BenzierGenerator.cpp XMLReader/xmlReader.cpp XMLReader/xmlReader.hpp Auxiliar/AuxiliarMethods.cpp Auxiliar/AuxiliarMethods.h Auxiliar/Point.h Generator/Model.cpp Generator/Model.h)
+add_executable(GeneratorEXE  Generator/BoxGenerator.cpp Generator/BoxGenerator.h Generator/ConeGenerator.cpp Generator/ConeGenerator.h Generator/BenzierGenerator.h Generator/Generator.cpp Generator/PlaneGenerator.cpp Generator/PlaneGenerator.h Generator/SphereGenerator.cpp Generator/TorusGenerator.cpp Generator/SphereGenerator.h Generator/TorusGenerator.h Generator/BenzierGenerator.cpp Auxiliar/AuxiliarMethods.cpp Auxiliar/AuxiliarMethods.h Generator/Model.cpp Generator/Model.h)
 
 
 find_package(OpenGL REQUIRED)
