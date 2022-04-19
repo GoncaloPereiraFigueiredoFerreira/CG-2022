@@ -41,15 +41,15 @@ int main(int argc, char** argv)
 		else if (strcmp(argv[1], "box") == 0 && atoi(argv[3]) >= 1) { //BOX GENERATOR
 			box(atof(argv[2]), atoi(argv[3]), vertexB, indexB);
 			filename = argv[4];
-		
-		}else {
+		}
+		else if (strcmp(argv[1], "benzier") == 0 && atoi(argv[3]) >= 1) { //BENZIER GENERATOR
+				benzier(argv[2], atoi(argv[3]), vertexB, indexB);
+				filename = argv[4];
+		}
+		else {
             printf("Invalid arguments!\n");
             generated = false;
         }
-	}
-	else if (argc == 4 && strcmp(argv[1], "benzier") == 0) { //BENZIER GENERATOR
-			benzier(argv[2], vertexB, indexB);
-			filename = argv[3];
 	}
 	else {
 		//Write help code here

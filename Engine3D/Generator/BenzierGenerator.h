@@ -5,6 +5,6 @@
 #include <vector>
 #include "../Auxiliar/Point.h"
 
-void benzier(char* path, std::vector<float>& vertexB, std::vector<unsigned int>& indexB);
+void benzier(char *path,int tessellation,std::vector<float> &vertex_VBO,std::vector<unsigned int> &index_VBO);
 
 #endif
