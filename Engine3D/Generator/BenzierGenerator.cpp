@@ -1,28 +1,6 @@
 #include "BenzierGenerator.h"
 using namespace std;
 
-
-inline long long unsigned int combination(int n, int r){
-    if (r == 0) return 1;
-
-    /*
-     Extra computation saving for large R,
-     using property:
-     N choose R = N choose (N-R)
-    */
-    if (r > n / 2) return combination(n, n - r); 
-
-    long res = 1; 
-
-    for (int k = 1; k <= r; ++k)
-    {
-        res *= n - k + 1;
-        res /= k;
-    }
-
-    return res;
-}
-
 int readfile_benzier(char *path,vector<Point> &points,vector<vector<int>> &index){
     std::ifstream fd;
     fd.open(path, ios::in);
@@ -67,6 +45,7 @@ int readfile_benzier(char *path,vector<Point> &points,vector<vector<int>> &index
 void benzier(char *path,int tessellation,vector<float> &vertex_VBO,vector<unsigned int> &index_VBO){
     vector<Point> points;
     vector<vector<int>> index;
+    float *vertex_arr;
 
     vector<int> aux;
 
@@ -75,62 +54,75 @@ void benzier(char *path,int tessellation,vector<float> &vertex_VBO,vector<unsign
 
     int size_x = index.size();
     int size_y = index[0].size();
-    long unsigned int coef[size_x][size_y];
+    int patchs_x = size_x/4;
+    int patchs_y = size_y/4;
+    int coef[4] = {1,3,3,1};
 
+    /*cout << "tam:" <<patchs_x * patchs_y * (tessellation + 1) * (tessellation + 1) * 3 << endl;
+    vertex_VBO.resize(patchs_x * patchs_y * (tessellation + 1) * (tessellation + 1) * 3);
+    vertex_arr = vertex_VBO.data();*/
 
-    for(int i = 0; i < 4;i++){
-        for(int j = 0; j < 4;j++){
-            coef[i][j] = combination(size_x-1,i) * combination(size_y-1,j);
-        }
-    }
+    vertex_VBO.reserve(patchs_x * patchs_y * (tessellation + 1) * (tessellation + 1) * 3);
 
-    double inc = 1.0f/(tessellation);
+    float inc = 1.0f/tessellation;
 
+    for(int p_x = 0; p_x < size_x; p_x += 4){
+        for(int p_y = 0; p_y < size_y;p_y += 4){
+            float t_x = 0;
+            for(int i = 0; i <= tessellation; i++){
+                float t_y = 0;
+                for(int j = 0; j <= tessellation; j++){
+                    float x = 0,y = 0,z = 0;
+                    for(int aux_x = 0; aux_x < 4; aux_x++){
+                        float val_x = pow((double)t_x,aux_x) * (double)pow(1-t_x,3-aux_x) * coef[aux_x];
+                        for(int aux_y = 0; aux_y < 4; aux_y++){
+                            float val = pow((double)t_y,aux_y) * (double)pow(1-t_y,3-aux_y) * coef[aux_y] * val_x;
 
-    for(int p_x = 0; p_x < size_x;p_x+=4){
-        for(int p_y = 0; p_y < size_y;p_y+=4){
+                            x += val * points[index[p_x + aux_x][p_y + aux_y]].cx;
+                            y += val * points[index[p_x + aux_x][p_y + aux_y]].cy;
+                            z += val * points[index[p_x + aux_x][p_y + aux_y]].cz;
 
-
-            double t_x = 0;
-            for(int i = 0; i < tessellation;i++){
-                double t_y = 0;
-                for(int j = 0; j < tessellation;j++){
-                    double x = 0,y = 0,z = 0;
-                    for(int aux_x = 0;aux_x < 4;aux_x++){
-                        double val_x = pow((double)t_x,aux_x) * (double)pow(1-t_x,3-aux_x);      
-                        for(int aux_y = 0;aux_y < 4;aux_y++){
-                            double val = (double)(coef[aux_x][aux_y]) * val_x;
-                            val *= pow((double)t_y,aux_y) * (double)pow(1-t_y,3-aux_y);
-                            //printf("val_y:%lf\n",val);
-                            x += ((double)points[index[p_x+aux_x][p_y+aux_y]].cx) * (double)val;
-                            y += ((double)points[index[p_x+aux_x][p_y+aux_y]].cy) * (double)val;
-                            z += ((double)points[index[p_x+aux_x][p_y+aux_y]].cz) * (double)val;
                         }
                     }
-                    vertex_VBO.push_back((float)x);
-                    vertex_VBO.push_back((float)y);
-                    vertex_VBO.push_back((float)z);
+                    /*int ind_VBO = (p_x/4) * patchs_y + (p_y/4);
+                    ind_VBO = ind_VBO * (tessellation + 1) * (tessellation + 1) + i * (tessellation + 1) + j;
+                    cout << "ind:" << ind_VBO  << endl;
+                    vertex_arr[ind_VBO * 3] = x;
+                    vertex_arr[ind_VBO * 3 + 1] = y;
+                    vertex_arr[ind_VBO * 3 + 2] = z;*/
+
+                    vertex_VBO.push_back(x);
+                    vertex_VBO.push_back(y);
+                    vertex_VBO.push_back(z);
 
                     t_y += inc;
                 }
+
                 t_x += inc;
             }
-
         }
     }
 
+    cout << "ola" << endl;
+    cout << (tessellation + 1) * patchs_x * (tessellation + 1) * patchs_y << endl;
+    index_VBO.reserve((tessellation + 1) * patchs_x * (tessellation + 1) * patchs_y);
 
+    for (int i = 0; i <  patchs_x; i++) {
+        for (int j = 0; j <  patchs_y; j++) {
+            for(int i_p = 1; i_p <= tessellation;i_p++){
+                for(int j_p = 1; j_p <= tessellation;j_p++){
+                    int patch = i * j * (tessellation + 1) * (tessellation + 1);
+                    index_VBO.push_back(patch + (i_p - 1) * (tessellation + 1) * patchs_y + (j_p - 1));
+                    index_VBO.push_back(patch + i_p * (tessellation + 1) * patchs_y + j_p);
+                    index_VBO.push_back(patch + i_p * (tessellation + 1) * patchs_y + (j_p - 1));
 
-    for (int i = 1; i <= tessellation; i++) {
-        for (int j = 1; j <= tessellation; j++) {
-
-            index_VBO.push_back((i - 1) * (tessellation + 1) + (j - 1));
-            index_VBO.push_back(i * (tessellation + 1) + (j - 1));
-            index_VBO.push_back(i * (tessellation + 1) + j);
-
-            index_VBO.push_back((i - 1) * (tessellation + 1) + (j - 1));
-            index_VBO.push_back(i * (tessellation + 1) + j);
-            index_VBO.push_back((i - 1) * (tessellation + 1) + j);
+                    index_VBO.push_back(patch + (i_p - 1) * (tessellation + 1) * patchs_y + (j_p - 1));
+                    index_VBO.push_back(patch + (i_p - 1) * (tessellation + 1) * patchs_y + j_p);
+                    index_VBO.push_back(patch + i_p * (tessellation + 1) * patchs_y + j_p);
+                }
+            }
+        
         }
     }
+
 }
