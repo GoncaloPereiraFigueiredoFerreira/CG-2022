@@ -4,7 +4,7 @@
 #include "PlaneGenerator.h"
 #include "BoxGenerator.h"
 #include "TorusGenerator.h"
-#include "BenzierGenerator.h"
+#include "BezierGenerator.h"
 #include "string.h"
 #include "Model.h"
 using namespace std;
@@ -42,8 +42,8 @@ int main(int argc, char** argv)
 			box(atof(argv[2]), atoi(argv[3]), vertexB, indexB);
 			filename = argv[4];
 		}
-		else if (strcmp(argv[1], "benzier") == 0 && atoi(argv[3]) >= 1) { //BENZIER GENERATOR
-				benzier(argv[2], atoi(argv[3]), vertexB, indexB);
+		else if (strcmp(argv[1], "bezier") == 0 && atoi(argv[3]) >= 1) { //BENZIER GENERATOR
+				bezier(argv[2], atoi(argv[3]), vertexB, indexB);
 				filename = argv[4];
 		}
 		else {
