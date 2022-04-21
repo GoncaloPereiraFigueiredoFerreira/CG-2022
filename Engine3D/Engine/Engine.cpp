@@ -121,7 +121,7 @@ void recursiveDraw(Group tmpGroup) {
 		tmpGroup.transforms[i]->apply();
 
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
-		auto m = modelDict[tmpGroup.modelList[i].sourceF];
+		ModelVBO *m = modelDict[tmpGroup.modelList[i].sourceF];
 
         glBindBuffer(GL_ARRAY_BUFFER, m->vertices);
         glVertexPointer(3, GL_FLOAT, 0, 0);
@@ -256,7 +256,7 @@ void processMouseMotion(int xx, int yy) {
         info.cameraInfo.yLook = info.cameraInfo.yPos + rAux * sin(-betaAux);
     }
 
-    glutPostRedisplay();
+    //glutPostRedisplay();
 }
 
 // function to process keyboard events
@@ -306,7 +306,7 @@ void defaultKeyFunc(unsigned char key, int x, int y) {
             glutSetWindowTitle("CG@13");
         }
 	}
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 void specialKeyFunc(int key_code, int x, int y) {
@@ -318,7 +318,7 @@ void specialKeyFunc(int key_code, int x, int y) {
 		info.cameraInfo.yLook -= 1;
         info.cameraInfo.yPos -= 1;
     }
-    glutPostRedisplay();
+    //glutPostRedisplay();
 }
 
 int main(int argc, char** argv) {
@@ -336,6 +336,7 @@ int main(int argc, char** argv) {
 
 	// Required callback registry
 	glutDisplayFunc(renderScene);
+	glutIdleFunc(renderScene);
 	glutReshapeFunc(changeSize);
 
 	// Registration of the keyboard and mouse callbacks
@@ -361,7 +362,7 @@ int main(int argc, char** argv) {
 		cout << "Invalid arguments" << endl;
 		return -1;
 	}
-
+	
 	if (!generateDic(info.groups, modelDict))
 		return -1;
 
