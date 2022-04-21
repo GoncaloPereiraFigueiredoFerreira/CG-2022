@@ -85,3 +85,20 @@ void CatmullRomPoint(float gt, std::vector<Point> p,float *pos, float *deriv) {
 
 	getCatmullRomPoint(t, p0, p1, p2, p3, pos, deriv);
 }
+
+
+void getMatrizRotateCatmull(float *div,float *y,float *m){	
+	normalize(div);
+
+	float z[4];
+
+	cross(div,y,z);
+
+	normalize(z);
+
+	cross(z,div,y);
+
+	normalize(y);
+
+	buildRotMatrix(div,y,z,m);
+}

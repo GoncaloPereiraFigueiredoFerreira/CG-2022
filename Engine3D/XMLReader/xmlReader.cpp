@@ -47,8 +47,8 @@ Group captureGroups (xml_node<char> * root){
             string s(t1->name());
             if (s == "translate"){
                 if (t1->first_attribute("time",0,false) != 0){
-                    
-                    bool flag = t1->first_attribute("align",0,false)->value() == "True";
+                    string sA(t1->first_attribute("align",0,false)->value());
+                    bool flag = sA == "True";
                     t2 = t1->first_node();
                     std::vector<Point> points;
                     int counter =0;

@@ -6,5 +6,6 @@
 #include "Point.h"
 
 void CatmullRomPoint(float gt, std::vector<Point> p,float *pos, float *deriv);
+void getMatrizRotateCatmull(float *div,float *y,float *m);
 
 #endif

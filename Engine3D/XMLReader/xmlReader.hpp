@@ -120,9 +120,10 @@ class TranslateD : public Transform {
         this->time = time;
 		this->align = align;
 		this->points = points;
-        
     }
 	void apply() {
+		static float y[4] = {0.0f,1.0f,0.0f};
+
 		double t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f; 
 
 		t /= this->time;
@@ -131,7 +132,7 @@ class TranslateD : public Transform {
 		float p[3];
 		float div[3];
 
-		//para modar so debug
+		//para modar so debug linhas do trajeto
 		int tessellation = 100;
 		float inc = 1.0f/tessellation;
 		float t_aux = 0;
@@ -146,6 +147,11 @@ class TranslateD : public Transform {
 
 		CatmullRomPoint(t,points,p,div);
 		glTranslatef(p[0], p[1], p[2]);
+		if(this->align){		
+			float m[16];
+			getMatrizRotateCatmull(div,y,m);
+			glMultMatrixf(m);
+		}
 	}
 };
 
