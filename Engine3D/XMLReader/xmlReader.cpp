@@ -53,14 +53,14 @@ Group captureGroups (xml_node<char> * root){
                     std::vector<Point> points;
                     int counter =0;
                     while (t2){
-                        if (t2->name() == "point"){
+                        string s2(t2->name());
+                        if (s2 == "point"){
                             float x =std::stof(t2->first_attribute("x",0,false)->value());
                             float y =std::stof(t2->first_attribute("y",0,false)->value());
                             float z =std::stof(t2->first_attribute("z",0,false)->value());
                             points.push_back(Point(x,y,z));
                             counter++;
                             t2=t2->next_sibling();
-                           
                         }
                     }
                     if (counter >= 4){

@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fstream>
 #include "../Auxiliar/Point.h"
+#include "../Auxiliar/catmull-rom.h"
 
 //Camera
 
@@ -122,7 +123,29 @@ class TranslateD : public Transform {
         
     }
 	void apply() {
-		//glTranslatef(this->x, this->y, this->z);
+		double t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f; 
+
+		t /= this->time;
+		t -= floor(t);
+
+		float p[3];
+		float div[3];
+
+		//para modar so debug
+		int tessellation = 100;
+		float inc = 1.0f/tessellation;
+		float t_aux = 0;
+		glBegin(GL_LINE_LOOP); 
+		for(int i = 0;i <= tessellation;i++){
+			CatmullRomPoint(t_aux,points,p,div);
+			glVertex3f(p[0],p[1],p[2]);
+			t_aux += inc;
+		}
+		glEnd();
+		//acaba
+
+		CatmullRomPoint(t,points,p,div);
+		glTranslatef(p[0], p[1], p[2]);
 	}
 };
 
@@ -153,7 +176,12 @@ class RotateD : public Transform {
         this->time = time;
     }
 	void apply() {
-		//glRotatef(this->time, this->x, this->y, this->z);
+		double t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f; 
+
+		t /= this->time;
+		t -= floor(t);
+
+		glRotatef(t * 360.0f, this->x , this->y, this->z);
 	}
 };
 
