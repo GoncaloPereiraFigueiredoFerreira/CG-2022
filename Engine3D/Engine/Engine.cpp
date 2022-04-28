@@ -26,7 +26,8 @@ public:
 
 
 int cameraMode = 0;
-
+int wW=800,wH=800;
+int timebase = 0, frame = 0;
 int startX, startY, tracking = 0;
 float alpha, beta1, r,sensibility = 0.01;
 
@@ -97,6 +98,9 @@ void changeSize(int w, int h) {
 	// compute window's aspect ratio
 	float ratio = w * 1.0 / h;
 
+	wW = w;
+	wH = h;
+
 	// Set the projection matrix as current
 	glMatrixMode(GL_PROJECTION);
 	// Load Identity Matrix
@@ -135,8 +139,43 @@ void recursiveDraw(Group tmpGroup) {
 	glPopMatrix();
 }
 
+void renderText(const std::string text) {
+	// Guardar a projeção anterior
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	// Projecção ortogonal para que as coordenadas de desenho coincidam com o tamanho da
+	//janela em pixeis
+	gluOrtho2D(0, wW,wH, 0);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	void* font = GLUT_BITMAP_HELVETICA_18;
+	// Centrar o texto, calculando a dimensão da mensagem em pixeis
+	float textw = glutBitmapLength(font, (unsigned char*) text.c_str());
+	glRasterPos2d(wW/40, wH/35); // text position in pixels
+	// Ignorar profundidade
+	glDisable(GL_DEPTH_TEST);
+	// Desenhar a mensagem, caracter a caracter
+	for (char c : text)
+	{
+	glutBitmapCharacter(font, c);
+	}
+	// Restaurar as matrizes anteriores
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glEnable(GL_DEPTH_TEST);
+}
+
+
 void renderScene(void) {
 	// clear buffers
+	int time;
+	float fps;
+	static char s[64];
+	//sprintf(s, "FPS:");
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// set the camera
@@ -145,6 +184,18 @@ void renderScene(void) {
 		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
 		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
 
+	
+
+	frame++;
+	time = glutGet(GLUT_ELAPSED_TIME); 
+	if (time - timebase > 1000) { 
+		fps = frame*1000.0/(time-timebase); 
+		timebase = time; 
+		frame = 0; 
+		
+		sprintf(s, "FPS: %f", fps);
+	}
+	renderText(s);
 
     //Desenho dos eixos
 	glBegin(GL_LINES);
@@ -328,7 +379,7 @@ int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(800, 800);
+	glutInitWindowSize(wW, wH);
 	glutCreateWindow("CG@G13");
     
     //init GLEW
