@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 			torus(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]), vertexB, indexB);
 			filename = argv[6];
 		}else {
-            printf("Invalid arguments!\n");
+            printf("Invalid arguments!\nUse command \"EngineExe help\"\n");
             generated = false;
         }
 	}
@@ -42,18 +42,27 @@ int main(int argc, char** argv)
 			box(atof(argv[2]), atoi(argv[3]), vertexB, indexB);
 			filename = argv[4];
 		}
-		else if (strcmp(argv[1], "bezier") == 0 && atoi(argv[3]) >= 1) { //BENZIER GENERATOR
+		else if (strcmp(argv[1], "bezier") == 0 && atoi(argv[3]) >= 1) { //BEZIER GENERATOR
 				bezier(argv[2], atoi(argv[3]), vertexB, indexB);
 				filename = argv[4];
 		}
 		else {
-            printf("Invalid arguments!\n");
+            printf("Invalid arguments!\nUse command \"EngineExe help\"\n ");
             generated = false;
         }
 	}
+	else if (argc==2 && (strcmp(argv[1], "help")==0)){
+		cout << "Available commands:\n\n";
+		cout << "EngineExe cone <base_radius> <height> <slices> <stacks>\n";
+		cout << "EngineExe torus <inner_radius> <outer_radius>  <slices> <stacks>\n";
+		cout << "EngineExe sphere <radius> <slices> <stacks>\n";
+		cout << "EngineExe plane <length> <divisions> \n";
+		cout << "EngineExe box <length> <divisions>\n";
+		cout << "EngineExe bezier <input_file> <tesselation>\n";
+	}
 	else {
-		//Write help code here
-		cout << "Invalid arguments!\n";
+		
+		cout << "Invalid arguments!\nUse command \"EngineExe help\"\n";
         generated = false;
 	}
 

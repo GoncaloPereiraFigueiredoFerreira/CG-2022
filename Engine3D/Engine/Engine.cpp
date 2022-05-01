@@ -406,7 +406,13 @@ int main(int argc, char** argv) {
 
 	if (argc == 2) {
 		//Reads XML file
-		info = readXML(argv[1]);
+		try{
+			info = readXML(argv[1]);
+		}catch (const char* msg){
+			cout << msg << endl;
+			return -1;
+		}
+		
         calculatePolarCoordinates();
 	}
 	else {

@@ -12,7 +12,6 @@ char* readFile(string filename){
     string wholeF;
 	my_file.open(filename, ios::in);
 	if (!my_file) {
-		cout << "No such file";
         return nullptr;
 	}
 	else {
@@ -184,7 +183,7 @@ xmlInfo readXML(string filename){
    
     xmlInfo xml;        
     bool flag = true;
-        if (fds && flag) {
+    if (fds && flag) {
 
             doc.parse<0>(&fds[0]);
             xml_node<> *root;
@@ -312,6 +311,9 @@ xmlInfo readXML(string filename){
 
                     cout  <<xml.groups.modelList[0].color.ambientB << "\n\n";
             */
+        }
+        else{
+            throw "Erro no input file";
         }
         return xml;
 
