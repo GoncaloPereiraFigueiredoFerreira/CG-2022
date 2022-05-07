@@ -255,23 +255,23 @@ xmlInfo readXML(string filename){
                 for (; i < 8 && t2; i++, t2 = t2->next_sibling()) {
                     string s(t2->first_attribute("type")->value());
                     if (s == "point") {
-                        LPoint lp = LPoint(std::stod(t2->first_attribute("posX")->value()),
-                                           std::stod(t2->first_attribute("posY")->value()),
-                                           std::stod(t2->first_attribute("posZ")->value()));
+                        LPoint lp = LPoint(std::stod(t2->first_attribute("posX",0,false)->value()),
+                                           std::stod(t2->first_attribute("posY",0,false)->value()),
+                                           std::stod(t2->first_attribute("posZ",0,false)->value()));
                         xml.lightsList.points.push_back(lp);
                     } else if (s == "directional") {
-                        LDirec ld = LDirec(std::stod(t2->first_attribute("dirX")->value()),
-                                           std::stod(t2->first_attribute("dirY")->value()),
-                                           std::stod(t2->first_attribute("dirZ")->value()));
+                        LDirec ld = LDirec(std::stod(t2->first_attribute("dirX",0,false)->value()),
+                                           std::stod(t2->first_attribute("dirY",0,false)->value()),
+                                           std::stod(t2->first_attribute("dirZ",0,false)->value()));
                         xml.lightsList.direct.push_back(ld);
-                    } else if (s == "spotlight") {
-                        LSpotl ls = LSpotl(std::stod(t2->first_attribute("posX")->value()),
-                                           std::stod(t2->first_attribute("posY")->value()),
-                                           std::stod(t2->first_attribute("posZ")->value()),
-                                           std::stod(t2->first_attribute("dirX")->value()),
-                                           std::stod(t2->first_attribute("dirY")->value()),
-                                           std::stod(t2->first_attribute("dirZ")->value()),
-                                           ls.cutoff = std::stod(t2->first_attribute("cutoff")->value()));
+                    } else if (s == "spotlight" or s == "spot") {
+                        LSpotl ls = LSpotl(std::stod(t2->first_attribute("posX",0,false)->value()),
+                                           std::stod(t2->first_attribute("posY",0,false)->value()),
+                                           std::stod(t2->first_attribute("posZ",0,false)->value()),
+                                           std::stod(t2->first_attribute("dirX",0,false)->value()),
+                                           std::stod(t2->first_attribute("dirY",0,false)->value()),
+                                           std::stod(t2->first_attribute("dirZ",0,false)->value()),
+                                           ls.cutoff = std::stod(t2->first_attribute("cutoff",0,false)->value()));
                         xml.lightsList.spotL.push_back(ls);
                     }
                 }

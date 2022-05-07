@@ -7,9 +7,10 @@ void insertCoordinates(vector<float>& vertexB, int index, float x, float y, floa
     vertexB[index + 2] = z;
 }
 
-void box(float length, int divisions, vector<float>& vertexB, vector<unsigned int>& indexB) {
+void box(float length, int divisions, vector<float>& vertexB, vector<unsigned int>& indexB,vector<float>& normalB) {
     int verticesPerFace = (divisions + 1) * (divisions + 1);
     vertexB.resize(verticesPerFace * 6 * 3);
+    normalB.resize(verticesPerFace * 6 * 3);
 
     float half_lengh = length / 2;
     float cx, cxi = cx = -half_lengh, cz = -half_lengh;
@@ -20,11 +21,17 @@ void box(float length, int divisions, vector<float>& vertexB, vector<unsigned in
     for (int i = 0; i <= divisions; i++) {
         for (int j = 0; j <= divisions; j++) {
             insertCoordinates(vertexB, (i * (divisions + 1) + j) * 3, cx, cy_b, cz); //under
+            insertCoordinates(normalB, (i * (divisions + 1) + j) * 3, 0.0f, -1.0f, 0.0f); //under
             insertCoordinates(vertexB, (verticesPerFace + i * (divisions + 1) + j) * 3, cy_t, cx , cz); //front
+            insertCoordinates(normalB, (verticesPerFace + i * (divisions + 1) + j) * 3, 1.0f, 0.0f , 0.0f); //front
             insertCoordinates(vertexB, (2 * verticesPerFace + i * (divisions + 1) + j) * 3, cx, cz, cy_t); //left
+            insertCoordinates(normalB, (2 * verticesPerFace + i * (divisions + 1) + j) * 3, 0.0f, 0.0f, 1.0f); //left
             insertCoordinates(vertexB, (3 * verticesPerFace + i * (divisions + 1) + j) * 3, cx, cy_t, cz); //top
+            insertCoordinates(normalB, (3 * verticesPerFace + i * (divisions + 1) + j) * 3, 0.0f, 1.0f, 0.0f); //top
             insertCoordinates(vertexB, (4 * verticesPerFace + i * (divisions + 1) + j) * 3, cy_b, cx, cz); //back
+            insertCoordinates(normalB, (4 * verticesPerFace + i * (divisions + 1) + j) * 3, -1.0f, 0.0f, 0.0f); //back
             insertCoordinates(vertexB, (5 * verticesPerFace + i * (divisions + 1) + j) * 3, cx, cz, cy_b); //right
+            insertCoordinates(normalB, (5 * verticesPerFace + i * (divisions + 1) + j) * 3, 0.0f, 0.0f, -1.0f); //right
             cx += incr;
         }
         cz += incr;

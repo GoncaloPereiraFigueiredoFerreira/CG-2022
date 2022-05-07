@@ -48,6 +48,11 @@ public:
 	double posX;
 	double posY;
 	double posZ;
+
+	void apply(GLenum light){
+		float aux[4] = {(float)posX,(float)posY,(float)posZ,1.0f};
+		glLightfv(light,GL_POSITION,aux);
+	}
 };
 
 class LDirec{
@@ -58,6 +63,11 @@ public:
 	double dirX;
 	double dirY;
 	double dirZ;
+
+	void apply(GLenum light){
+		float aux[4] = {(float)dirX,(float)dirY,(float)dirZ,0.0f};
+		glLightfv(light,GL_POSITION,aux);
+	}
 };
 
 class LSpotl{
@@ -78,6 +88,14 @@ public:
 	double dirY;
 	double dirZ;
 	double cutoff;
+
+	void apply(GLenum light){
+		float aux_p[4] = {(float)posX,(float)posY,(float)posZ,1.0f};
+		float aux_d[3] = {(float)dirX,(float)dirY,(float)dirZ};
+		glLightfv(light,GL_POSITION, aux_p);
+		glLightfv(light,GL_SPOT_DIRECTION, aux_d);
+		glLightf(light,GL_SPOT_CUTOFF,(float)cutoff);
+	}
 };
 
 
@@ -86,6 +104,39 @@ class Lights{
 	std::vector<LPoint> points;
 	std::vector<LDirec> direct;
 	std::vector<LSpotl> spotL;
+
+	void init(GLenum light0){
+		int aux = 0;
+		for(int i = 0; i < points.size();i++){
+			glEnable(light0 + aux);
+			aux++;
+		}
+		for(int i = 0; i < direct.size();i++){
+			glEnable(light0 + aux);
+			aux++;
+		}
+		for(int i = 0; i < spotL.size();i++){
+			glEnable(light0 + aux);
+			aux++;
+		}
+	}
+
+	void apply(GLenum light0){
+		int aux = 0;
+		for(int i = 0; i < points.size();i++){
+			points[i].apply(light0+aux);
+			aux++;
+		}
+		for(int i = 0; i < direct.size();i++){
+			direct[i].apply(light0+aux);
+			aux++;
+		}
+		for(int i = 0; i < spotL.size();i++){
+			spotL[i].apply(light0+aux);
+			aux++;
+		}
+	}
+
 };
 
 
@@ -244,6 +295,20 @@ public:
 	double emissiveB{};
 
 	double shine{};
+
+	void apply(){
+		float aux_d[4] = {(float)diffuseR/255,(float)diffuseG/255,(float)diffuseB/255,1.0f};
+		float aux_a[4] = {(float)ambientR/255,(float)ambientG/255,(float)ambientB/255,1.0f};
+		float aux_s[4] = {(float)specularR/255,(float)specularG/255,(float)specularB/255,1.0f};
+		float aux_e[4] = {(float)emissiveR/255,(float)emissiveG/255,(float)emissiveB/255,1.0f};
+
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, aux_d);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, aux_a);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, aux_s);
+		glMaterialfv(GL_FRONT, GL_EMISSION, aux_e);
+		glMaterialf(GL_FRONT, GL_SHININESS, (float)shine);
+
+	};
 };
 
 
