@@ -17,11 +17,11 @@ using namespace std;
 
 class ModelVBO {
 public:
-    GLuint vertices, verticesCount, indices;
+    GLuint vertices, verticesCount, indices, normais;
     unsigned int indicesCount;
 
-    ModelVBO(GLuint vertices, GLuint verticesCount, GLuint indices, unsigned int indicesCount) : vertices(
-        vertices), verticesCount(verticesCount), indices(indices), indicesCount(indicesCount) {}
+    ModelVBO(GLuint vertices, GLuint verticesCount, GLuint indices, unsigned int indicesCount, GLuint normais) : vertices(
+        vertices), verticesCount(verticesCount), indices(indices), indicesCount(indicesCount),normais(normais) {}
 };
 
 
@@ -30,6 +30,12 @@ int wW=800,wH=800;
 int timebase = 0, frame = 0;
 int startX, startY, tracking = 0;
 float alpha, beta1, r,sensibility = 0.01;
+
+float diffuse[4] = {200.0f/255.0f,200.0f/255.0f,200.0f/255.0f,1.0f};
+float ambient[4] = {50.0f/255.0f,50.0f/255.0f,50.0f/255.0f,1.0f};
+float specular[4] = {0.0f,0.0f,0.0f,1.0f};
+float emissive[4] = {0.0f,0.0f,0.0f,1.0f};
+int shininess = 0;
 
 xmlInfo info;
 vector<Group> groups;
@@ -50,14 +56,14 @@ void calculatePolarCoordinates(){
 int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
 		if (modelDict.find(tmpGroup.modelList[i].sourceF) == modelDict.end()) {  //Verificar se o elemento ja esta no mapa
-            vector<float> vertexB; vector<unsigned int> indexB;
+            vector<float> vertexB; vector<unsigned int> indexB;vector<float> normalB;
 
-			if (readModelFromFile(tmpGroup.modelList[i].sourceF, vertexB, indexB) == -1) {
+			if (readModelFromFile(tmpGroup.modelList[i].sourceF, vertexB, indexB, normalB) == -1) {
 				cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
 				return -1;
 			}
 			else {
-                GLuint vertices, verticesCount = vertexB.size() / 3, indices;
+                GLuint vertices, normais, verticesCount = vertexB.size() / 3, indices;
                 unsigned int indicesCount = indexB.size();
 
                 //Create VBO
@@ -67,12 +73,19 @@ int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict) {
                 glBindBuffer(GL_ARRAY_BUFFER, vertices);
                 glBufferData(GL_ARRAY_BUFFER, vertexB.size() * sizeof(float), vertexB.data(), GL_STATIC_DRAW);
 
+                //Create VBO
+                glGenBuffers(1, &normais);
+
+                //Copy vector to graphics card
+                glBindBuffer(GL_ARRAY_BUFFER, normais);
+                glBufferData(GL_ARRAY_BUFFER, normalB.size() * sizeof(float), normalB.data(), GL_STATIC_DRAW);
+
                 glGenBuffers(1, &indices);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices);
                 glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indexB.size(), indexB.data(), GL_STATIC_DRAW);
 
                 //inserts pair of file's name and respective VBO information
-                auto m = new ModelVBO(vertices, verticesCount, indices, indicesCount);
+                auto m = new ModelVBO(vertices, verticesCount, indices, indicesCount,normais);
                 modelDict.insert(std::make_pair(tmpGroup.modelList[i].sourceF, m));
             }
 		}
@@ -127,9 +140,13 @@ void recursiveDraw(Group tmpGroup) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
 		ModelVBO *m = modelDict[tmpGroup.modelList[i].sourceF];
 
+		tmpGroup.modelList[i].color->apply();
+
         glBindBuffer(GL_ARRAY_BUFFER, m->vertices);
         glVertexPointer(3, GL_FLOAT, 0, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices);
+        glBindBuffer(GL_ARRAY_BUFFER,m->normais);
+        glNormalPointer(GL_FLOAT,0,0);
         glDrawElements(GL_TRIANGLES, m->indicesCount, GL_UNSIGNED_INT, 0);
 	}
 
@@ -177,14 +194,15 @@ void renderScene(void) {
 	static char s[64];
 	//sprintf(s, "FPS:");
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	
 	// set the camera
 	glLoadIdentity();
 	gluLookAt(info.cameraInfo.xPos, info.cameraInfo.yPos, info.cameraInfo.zPos,
 		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
 		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
 
-	
+
+	info.lightsList.apply(GL_LIGHT0);
 
 	frame++;
 	time = glutGet(GLUT_ELAPSED_TIME); 
@@ -398,11 +416,16 @@ int main(int argc, char** argv) {
 
     //Enabling Buffer of Vertex Functionality
     glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	//  OpenGL settings
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glEnable(GL_RESCALE_NORMAL);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_LIGHTING);
+	float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
 	if (argc == 2) {
 		//Reads XML file
@@ -412,13 +435,14 @@ int main(int argc, char** argv) {
 			cout << msg << endl;
 			return -1;
 		}
-		
         calculatePolarCoordinates();
 	}
 	else {
 		cout << "Invalid arguments" << endl;
 		return -1;
 	}
+	
+	info.lightsList.init(GL_LIGHT0);	
 	
 	if (!generateDic(info.groups, modelDict))
 		return -1;

@@ -1,4 +1,5 @@
 #include "catmull-rom.h"
+#include <stdio.h>
 
 void buildRotMatrix(float *x, float *y, float *z, float *m) {
 	m[0] = x[0]; m[1] = x[1]; m[2] = x[2]; m[3] = 0;
@@ -31,6 +32,14 @@ void multMatrixVector(float *m, float *v, float *res) {
 		}
 	}
 
+}
+
+void getNormal(float *m,float *v,float *res){
+	normalize(m);
+	normalize(v);
+	cross(m,v,res);
+	//printf("%f,%f,%f\n",m[0],m[1],m[2]);
+	normalize(res);
 }
 
 void getCatmullRomPoint(float t, float *p0, float *p1, float *p2, float *p3, float *pos, float *deriv) {

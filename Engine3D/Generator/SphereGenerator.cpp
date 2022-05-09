@@ -2,10 +2,11 @@
 
 using namespace std;
 
-void sphere(float radius, int slices, int stacks, vector<float>& vertexB, vector<unsigned int>& indexB) {
+void sphere(float radius, int slices, int stacks, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB) {
     //Inicializacao do vector onde serao guardados os pontos
     unsigned int verticeCount = (stacks - 1) * slices + 2;
     vertexB.resize(verticeCount * 3);
+    normalB.resize(verticeCount * 3);
 
     //Preenchimento do vector
     int indexLowestP = ((int) verticeCount - 2) * 3;
@@ -13,18 +14,29 @@ void sphere(float radius, int slices, int stacks, vector<float>& vertexB, vector
     vertexB[indexLowestP + 1] = -radius;
     vertexB[indexLowestP + 2] = 0;
 
+    normalB[indexLowestP] = 0;
+    normalB[indexLowestP + 1] = -1;
+    normalB[indexLowestP + 2] = 0;
+
+
     int indexHighestP = ((int) verticeCount - 1) * 3;
     vertexB[indexHighestP] = 0;
     vertexB[indexHighestP + 1] = radius;
     vertexB[indexHighestP + 2] = 0;
 
+    normalB[indexHighestP] = 0;
+    normalB[indexHighestP + 1] = 1;
+    normalB[indexHighestP + 2] = 0;
+
     float stacksAngInc = M_PI / stacks;
     float slicesAngInc = 2 * M_PI / slices; //Valor do angulo a aumentar entre cada ponto que define uma slice
-    float ang, height, r;
+    float ang, height, r, length , normal_y;
 
     for (int i = 0; i < stacks - 1; i++) {
         height = radius * sin(-M_PI_2 + stacksAngInc * (float) (i + 1));
         r = radius * cos(-M_PI_2 + stacksAngInc * (float) (i + 1)); //raio da "circunferencia" atual
+        length = sqrt(pow(sin(-M_PI_2 + stacksAngInc * (float) (i + 1)),2) + 1.0f);
+        normal_y = sin(-M_PI_2 + stacksAngInc * (float) (i + 1));
 
         //Preenche valores da stack com indice i
         for (int j = 0; j < slices; j++) {
@@ -33,6 +45,10 @@ void sphere(float radius, int slices, int stacks, vector<float>& vertexB, vector
             vertexB[index] = r * sin(ang);
             vertexB[index + 1] = height;
             vertexB[index + 2] = r * cos(ang);
+
+            normalB[index] = cos(-M_PI_2 + stacksAngInc * (float) (i + 1)) * sin(ang);
+            normalB[index + 1] = normal_y;
+            normalB[index + 2] = cos(-M_PI_2 + stacksAngInc * (float) (i + 1)) * cos(ang);
         }
     }
 
