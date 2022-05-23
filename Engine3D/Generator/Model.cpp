@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int generateModelFile(string filename, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB) {
+int generateModelFile(string filename, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB, vector<float>& textB) {
 	ofstream fich;
 	fich.open(filename, ios::out);
 
@@ -27,6 +27,13 @@ int generateModelFile(string filename, vector<float>& vertexB, vector<unsigned i
 
         fich << normalB[normalB.size() - 1] << "\n";
 
+        //Writes contents of textB
+        for (int i = 0; i < textB.size() - 1; i++) {
+            fich << textB[i] << ";";
+        }
+
+        fich << textB[textB.size() - 1] << "\n";
+
         fich.close();
         return 0;
     }
@@ -34,7 +41,7 @@ int generateModelFile(string filename, vector<float>& vertexB, vector<unsigned i
     return -1;
 }
 
-int readModelFromFile(string filename, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB) {
+int readModelFromFile(string filename, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB, vector<float>& textB) {
     std::ifstream fd;
     fd.open(filename, ios::in);
 
@@ -63,6 +70,13 @@ int readModelFromFile(string filename, vector<float>& vertexB, vector<unsigned i
         normalB.reserve(nB.size());
         for(int i = 0; i < nB.size() ; i++)
             normalB.push_back(stof(nB[i]));
+
+        //Read text
+        getline(fd, line);
+        vector<string> tB = parseLine(line, delimiter);
+        textB.reserve(nB.size());
+        for(int i = 0; i < tB.size() ; i++)
+            textB.push_back(stof(tB[i]));
 
         return 0;
 	}

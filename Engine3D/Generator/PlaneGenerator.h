@@ -5,6 +5,6 @@
 #include "../Auxiliar/AuxiliarMethods.h"
 using namespace std;
 
-void plane(float length, int divisions, vector<float>& vertexB, vector<unsigned int>& indexB, std::vector<float>& normalB);
+void plane(float length, int divisions, vector<float>& vertexB, vector<unsigned int>& indexB, std::vector<float>& normalB, std::vector<float>& textB);
 
 #endif

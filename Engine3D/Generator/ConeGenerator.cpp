@@ -1,7 +1,7 @@
 #include "ConeGenerator.h"
 using namespace std;
 
-void cone(float base, float height, int slices, int stacks, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB) {
+void cone(float base, float height, int slices, int stacks, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB, vector<float>& textB) {
     unsigned int verticesCount;
     float angInc = 2 * M_PI / slices, //angle increment value
     heightInc = height / stacks,
@@ -22,6 +22,9 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
         normalB.push_back(0.0f);
         normalB.push_back(-1.0f);
         normalB.push_back(0.0f);
+
+        textB.push_back(j/slices);
+        textB.push_back(0);
     }
 
     cos_y = atan(height/base);
@@ -44,6 +47,9 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
             normalB.push_back(sin(ang) * cos_y);
             normalB.push_back(normal_y);
             normalB.push_back(cos(ang) * cos_y);
+
+            textB.push_back(i/slices);
+            textB.push_back((j + 1)/stacks);
         }
     }
 
@@ -56,6 +62,8 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
     normalB.push_back(-1.0f);
     normalB.push_back(0.0f);
 
+    textB.push_back(0.5);
+    textB.push_back(0);
 
     ang = 0;
     for(int i = 0; i < slices;i++){
@@ -69,6 +77,9 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
         normalB.push_back(sin(ang) * cos_y);
         normalB.push_back(normal_y);
         normalB.push_back(cos(ang) * cos_y);
+
+        textB.push_back(i/slices);
+        textB.push_back(1);
     }
 
     verticesCount = vertexB.size() / 3;

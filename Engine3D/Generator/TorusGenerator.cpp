@@ -1,7 +1,7 @@
 #include "TorusGenerator.h"
 using namespace std;
 
-void torus(float inner_radius, float outer_radius, int slices, int stacks, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB) {
+void torus(float inner_radius, float outer_radius, int slices, int stacks, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB, vector<float>& textB) {
     float radius = inner_radius + outer_radius;
     float slicesAngInc = 2 * M_PI / slices;
     float stacksAngInc = 2 * M_PI / stacks;
@@ -29,6 +29,9 @@ void torus(float inner_radius, float outer_radius, int slices, int stacks, vecto
             normalB.push_back(cos(stacksAngInc * j) * cos_B);
             normalB.push_back(sin(stacksAngInc * j));
             normalB.push_back(cos(stacksAngInc * j) * sin_B);
+
+            textB.push_back(float(i/slices));
+            textB.push_back(float(j/stacks));
         }
     }
 

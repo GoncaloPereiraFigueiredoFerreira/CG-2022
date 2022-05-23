@@ -56,9 +56,9 @@ void calculatePolarCoordinates(){
 int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
 		if (modelDict.find(tmpGroup.modelList[i].sourceF) == modelDict.end()) {  //Verificar se o elemento ja esta no mapa
-            vector<float> vertexB; vector<unsigned int> indexB;vector<float> normalB;
+            vector<float> vertexB; vector<unsigned int> indexB;vector<float> normalB;vector<float> textB;
 
-			if (readModelFromFile(tmpGroup.modelList[i].sourceF, vertexB, indexB, normalB) == -1) {
+			if (readModelFromFile(tmpGroup.modelList[i].sourceF, vertexB, indexB, normalB, textB) == -1) {
 				cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
 				return -1;
 			}

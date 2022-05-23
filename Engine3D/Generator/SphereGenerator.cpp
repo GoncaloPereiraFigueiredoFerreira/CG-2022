@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void sphere(float radius, int slices, int stacks, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB) {
+void sphere(float radius, int slices, int stacks, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB, vector<float>& textB) {
     //Inicializacao do vector onde serao guardados os pontos
     unsigned int verticeCount = (stacks - 1) * slices + 2;
     vertexB.resize(verticeCount * 3);
@@ -18,6 +18,9 @@ void sphere(float radius, int slices, int stacks, vector<float>& vertexB, vector
     normalB[indexLowestP + 1] = -1;
     normalB[indexLowestP + 2] = 0;
 
+    textB.push_back(0.5);
+    textB.push_back(0);
+
 
     int indexHighestP = ((int) verticeCount - 1) * 3;
     vertexB[indexHighestP] = 0;
@@ -27,6 +30,9 @@ void sphere(float radius, int slices, int stacks, vector<float>& vertexB, vector
     normalB[indexHighestP] = 0;
     normalB[indexHighestP + 1] = 1;
     normalB[indexHighestP + 2] = 0;
+
+    textB.push_back(0.5);
+    textB.push_back(1);
 
     float stacksAngInc = M_PI / stacks;
     float slicesAngInc = 2 * M_PI / slices; //Valor do angulo a aumentar entre cada ponto que define uma slice
@@ -49,6 +55,9 @@ void sphere(float radius, int slices, int stacks, vector<float>& vertexB, vector
             normalB[index] = cos(-M_PI_2 + stacksAngInc * (float) (i + 1)) * sin(ang);
             normalB[index + 1] = normal_y;
             normalB[index + 2] = cos(-M_PI_2 + stacksAngInc * (float) (i + 1)) * cos(ang);
+
+            textB.push_back(j/slices);
+            textB.push_back(float((i+1)/stacks));
         }
     }
 
