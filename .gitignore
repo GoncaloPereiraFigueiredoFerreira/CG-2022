@@ -4,4 +4,6 @@
 *cmake-build-release/*
 *nohup.out*
 Engine3D/Build*
+Engine3D/build*
+build*
 *.3d
