@@ -156,11 +156,12 @@ void recursiveDraw(Group tmpGroup) {
 	glPopMatrix();
 }
 
-void renderText(const std::string text) {
+void renderText(const std::string text,double posx, double posy) {
 	// Guardar a projeção anterior
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
+	
 	// Projecção ortogonal para que as coordenadas de desenho coincidam com o tamanho da
 	//janela em pixeis
 	gluOrtho2D(0, wW,wH, 0);
@@ -170,13 +171,16 @@ void renderText(const std::string text) {
 	void* font = GLUT_BITMAP_HELVETICA_18;
 	// Centrar o texto, calculando a dimensão da mensagem em pixeis
 	float textw = glutBitmapLength(font, (unsigned char*) text.c_str());
-	glRasterPos2d(wW/40, wH/35); // text position in pixels
 	// Ignorar profundidade
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glRasterPos2d(posx, posy); // text position in pixels
+	
 	// Desenhar a mensagem, caracter a caracter
 	for (char c : text)
 	{
-	glutBitmapCharacter(font, c);
+		glutBitmapCharacter(font, c);
 	}
 	// Restaurar as matrizes anteriores
 	glMatrixMode(GL_PROJECTION);
@@ -184,6 +188,7 @@ void renderText(const std::string text) {
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 }
 
 
@@ -211,9 +216,17 @@ void renderScene(void) {
 		timebase = time; 
 		frame = 0; 
 		
-		sprintf(s, "FPS: %f", fps);
+		sprintf(s, "FPS: %.3f", fps);
 	}
-	renderText(s);
+	renderText(s,wW/40, wH/35);
+	static char s2[120];
+
+	sprintf(s2, "Look x: %.3f Look y: %.3f Look z: %.3f", info.cameraInfo.xLook,info.cameraInfo.yLook,info.cameraInfo.zLook);
+	renderText(s2,wW/40, wH/35 + 20);
+	sprintf(s2, "Pos x: %.3f Pos y: %.3f Pos z: %.3f", info.cameraInfo.xPos,info.cameraInfo.yPos,info.cameraInfo.zPos);
+	renderText(s2,wW/40, wH/35 + 40);
+
+
 
     //Desenho dos eixos
 	glBegin(GL_LINES);
