@@ -16,8 +16,8 @@ void plane(float length, int divisions, vector<float>& vertexB, vector<unsigned 
             normalB.push_back(1.0f);
             normalB.push_back(0.0f);
 
-            textB.push_back(float(i/divisions));
-            textB.push_back(float(j/divisions));
+            textB.push_back(float(i)/float(divisions));
+            textB.push_back(float(j)/float(divisions));
         }
         cz += incr;
         cx = cxi;

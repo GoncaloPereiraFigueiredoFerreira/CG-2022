@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #endif
+#include <IL/il.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -17,11 +18,11 @@ using namespace std;
 
 class ModelVBO {
 public:
-    GLuint vertices, verticesCount, indices, normais;
+    GLuint vertices, verticesCount, indices, normais,texCoords;
     unsigned int indicesCount;
 
-    ModelVBO(GLuint vertices, GLuint verticesCount, GLuint indices, unsigned int indicesCount, GLuint normais) : vertices(
-        vertices), verticesCount(verticesCount), indices(indices), indicesCount(indicesCount),normais(normais) {}
+    ModelVBO(GLuint vertices, GLuint verticesCount, GLuint indices, unsigned int indicesCount, GLuint normais,GLuint texCoords) : vertices(
+        vertices), verticesCount(verticesCount), indices(indices), indicesCount(indicesCount),normais(normais),texCoords(texCoords) {}
 };
 
 
@@ -40,6 +41,7 @@ int shininess = 0;
 xmlInfo info;
 vector<Group> groups;
 unordered_map<char*, ModelVBO*> modelDict;
+unordered_map<char*, GLuint> textureDict;
 
 void calculatePolarCoordinates(){
     float xAux, yAux, zAux;
@@ -51,10 +53,46 @@ void calculatePolarCoordinates(){
     beta1 = asin(yAux / r);
 }
 
+int loadTexture(std::string s) {
+
+	unsigned int t,tw,th;
+	unsigned char *texData;
+	unsigned int texID = 0;
+
+	ilInit();
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+	ilGenImages(1,&t);
+	ilBindImage(t);
+	if (ilLoadImage((ILstring)s.c_str()) == IL_TRUE){
+		tw = ilGetInteger(IL_IMAGE_WIDTH);
+		th = ilGetInteger(IL_IMAGE_HEIGHT);
+		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+		texData = ilGetData();
+
+		glGenTextures(1,&texID);
+		
+		glBindTexture(GL_TEXTURE_2D,texID);
+		glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,		GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,		GL_REPEAT);
+
+		glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_MAG_FILTER,   	GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	return texID;
+}
+
 /* ------- Generate Dictionary Of Models ------- */
 
-int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict) {
+int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict,unordered_map<char*, GLuint>& textureDict) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
+		// cria modelDict
 		if (modelDict.find(tmpGroup.modelList[i].sourceF) == modelDict.end()) {  //Verificar se o elemento ja esta no mapa
             vector<float> vertexB; vector<unsigned int> indexB;vector<float> normalB;vector<float> textB;
 
@@ -63,7 +101,7 @@ int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict) {
 				return -1;
 			}
 			else {
-                GLuint vertices, normais, verticesCount = vertexB.size() / 3, indices;
+                GLuint vertices, normais, verticesCount = vertexB.size() / 3, indices,texCoords;
                 unsigned int indicesCount = indexB.size();
 
                 //Create VBO
@@ -80,19 +118,34 @@ int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict) {
                 glBindBuffer(GL_ARRAY_BUFFER, normais);
                 glBufferData(GL_ARRAY_BUFFER, normalB.size() * sizeof(float), normalB.data(), GL_STATIC_DRAW);
 
+                //Create VBO indices 
                 glGenBuffers(1, &indices);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices);
                 glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indexB.size(), indexB.data(), GL_STATIC_DRAW);
+ 
+                //Create VBO textura
+                glGenBuffers(1, &texCoords);
+				glBindBuffer(GL_ARRAY_BUFFER, texCoords);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * textB.size(), textB.data(), GL_STATIC_DRAW);
 
                 //inserts pair of file's name and respective VBO information
-                auto m = new ModelVBO(vertices, verticesCount, indices, indicesCount,normais);
+                auto m = new ModelVBO(vertices, verticesCount, indices, indicesCount,normais,texCoords);
                 modelDict.insert(std::make_pair(tmpGroup.modelList[i].sourceF, m));
             }
+		}
+
+		//cria textureDict
+		if (tmpGroup.modelList[i].textureF && textureDict.find(tmpGroup.modelList[i].textureF) == textureDict.end()) {  //Verificar se o elemento ja esta no mapa
+
+			GLuint textID = loadTexture(tmpGroup.modelList[i].textureF);
+
+            //inserts pair of file's name and respective VBO information
+            textureDict.insert(std::make_pair(tmpGroup.modelList[i].textureF, textID));
 		}
 	}
 
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++)
-		if(generateDic(tmpGroup.groupChildren[i], modelDict) == -1)
+		if(generateDic(tmpGroup.groupChildren[i], modelDict,textureDict) == -1)
             return -1;
 
 	return 1;
@@ -139,6 +192,7 @@ void recursiveDraw(Group tmpGroup) {
 
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
 		ModelVBO *m = modelDict[tmpGroup.modelList[i].sourceF];
+		GLuint texID = 0;
 
 		tmpGroup.modelList[i].color->apply();
 
@@ -147,7 +201,19 @@ void recursiveDraw(Group tmpGroup) {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices);
         glBindBuffer(GL_ARRAY_BUFFER,m->normais);
         glNormalPointer(GL_FLOAT,0,0);
+
+        if (tmpGroup.modelList[i].textureF && textureDict.find(tmpGroup.modelList[i].textureF) != textureDict.end()){
+        	texID = textureDict[tmpGroup.modelList[i].textureF];
+
+        	glBindTexture(GL_TEXTURE_2D, texID);
+
+        	glBindBuffer(GL_ARRAY_BUFFER,m->texCoords);
+			glTexCoordPointer(2,GL_FLOAT,0,0);
+        }
+
         glDrawElements(GL_TRIANGLES, m->indicesCount, GL_UNSIGNED_INT, 0);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++)
@@ -417,6 +483,7 @@ int main(int argc, char** argv) {
     //Enabling Buffer of Vertex Functionality
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	//  OpenGL settings
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -424,6 +491,8 @@ int main(int argc, char** argv) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+
 	float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
@@ -444,7 +513,7 @@ int main(int argc, char** argv) {
 	
 	info.lightsList.init(GL_LIGHT0);	
 	
-	if (!generateDic(info.groups, modelDict))
+	if (!generateDic(info.groups, modelDict,textureDict))
 		return -1;
 
 	// enter GLUT's main cycle

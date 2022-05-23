@@ -23,8 +23,8 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
         normalB.push_back(-1.0f);
         normalB.push_back(0.0f);
 
-        textB.push_back(j/slices);
-        textB.push_back(0);
+        textB.push_back(float(j)/float(slices));
+        textB.push_back(0.0f);
     }
 
     cos_y = atan(height/base);
@@ -48,8 +48,8 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
             normalB.push_back(normal_y);
             normalB.push_back(cos(ang) * cos_y);
 
-            textB.push_back(i/slices);
-            textB.push_back((j + 1)/stacks);
+            textB.push_back(float((j + 1))/float(stacks));
+            textB.push_back(float(i)/float(slices));
         }
     }
 
@@ -62,8 +62,8 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
     normalB.push_back(-1.0f);
     normalB.push_back(0.0f);
 
-    textB.push_back(0.5);
-    textB.push_back(0);
+    textB.push_back(0.5f);
+    textB.push_back(0.0f);
 
     ang = 0;
     for(int i = 0; i < slices;i++){
@@ -78,8 +78,8 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
         normalB.push_back(normal_y);
         normalB.push_back(cos(ang) * cos_y);
 
-        textB.push_back(i/slices);
-        textB.push_back(1);
+        textB.push_back(float(i)/float(slices));
+        textB.push_back(1.0f);
     }
 
     verticesCount = vertexB.size() / 3;

@@ -10,7 +10,7 @@ void torus(float inner_radius, float outer_radius, int slices, int stacks, vecto
     vertexB.reserve(slices * stacks * 3);
     normalB.reserve(slices * stacks * 3);
 
-    for (int i = 0; i < slices; i++) {
+    for (int i = 0; i <= slices; i++) {
 
         angle = slicesAngInc * i;
 
@@ -20,7 +20,7 @@ void torus(float inner_radius, float outer_radius, int slices, int stacks, vecto
         radius_x = cos_B * radius;
         radius_z = sin_B * radius;
 
-        for (int j = 0; j < stacks; j++) {
+        for (int j = 0; j <= stacks; j++) {
             aux_radius = cos(stacksAngInc * j) * inner_radius; //anglo interno rebatido para o o plano xoz
             vertexB.push_back(radius_x + aux_radius * cos_B);
             vertexB.push_back(sin(stacksAngInc * j) * inner_radius);
@@ -30,20 +30,20 @@ void torus(float inner_radius, float outer_radius, int slices, int stacks, vecto
             normalB.push_back(sin(stacksAngInc * j));
             normalB.push_back(cos(stacksAngInc * j) * sin_B);
 
-            textB.push_back(float(i/slices));
-            textB.push_back(float(j/stacks));
+            textB.push_back(float(i)/float(slices));
+            textB.push_back(float(j)/float(stacks));
         }
     }
 
     for (int i = 0; i < slices; i++) {
         for (int j = 0; j < stacks; j++) {
-        	indexB.push_back(i*stacks+j);
-        	indexB.push_back(i*stacks+(j + 1)%stacks);
-        	indexB.push_back(((i+1)% slices)*stacks+j);
+        	indexB.push_back(i*(stacks+1)+j);
+        	indexB.push_back(i*(stacks+1)+(j + 1));
+        	indexB.push_back((i+1)*(stacks+1)+j);
 
-        	indexB.push_back(i*stacks+(j + 1)%stacks);
-        	indexB.push_back(((i+1)% slices)*stacks+((j+1)%stacks));
-        	indexB.push_back(((i+1)% slices)*stacks+j);
+        	indexB.push_back(i*(stacks+1)+(j + 1));
+        	indexB.push_back((i+1)*(stacks+1)+(j+1));
+        	indexB.push_back((i+1)*(stacks+1)+j);
         }
     }
 }
