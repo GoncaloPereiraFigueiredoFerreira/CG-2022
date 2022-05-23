@@ -6,6 +6,6 @@
 #include <vector>
 #include "../Auxiliar/Point.h"
 
-void bezier(char *path,int tessellation,std::vector<float> &vertex_VBO,std::vector<unsigned int> &index_VBO, std::vector<float>& normalB);
+void bezier(char *path,int tessellation,std::vector<float> &vertex_VBO,std::vector<unsigned int> &index_VBO, std::vector<float>& normalB, std::vector<float>& textB);
 
 #endif

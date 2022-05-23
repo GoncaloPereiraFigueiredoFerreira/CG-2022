@@ -1,7 +1,7 @@
 #include "PlaneGenerator.h"
 using namespace std;
 
-void plane(float length, int divisions, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB) {
+void plane(float length, int divisions, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB, vector<float>& textB) {
     float cxi = -(length / 2), cx = cxi, cy = 0, cz = -(length / 2);
     float incr = length / divisions; //side increment value
 
@@ -15,6 +15,9 @@ void plane(float length, int divisions, vector<float>& vertexB, vector<unsigned 
             normalB.push_back(0.0f);
             normalB.push_back(1.0f);
             normalB.push_back(0.0f);
+
+            textB.push_back(float(i)/float(divisions));
+            textB.push_back(float(j)/float(divisions));
         }
         cz += incr;
         cx = cxi;

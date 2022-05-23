@@ -4,6 +4,6 @@
 #include "../Auxiliar/AuxiliarMethods.h"
 #include <vector>
 
-void box(float length, int divisions, std::vector<float>& vertexB, std::vector<unsigned int>& indexB, std::vector<float>& normalB);
+void box(float length, int divisions, std::vector<float>& vertexB, std::vector<unsigned int>& indexB, std::vector<float>& normalB, std::vector<float>& textB);
 
 #endif

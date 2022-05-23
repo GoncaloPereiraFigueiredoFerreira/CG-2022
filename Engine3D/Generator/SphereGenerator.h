@@ -4,6 +4,6 @@
 #include "../Auxiliar/AuxiliarMethods.h"
 #include <vector>
 
-void sphere(float radius, int slices, int stacks, std::vector<float>& vertexB, std::vector<unsigned int>& indexB, std::vector<float>& normalB);
+void sphere(float radius, int slices, int stacks, std::vector<float>& vertexB, std::vector<unsigned int>& indexB, std::vector<float>& normalB, std::vector<float>& textB);
 
 #endif

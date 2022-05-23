@@ -69,7 +69,7 @@ inline void dif_points(float *a,float *b,float *res){
     res[2] = a[2] - b[2];
 }
 
-void bezier(char *path,int tessellation,vector<float> &vertex_VBO,vector<unsigned int> &index_VBO,vector<float> &normalB){
+void bezier(char *path,int tessellation,vector<float> &vertex_VBO,vector<unsigned int> &index_VBO,vector<float> &normalB, vector<float>& textB){
     vector<Point> points;
     vector<vector<int>> index;
     float *vertex_arr;
@@ -117,6 +117,9 @@ void bezier(char *path,int tessellation,vector<float> &vertex_VBO,vector<unsigne
                 vertex_VBO.push_back(x_atu[j*3+0]);
                 vertex_VBO.push_back(x_atu[j*3+1]);
                 vertex_VBO.push_back(x_atu[j*3+2]);
+
+                textB.push_back(float(tessellation - j)/float(tessellation));
+                textB.push_back(float(tessellation - i)/float(tessellation));
 
                 normalB.push_back(points_normal[0]);
                 normalB.push_back(points_normal[1]);
