@@ -22,10 +22,12 @@ int main(int argc, char** argv)
 		if(strcmp(argv[1], "cone") == 0 && atoi(argv[5]) >= 1 && atoi(argv[4]) >= 1){//CONE GENERATOR
 			cone(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]), vertexB, indexB,normalB,textB);
 			filename = argv[6];
+			cout << "Cone created\n";
 		}
 		else if(strcmp(argv[1], "torus") == 0 && atoi(argv[5]) >= 1 && atoi(argv[4]) >= 1){//TORUS GENERATOR
 			torus(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]), vertexB, indexB,normalB,textB);
 			filename = argv[6];
+			cout << "Torus created\n";
 		}else {
             printf("Invalid arguments!\nUse command \"EngineExe help\"\n");
             generated = false;
@@ -34,19 +36,23 @@ int main(int argc, char** argv)
 	else if (argc == 6 && strcmp(argv[1], "sphere") == 0 && atoi(argv[3]) >= 1 && atoi(argv[4]) >= 1) { //SPHERE GENERATOR
 		sphere(atof(argv[2]), atoi(argv[3]), atoi(argv[4]), vertexB, indexB,normalB,textB);
         filename = argv[5];
+		cout << "Sphere created\n";
 	}
 	else if (argc == 5) {
 		if (strcmp(argv[1], "plane") == 0 && atoi(argv[3]) >= 1) { //PLANE GENERATOR
 			plane(atof(argv[2]), atoi(argv[3]), vertexB, indexB,normalB,textB);
 			filename = argv[4];
+			cout << "Plane created\n";
 		}
 		else if (strcmp(argv[1], "box") == 0 && atoi(argv[3]) >= 1) { //BOX GENERATOR
 			box(atof(argv[2]), atoi(argv[3]), vertexB, indexB,normalB,textB);
 			filename = argv[4];
+			cout << "Box created\n";
 		}
 		else if (strcmp(argv[1], "bezier") == 0 && atoi(argv[3]) >= 1) { //BEZIER GENERATOR
 				bezier(argv[2], atoi(argv[3]), vertexB, indexB,normalB,textB);
 				filename = argv[4];
+				cout << "Bezier created\n";
 		}
 		else {
             printf("Invalid arguments!\nUse command \"EngineExe help\"\n ");

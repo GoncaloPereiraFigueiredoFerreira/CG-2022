@@ -74,8 +74,8 @@ void bezier(char *path,int tessellation,vector<float> &vertex_VBO,vector<unsigne
     vector<vector<int>> index;
     float *vertex_arr;
 
-    float x_ant[(tessellation + 1) * 3];
-    float x_atu[(tessellation + 1) * 3];
+    float *x_ant = new float[(tessellation + 1) * 3];
+    float *x_atu = new float[(tessellation + 1) * 3];
     float t_y;
 
     readfile_bezier(path,points,index);
@@ -163,4 +163,6 @@ void bezier(char *path,int tessellation,vector<float> &vertex_VBO,vector<unsigne
         
     }
 
+    delete[] x_ant;
+    delete[] x_atu;
 }
