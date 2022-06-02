@@ -20,9 +20,16 @@ class ModelVBO {
 public:
     GLuint vertices, verticesCount, indices, normais,texCoords;
     unsigned int indicesCount;
+    float cube[6];
 
-    ModelVBO(GLuint vertices, GLuint verticesCount, GLuint indices, unsigned int indicesCount, GLuint normais,GLuint texCoords) : vertices(
-        vertices), verticesCount(verticesCount), indices(indices), indicesCount(indicesCount),normais(normais),texCoords(texCoords) {}
+    ModelVBO(GLuint vertices, GLuint verticesCount, GLuint indices, unsigned int indicesCount, GLuint normais,GLuint texCoords,float *cube) : vertices(
+        vertices), verticesCount(verticesCount), indices(indices), indicesCount(indicesCount),normais(normais),texCoords(texCoords) {
+
+    	for(int i = 0;i < 6;i++){
+    		this->cube[i] = cube[i];
+    	}
+
+    }
 };
 
 
@@ -30,6 +37,7 @@ int cameraMode = 0;
 int wW=800,wH=800;
 int timebase = 0, frame = 0;
 int startX, startY, tracking = 0;
+int nmodels = 0;
 float alpha, beta1, r,sensibility = 0.01;
 
 float diffuse[4] = {200.0f/255.0f,200.0f/255.0f,200.0f/255.0f,1.0f};
@@ -95,8 +103,9 @@ int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict,unord
 		// cria modelDict
 		if (modelDict.find(tmpGroup.modelList[i].sourceF) == modelDict.end()) {  //Verificar se o elemento ja esta no mapa
             vector<float> vertexB; vector<unsigned int> indexB;vector<float> normalB;vector<float> textB;
+            float cube[6] = {0};
 
-			if (readModelFromFile(tmpGroup.modelList[i].sourceF, vertexB, indexB, normalB, textB) == -1) {
+			if (readModelFromFile(tmpGroup.modelList[i].sourceF, vertexB, indexB, normalB, textB,cube) == -1) {
 				cout << "Error: File\"" << tmpGroup.modelList[i].sourceF << "\" not found\n";
 				return -1;
 			}
@@ -129,7 +138,7 @@ int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict,unord
 				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * textB.size(), textB.data(), GL_STATIC_DRAW);
 
                 //inserts pair of file's name and respective VBO information
-                auto m = new ModelVBO(vertices, verticesCount, indices, indicesCount,normais,texCoords);
+                auto m = new ModelVBO(vertices, verticesCount, indices, indicesCount,normais,texCoords,cube);
                 modelDict.insert(std::make_pair(tmpGroup.modelList[i].sourceF, m));
             }
 		}
@@ -185,35 +194,107 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+static inline void getMPVMatrix(float *a){
+	float m[16],p[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX,m);
+	glGetFloatv(GL_PROJECTION_MATRIX,p);
+
+	glPushMatrix();
+	glLoadMatrixf(p);
+	glMultMatrixf(m);
+	glGetFloatv(GL_MODELVIEW_MATRIX,a);
+	glPopMatrix();
+}
+
+static inline char checkDraw(float *m,float *points){
+	char flag = true;
+	float c1[4],c2[4],p1[3],p2[3];
+	for(int i = 0; i < 3 && flag;i++){
+		for(int j = 0;j < 4;j++){
+			c1[j] = m[i+4*j] + m[4 * j + 3];
+			c2[j] = m[i+4*j] - m[4 * j + 3];
+		}
+		for(int j = 0;j < 3;j++){
+			p1[j] = (c1[j] > 0) ? points[j*2]:points[j*2+1];
+			p2[j] = (c2[j] < 0) ? points[j*2]:points[j*2+1];
+		}
+
+		flag = (0 <= p1[0] * c1[0] + p1[1] * c1[1] + p1[2] * c1[2] + c1[3]) &&
+		       (0 >= p2[0] * c2[0] + p2[1] * c2[1] + p2[2] * c2[2] + c2[3]);
+	}
+
+	return flag;
+}
+
 void recursiveDraw(Group tmpGroup) {
+
+	float matrix[16];
+
 	glPushMatrix();
 	for (int i = 0; i < tmpGroup.transforms.size(); i++)
 		tmpGroup.transforms[i]->apply();
 
+	getMPVMatrix(matrix);
+
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
 		ModelVBO *m = modelDict[tmpGroup.modelList[i].sourceF];
-		GLuint texID = 0;
+		if(checkDraw(matrix,m->cube)){
+			nmodels++;
+			GLuint texID = 0;
 
-		tmpGroup.modelList[i].color->apply();
+			tmpGroup.modelList[i].color->apply();
 
-        glBindBuffer(GL_ARRAY_BUFFER, m->vertices);
-        glVertexPointer(3, GL_FLOAT, 0, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices);
-        glBindBuffer(GL_ARRAY_BUFFER,m->normais);
-        glNormalPointer(GL_FLOAT,0,0);
+			/*glBegin(GL_QUADS);
+				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
+				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
 
-        if (tmpGroup.modelList[i].textureF && textureDict.find(tmpGroup.modelList[i].textureF) != textureDict.end()){
-        	texID = textureDict[tmpGroup.modelList[i].textureF];
+				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
+				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
 
-        	glBindTexture(GL_TEXTURE_2D, texID);
+				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
+				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
 
-        	glBindBuffer(GL_ARRAY_BUFFER,m->texCoords);
-			glTexCoordPointer(2,GL_FLOAT,0,0);
-        }
+				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
+				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
 
-        glDrawElements(GL_TRIANGLES, m->indicesCount, GL_UNSIGNED_INT, 0);
+				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
+				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
+				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
+				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
+			glEnd();*/
+
+	        glBindBuffer(GL_ARRAY_BUFFER, m->vertices);
+	        glVertexPointer(3, GL_FLOAT, 0, 0);
+	        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->indices);
+	        glBindBuffer(GL_ARRAY_BUFFER,m->normais);
+	        glNormalPointer(GL_FLOAT,0,0);
+
+	        if (tmpGroup.modelList[i].textureF && textureDict.find(tmpGroup.modelList[i].textureF) != textureDict.end()){
+	        	texID = textureDict[tmpGroup.modelList[i].textureF];
+
+	        	glBindTexture(GL_TEXTURE_2D, texID);
+
+	        	glBindBuffer(GL_ARRAY_BUFFER,m->texCoords);
+				glTexCoordPointer(2,GL_FLOAT,0,0);
+	        }
+
+	        glDrawElements(GL_TRIANGLES, m->indicesCount, GL_UNSIGNED_INT, 0);
+
+	        glBindTexture(GL_TEXTURE_2D, 0);
+    	}
 	}
 
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++)
@@ -291,6 +372,9 @@ void renderScene(void) {
 	renderText(s2,wW/40, wH/35 + 20);
 	sprintf(s2, "Pos x: %.3f Pos y: %.3f Pos z: %.3f", info.cameraInfo.xPos,info.cameraInfo.yPos,info.cameraInfo.zPos);
 	renderText(s2,wW/40, wH/35 + 40);
+	sprintf(s2, "Numero de modelos: %d", nmodels);
+	renderText(s2,wW/40, wH/35 + 60);
+	nmodels = 0;
 
 
 

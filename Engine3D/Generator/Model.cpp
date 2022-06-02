@@ -41,9 +41,12 @@ int generateModelFile(string filename, vector<float>& vertexB, vector<unsigned i
     return -1;
 }
 
-int readModelFromFile(string filename, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB, vector<float>& textB) {
+int readModelFromFile(string filename, vector<float>& vertexB, vector<unsigned int>& indexB, vector<float>& normalB, vector<float>& textB,float *cube) {
     std::ifstream fd;
     fd.open(filename, ios::in);
+
+    int index = 0;
+    float value = 0;
 
     if (fd.fail()) return -1;
 	else {
@@ -54,8 +57,13 @@ int readModelFromFile(string filename, vector<float>& vertexB, vector<unsigned i
 		getline(fd, line);
 		vector<string> vB = parseLine(line, delimiter);
         vertexB.reserve(vB.size());
-        for(int i = 0; i < vB.size() ; i++)
-            vertexB.push_back(stof(vB[i]));
+        for(int i = 0; i < vB.size() ; i++){
+            value = stof(vB[i]);
+            cube[index * 2] = (cube[index * 2] > value)?cube[index * 2]:value;
+            cube[index * 2 + 1] = (cube[index * 2 + 1] < value)?cube[index * 2 + 1]:value;
+            vertexB.push_back(value);
+            index = (index + 1) % 3;
+        }
 
         //Read indexes
         getline(fd, line);

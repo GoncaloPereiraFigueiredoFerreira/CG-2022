@@ -9,6 +9,6 @@
 #include "../Auxiliar/AuxiliarMethods.h"
 
 int generateModelFile(std::string filename, std::vector<float>& vertexB, std::vector<unsigned int>& indexB, std::vector<float>& normalB, std::vector<float>& textB);
-int readModelFromFile(std::string filename, std::vector<float>& vertexB, std::vector<unsigned int>& indexB, std::vector<float>& normalB, std::vector<float>& textB);
+int readModelFromFile(std::string filename, std::vector<float>& vertexB, std::vector<unsigned int>& indexB, std::vector<float>& normalB, std::vector<float>& textB,float *cube);
 
 #endif //ENGINEEXE_MODEL_H
