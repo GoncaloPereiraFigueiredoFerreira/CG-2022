@@ -1,6 +1,6 @@
 <world>  <!--sphere 1.5 15 15 sol.3d--> <!--sphere 1 15 15 sphere.3d--><!-- torus 0.5 1.5 500 2 torusIner.3d--> <!-- torus 1 3.8 500 2 torusOuter.3d   bezier teapot.patch 10 teapot.3d -->
     <camera> 
-        <position x="50" y="50" z="50" />
+        <position x="150" y="150" z="150" />
         <lookAt x="0" y="0" z="0" />
         <up x="0" y="1" z="0" />
         <projection fov="60" near="1" far="1000" />
@@ -8,7 +8,9 @@
 
     <group>
         <models> 
-            <model file="sol.3d" /> <!-- SOL --> <!--sphere 1.5 15 15 sol.3d-->
+            <model file="Testes/sol.3d" > <!-- SOL --> <!--sphere 1.5 15 15 sol.3d-->
+            <texture file = "Testes/sun.jpg" />
+            </model>
         </models>
         <group>
             <transform> <!-- Trajetoria-->
@@ -27,7 +29,7 @@
                     <scale x="0.05" y="0.05" z="0.05" />
                 </transform>
                 <models> 
-                    <model file="teapot.3d" /> <!-- generator bezier teapot.patch 10 teapot.3d -->
+                    <model file="Testes/teapot.3d" /> <!-- generator bezier teapot.patch 10 teapot.3d -->
                 </models>
             </group>
         </group>
@@ -41,7 +43,7 @@
                 <scale x="0.025" y="0.025" z="0.025" />
             </transform>
             <models> 
-                <model file="sphere.3d" /> <!--sphere 1 15 15 sphere.3d-->
+                <model file="Testes/sphere.3d" /> <!--sphere 1 15 15 sphere.3d-->
             </models>
         </group>
         <group> <!-- Venus -->
@@ -51,7 +53,7 @@
                 <scale x="0.075" y="0.075" z="0.075" />
             </transform>
             <models> 
-                <model file="sphere.3d" />
+                <model file="Testes/sphere.3d" />
             </models>
         </group>
         <group> <!-- Terra -->
@@ -61,7 +63,9 @@
                 <scale x="0.070" y="0.070" z="0.070" />
             </transform>
             <models> 
-                <model file="sphere.3d" />
+                <model file="Testes/sphere.3d" >
+                <texture file = "Testes/earth.jpg" />
+                </model>
             </models>
             <group> <!-- Luas -->
                 <transform> 
@@ -70,7 +74,7 @@
                     <scale x="0.2" y="0.2" z="0.2" />
                 </transform>
                 <models> 
-                  <model file="sphere.3d" />
+                  <model file="Testes/sphere.3d" />
                 </models>
             </group>
         </group>
@@ -81,7 +85,7 @@
                 <scale x="0.060" y="0.060" z="0.060" />
             </transform>
             <models> 
-                <model file="sphere.3d" />
+                <model file="Testes/sphere.3d" />
             </models>
             <group> <!-- Luas -->
                 <group> <!-- Lua 1 -->
@@ -91,7 +95,7 @@
                         <scale x="0.2" y="0.2" z="0.2" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" />
+                        <model file="Testes/sphere.3d" />
                     </models>
                 </group>
                 <group> <!-- Lua 2 -->
@@ -101,7 +105,7 @@
                         <scale x="0.2" y="0.2" z="0.2" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
             </group>
@@ -113,7 +117,7 @@
                 <scale x="0.70" y="0.70" z="0.70" />
             </transform>
             <models> 
-                <model file="sphere.3d" />
+                <model file="Testes/sphere.3d" />
             </models>
             <group> <!-- Luas -->
                 <group> <!-- Lua 1 -->
@@ -123,7 +127,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 2 -->
@@ -133,7 +137,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 3 -->
@@ -143,7 +147,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 4 -->
@@ -153,7 +157,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 5 -->
@@ -163,7 +167,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
             </group>
@@ -175,7 +179,10 @@
                 <scale x="0.25" y="0.25" z="0.25" />
             </transform>
             <models> 
-                <model file="sphere.3d" /> 
+                <model file="Testes/sphere.3d" >
+                <texture file = "Testes/saturn.jpg"/>
+                </model>
+
             </models>
             <group> <!-- Luas e anel-->
                 <group> <!-- Anel -->
@@ -183,8 +190,12 @@
                         <rotate angle="45" x="1" y ="0" z = "0" />
                     </transform>
                     <models> 
-                        <model file="torusIner.3d" /> <!-- torus 0.5 1.5 500 2 torusIner.3d-->
-                        <model file="torusOuter.3d"/> <!-- torus 1 3.8 500 2 torusOuter.3d-->
+                        <model file="Testes/torusIner.3d" > <!-- torus 0.5 1.5 500 2 torusIner.3d-->
+                        <texture file = "Testes/rings.jpeg"/>
+                        </model>
+                        <model file="Testes/torusOuter.3d"> <!-- torus 1 3.8 500 2 torusOuter.3d-->
+                        <texture file = "Testes/rings.jpeg"/>
+                        </model>
                     </models>
                 </group>
                 <group> <!-- Lua 1 -->
@@ -194,7 +205,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 2 -->
@@ -204,7 +215,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 3 -->
@@ -214,7 +225,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 4 -->
@@ -224,7 +235,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 5 -->
@@ -234,7 +245,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
             </group>
@@ -246,7 +257,7 @@
                 <scale x="0.20" y="0.20" z="0.20" />
             </transform>
             <models> 
-                <model file="sphere.3d" /> 
+                <model file="Testes/sphere.3d" /> 
             </models>
             <group> <!-- Luas -->
                 <group> <!-- Lua 1 -->
@@ -256,7 +267,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 2 -->
@@ -266,7 +277,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 3 -->
@@ -276,7 +287,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
             </group>
@@ -288,7 +299,7 @@
                 <scale x="0.20" y="0.20" z="0.20" />
             </transform>
             <models> 
-                <model file="sphere.3d" /> 
+                <model file="Testes/sphere.3d" /> 
             </models>
             <group> <!-- Luas -->
                 <group> <!-- Lua 1 -->
@@ -298,7 +309,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 2 -->
@@ -308,7 +319,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
                 <group> <!-- Lua 3 -->
@@ -318,7 +329,7 @@
                         <scale x="0.05" y="0.05" z="0.05" />
                     </transform>
                     <models> 
-                        <model file="sphere.3d" /> 
+                        <model file="Testes/sphere.3d" /> 
                     </models>
                 </group>
             </group>
@@ -330,7 +341,7 @@
                 <scale x="0.02" y="0.02" z="0.02" />
             </transform>
             <models> 
-                <model file="sphere.3d" /> 
+                <model file="Testes/sphere.3d" /> 
             </models>
         </group>
     </group>
