@@ -119,6 +119,9 @@ class Lights{
 			glEnable(light0 + aux);
 			aux++;
 		}
+		if(aux){
+			glEnable(GL_LIGHTING);
+		}
 	}
 
 	void apply(GLenum light0){

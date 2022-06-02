@@ -40,10 +40,8 @@ int startX, startY, tracking = 0;
 int nmodels = 0;
 float alpha, beta1, r,sensibility = 0.01;
 
-float diffuse[4] = {200.0f/255.0f,200.0f/255.0f,200.0f/255.0f,1.0f};
-float ambient[4] = {50.0f/255.0f,50.0f/255.0f,50.0f/255.0f,1.0f};
-float specular[4] = {0.0f,0.0f,0.0f,1.0f};
-float emissive[4] = {0.0f,0.0f,0.0f,1.0f};
+float emissive_def[4] = {0.0f,0.0f,0.0f,1.0f};
+float emissive_full[4] = {1.0f,1.0f,1.0f,1.0f};
 int shininess = 0;
 
 xmlInfo info;
@@ -320,8 +318,9 @@ void renderText(const std::string text,double posx, double posy) {
 	float textw = glutBitmapLength(font, (unsigned char*) text.c_str());
 	// Ignorar profundidade
 	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	glColor3f(1.0f, 1.0f, 1.0f);
+	glMaterialfv(GL_FRONT, GL_EMISSION, emissive_full);
 	glRasterPos2d(posx, posy); // text position in pixels
 	
 	// Desenhar a mensagem, caracter a caracter
@@ -335,7 +334,8 @@ void renderText(const std::string text,double posx, double posy) {
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
+	glMaterialfv(GL_FRONT, GL_EMISSION, emissive_def);
 }
 
 
@@ -356,6 +356,26 @@ void renderScene(void) {
 
 	info.lightsList.apply(GL_LIGHT0);
 
+
+	    //Desenho dos eixos
+	glBegin(GL_LINES);
+	// X axis in red
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(100.0f, 0.0f, 0.0f);
+	// Y Axis in Green
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 100.0f, 0.0f);
+	// Z Axis in Blue
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 100.0f);
+	glEnd();
+
+	glColor3f(1.0f, 1.0f, 1.0f);
+	recursiveDraw(info.groups);
+
 	frame++;
 	time = glutGet(GLUT_ELAPSED_TIME); 
 	if (time - timebase > 1000) { 
@@ -375,27 +395,6 @@ void renderScene(void) {
 	sprintf(s2, "Numero de modelos: %d", nmodels);
 	renderText(s2,wW/40, wH/35 + 60);
 	nmodels = 0;
-
-
-
-    //Desenho dos eixos
-	glBegin(GL_LINES);
-	// X axis in red
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(100.0f, 0.0f, 0.0f);
-	// Y Axis in Green
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 100.0f, 0.0f);
-	// Z Axis in Blue
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 100.0f);
-	glEnd();
-
-	glColor3f(1.0f, 1.0f, 1.0f);
-	recursiveDraw(info.groups);
 
 	// End of frame
 	glutSwapBuffers();
@@ -587,7 +586,6 @@ int main(int argc, char** argv) {
 	glEnable(GL_RESCALE_NORMAL);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 
 	float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
