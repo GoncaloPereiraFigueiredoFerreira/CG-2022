@@ -415,8 +415,9 @@ void renderScene(void) {
 
 	info.lightsList.apply(GL_LIGHT0);
 
+	
 
-	    //Desenho dos eixos
+    //Desenho dos eixos
 	glBegin(GL_LINES);
 	// X axis in red
 	glColor3f(1.0f, 0.0f, 0.0f);
