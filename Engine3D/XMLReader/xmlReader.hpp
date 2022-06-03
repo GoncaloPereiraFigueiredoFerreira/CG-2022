@@ -107,6 +107,7 @@ class Lights{
 
 	void init(GLenum light0){
 		int aux = 0;
+        glEnable(GL_LIGHTING);
 		for(int i = 0; i < points.size();i++){
 			glEnable(light0 + aux);
 			aux++;
@@ -119,22 +120,33 @@ class Lights{
 			glEnable(light0 + aux);
 			aux++;
 		}
-		if(aux){
-			glEnable(GL_LIGHTING);
+		if(aux == 0){
+			glDisable(GL_LIGHTING);
 		}
 	}
 
 	void apply(GLenum light0){
 		int aux = 0;
+        float white[4] = {1.0, 1.0, 1.0, 1.0};
+
 		for(int i = 0; i < points.size();i++){
+            glLightfv(light0 + aux, GL_AMBIENT, white);
+            glLightfv(light0 + aux, GL_DIFFUSE, white);
+            glLightfv(light0 + aux, GL_SPECULAR, white);
 			points[i].apply(light0+aux);
 			aux++;
 		}
 		for(int i = 0; i < direct.size();i++){
+            glLightfv(light0 + aux, GL_AMBIENT, white);
+            glLightfv(light0 + aux, GL_DIFFUSE, white);
+            glLightfv(light0 + aux, GL_SPECULAR, white);
 			direct[i].apply(light0+aux);
 			aux++;
 		}
 		for(int i = 0; i < spotL.size();i++){
+            glLightfv(light0 + aux, GL_AMBIENT, white);
+            glLightfv(light0 + aux, GL_DIFFUSE, white);
+            glLightfv(light0 + aux, GL_SPECULAR, white);
 			spotL[i].apply(light0+aux);
 			aux++;
 		}

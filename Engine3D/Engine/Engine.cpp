@@ -498,10 +498,7 @@ void renderScene(void) {
 		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
 		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.zUp);
 
-
 	info.lightsList.apply(GL_LIGHT0);
-
-	
 
     //Desenho dos eixos
 	glBegin(GL_LINES);
