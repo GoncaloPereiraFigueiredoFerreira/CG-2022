@@ -289,7 +289,7 @@ int generateDic(Group tmpGroup, unordered_map<std::string, ModelVBO*>& modelDict
                 modelDict.insert(std::make_pair(tmpGroup.modelList[i].sourceF, m));
             }
 		}
-		if (tmpGroup.modelList[i].textureF && !textureDict.contains(tmpGroup.modelList[i].textureF)) {  //Verificar se o elemento ja esta no mapa
+		if (tmpGroup.modelList[i].textureF && textureDict.find(tmpGroup.modelList[i].textureF) == textureDict.end()) {  //Verificar se o elemento ja esta no mapa
 
 			GLuint textID = loadTexture(tmpGroup.modelList[i].textureF);
             //inserts pair of file's name and respective VBO information
