@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <set>
 #include "../Generator/Model.h"
 #include "../XMLReader/xmlReader.hpp"
 using namespace std;
@@ -48,6 +49,10 @@ xmlInfo info;
 vector<Group> groups;
 unordered_map<char*, ModelVBO*> modelDict;
 unordered_map<char*, GLuint> textureDict;
+
+
+set<unsigned char> keysBeingPressed;
+float moveSensivity = 0.5f;
 
 void calculatePolarCoordinates(){
     float xAux, yAux, zAux;
@@ -338,6 +343,56 @@ void renderText(const std::string text,double posx, double posy) {
 	glMaterialfv(GL_FRONT, GL_EMISSION, emissive_def);
 }
 
+void performKeyFunctions(){
+    float Dx = info.cameraInfo.xLook - info.cameraInfo.xPos,
+  	Dz = info.cameraInfo.zLook - info.cameraInfo.zPos;
+    float normD = sqrt(pow(Dx,2) + pow(Dz, 2));
+
+    //Transforming in unit vector
+	Dx /= normD;
+  	Dz /= normD;
+
+    //Movements of
+    float LookX = 0, LookY = 0, LookZ = 0, PosX = 0, PosY = 0, PosZ = 0;
+    for(auto key = keysBeingPressed.begin(); key != keysBeingPressed.end(); key++) {
+        if (*key == 'w' || *key == 'W') {
+            LookX += Dx;
+            LookZ += Dz;
+            PosX += Dx;
+            PosZ += Dz;
+        } else if (*key == 's' || *key == 'S') {
+            LookX -= Dx;
+            LookZ -= Dz;
+            PosX -= Dx;
+            PosZ -= Dz;
+        } else if (*key == 'd' || *key == 'D') {
+            LookX -= Dz;
+            LookZ += Dx;
+            PosX -= Dz;
+            PosZ += Dx;
+        } else if (*key == 'a' || *key == 'A') {
+            LookX += Dz;
+            LookZ -= Dx;
+            PosX += Dz;
+            PosZ -= Dx;
+        }
+        else if (*key == ' ') {
+            LookY += 1;
+            PosY += 1;
+	    }
+        else if (*key == 'c' || *key == 'C') {
+            LookY -= 1;
+            PosY -= 1;
+        }
+    }
+
+    info.cameraInfo.xLook += LookX * moveSensivity;
+    info.cameraInfo.yLook += LookY * moveSensivity;
+    info.cameraInfo.zLook += LookZ * moveSensivity;
+    info.cameraInfo.xPos += PosX * moveSensivity;
+    info.cameraInfo.yPos += PosY * moveSensivity;
+    info.cameraInfo.zPos += PosZ * moveSensivity;
+}
 
 void renderScene(void) {
 	// clear buffers
@@ -348,6 +403,7 @@ void renderScene(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	// set the camera
+    performKeyFunctions(); //Perform camera move actions
 	glLoadIdentity();
 	gluLookAt(info.cameraInfo.xPos, info.cameraInfo.yPos, info.cameraInfo.zPos,
 		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
@@ -403,7 +459,6 @@ void renderScene(void) {
 
 // functions to process mouse events
 void processMouseButtons(int button, int state, int xx, int yy) {
-
 	if (cameraMode ==1)
 		yy = -yy;
 
@@ -439,11 +494,8 @@ void processMouseButtons(int button, int state, int xx, int yy) {
 
 
 void processMouseMotion(int xx, int yy) {
-
-
 	if (cameraMode ==1)
 		yy = -yy;
-
 
 	float deltaX, deltaY;
 	float alphaAux, betaAux;
@@ -493,40 +545,17 @@ void processMouseMotion(int xx, int yy) {
 // function to process keyboard events
 
 void defaultKeyFunc(unsigned char key, int x, int y) {
-	float Dx = info.cameraInfo.xLook - info.cameraInfo.xPos,
-  	Dz = info.cameraInfo.zLook - info.cameraInfo.zPos;
-
-    float normD = sqrt(pow(Dx,2) + pow(Dz, 2));
-
-    //Transforming in unit vector
-	Dx /= normD;
-  	Dz /= normD;
-
     //Movements of
-	if (key == 'w' || key == 'W') {
-		info.cameraInfo.xLook += Dx;
-        info.cameraInfo.zLook += Dz;
-        info.cameraInfo.xPos += Dx;
-        info.cameraInfo.zPos += Dz;
+    if (key == 'w' || key == 'W' || key == 's' || key == 'S' || key == 'd' || key == 'D' || key == 'a' || key == 'A' || key == ' ' || key == 'c' || key == 'C') {
+        keysBeingPressed.insert(key);
 	}
-	else if (key == 's' || key == 'S') {
-		info.cameraInfo.xLook -= Dx;
-        info.cameraInfo.zLook -= Dz;
-        info.cameraInfo.xPos -= Dx;
-        info.cameraInfo.zPos -= Dz;
-	}
-	else if (key == 'd' || key == 'D') {
-		info.cameraInfo.xLook -= Dz;
-        info.cameraInfo.zLook += Dx;
-        info.cameraInfo.xPos -= Dz;
-        info.cameraInfo.zPos += Dx;
-	}
-	else if (key == 'a' || key == 'A') {
-		info.cameraInfo.xLook += Dz;
-        info.cameraInfo.zLook -= Dx;
-        info.cameraInfo.xPos += Dz;
-        info.cameraInfo.zPos -= Dx;
-	}
+    else if (key == 'u' || key == 'U'){
+        moveSensivity += 0.05;
+    }
+    else if (key == 'i' || key == 'I'){
+        if (moveSensivity > 0.1)
+            moveSensivity -= 0.05;
+    }
     else if (key == 'm' || key == 'M') {
 		if(cameraMode == 0){
             cameraMode = 1;
@@ -540,16 +569,8 @@ void defaultKeyFunc(unsigned char key, int x, int y) {
 	//glutPostRedisplay();
 }
 
-void specialKeyFunc(int key_code, int x, int y) {
-    if (key_code == GLUT_KEY_UP) {
-		info.cameraInfo.yLook += 1;
-       	info.cameraInfo.yPos += 1;
-	}
-	else if (key_code == GLUT_KEY_DOWN) {
-		info.cameraInfo.yLook -= 1;
-        info.cameraInfo.yPos -= 1;
-    }
-    //glutPostRedisplay();
+void defaultKeyUpFunc(unsigned char key, int x, int y){
+    keysBeingPressed.erase(key);
 }
 
 int main(int argc, char** argv) {
@@ -574,7 +595,7 @@ int main(int argc, char** argv) {
 	glutMouseFunc(processMouseButtons);
     glutMotionFunc(processMouseMotion);
     glutKeyboardFunc(defaultKeyFunc);
-	glutSpecialFunc(specialKeyFunc);
+    glutKeyboardUpFunc(defaultKeyUpFunc);
 
     //Enabling Buffer of Vertex Functionality
     glEnableClientState(GL_VERTEX_ARRAY);
