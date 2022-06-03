@@ -43,8 +43,8 @@ int shininess = 0;
 
 xmlInfo info;
 vector<Group> groups;
-unordered_map<char*, ModelVBO*> modelDict;
-unordered_map<char*, GLuint> textureDict;
+unordered_map < std::string, ModelVBO* > modelDict;
+unordered_map<std::string, GLuint> textureDict;
 
 // ******* Auxiliar ******* //
 
@@ -245,7 +245,7 @@ int loadTexture(std::string s) {
 
 /* ------- Generate Dictionary Of Models ------- */
 
-int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict,unordered_map<char*, GLuint>& textureDict) {
+int generateDic(Group tmpGroup, unordered_map<std::string, ModelVBO*>& modelDict,unordered_map<std::string, GLuint>& textureDict) {
 	for (int i = 0; i < tmpGroup.modelList.size(); i++) {
 		// cria modelDict
 		if (modelDict.find(tmpGroup.modelList[i].sourceF) == modelDict.end()) {  //Verificar se o elemento ja esta no mapa
@@ -289,17 +289,13 @@ int generateDic(Group tmpGroup, unordered_map<char*, ModelVBO*>& modelDict,unord
                 modelDict.insert(std::make_pair(tmpGroup.modelList[i].sourceF, m));
             }
 		}
-
-		//cria textureDict
-		if (tmpGroup.modelList[i].textureF && textureDict.find(tmpGroup.modelList[i].textureF) == textureDict.end()) {  //Verificar se o elemento ja esta no mapa
+		if (tmpGroup.modelList[i].textureF && !textureDict.contains(tmpGroup.modelList[i].textureF)) {  //Verificar se o elemento ja esta no mapa
 
 			GLuint textID = loadTexture(tmpGroup.modelList[i].textureF);
-
             //inserts pair of file's name and respective VBO information
             textureDict.insert(std::make_pair(tmpGroup.modelList[i].textureF, textID));
 		}
 	}
-
 	for (int i = 0; i < tmpGroup.groupChildren.size(); i++)
 		if(generateDic(tmpGroup.groupChildren[i], modelDict,textureDict) == -1)
             return -1;
