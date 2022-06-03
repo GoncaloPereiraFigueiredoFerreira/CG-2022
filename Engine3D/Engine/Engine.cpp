@@ -343,55 +343,58 @@ void renderText(const std::string text,double posx, double posy) {
 	glMaterialfv(GL_FRONT, GL_EMISSION, emissive_def);
 }
 
-void performKeyFunctions(){
-    float Dx = info.cameraInfo.xLook - info.cameraInfo.xPos,
-  	Dz = info.cameraInfo.zLook - info.cameraInfo.zPos;
-    float normD = sqrt(pow(Dx,2) + pow(Dz, 2));
 
-    //Transforming in unit vector
-	Dx /= normD;
-  	Dz /= normD;
+//add vector b to vector a
+void inline addVector(float* a, float* b){
+    for(int i = 0; i < 3; i++)
+        a[i] += b[i];
+}
+
+//sub vector b to vector a
+void inline subVector(float* a, float* b){
+    for(int i = 0; i < 3; i++)
+        a[i] -= b[i];
+}
+
+void performKeyFunctions(){
+    float cameraD[3] = {(float) (info.cameraInfo.xLook - info.cameraInfo.xPos),
+                        (float) (info.cameraInfo.yLook - info.cameraInfo.yPos),
+                        (float) (info.cameraInfo.zLook - info.cameraInfo.zPos)};
+    float right[3] = {};
+    float up[3] = {(float) info.cameraInfo.xUp, (float) info.cameraInfo.yUp, (float) info.cameraInfo.zUp};
+    getNormal(cameraD, up, right); //Calculates camera right vector
+    getNormal(right, cameraD, up); //Calculates camera up vector
 
     //Movements of
-    float LookX = 0, LookY = 0, LookZ = 0, PosX = 0, PosY = 0, PosZ = 0;
+    float Look[3] = {0}, Pos[3] = {0};
     for(auto key = keysBeingPressed.begin(); key != keysBeingPressed.end(); key++) {
         if (*key == 'w' || *key == 'W') {
-            LookX += Dx;
-            LookZ += Dz;
-            PosX += Dx;
-            PosZ += Dz;
+            addVector(Look, cameraD);
+            addVector(Pos, cameraD);
         } else if (*key == 's' || *key == 'S') {
-            LookX -= Dx;
-            LookZ -= Dz;
-            PosX -= Dx;
-            PosZ -= Dz;
+            subVector(Look, cameraD);
+            subVector(Pos, cameraD);
         } else if (*key == 'd' || *key == 'D') {
-            LookX -= Dz;
-            LookZ += Dx;
-            PosX -= Dz;
-            PosZ += Dx;
+            addVector(Look, right);
+            addVector(Pos, right);
         } else if (*key == 'a' || *key == 'A') {
-            LookX += Dz;
-            LookZ -= Dx;
-            PosX += Dz;
-            PosZ -= Dx;
-        }
-        else if (*key == ' ') {
-            LookY += 1;
-            PosY += 1;
-	    }
-        else if (*key == 'c' || *key == 'C') {
-            LookY -= 1;
-            PosY -= 1;
+            subVector(Look, right);
+            subVector(Pos, right);
+        } else if (*key == ' '){
+            addVector(Look, up);
+            addVector(Pos, up);
+        } else if (*key == 'c' || *key == 'C'){
+            subVector(Look, up);
+            subVector(Pos, up);
         }
     }
 
-    info.cameraInfo.xLook += LookX * moveSensivity;
-    info.cameraInfo.yLook += LookY * moveSensivity;
-    info.cameraInfo.zLook += LookZ * moveSensivity;
-    info.cameraInfo.xPos += PosX * moveSensivity;
-    info.cameraInfo.yPos += PosY * moveSensivity;
-    info.cameraInfo.zPos += PosZ * moveSensivity;
+    info.cameraInfo.xLook += Look[0] * moveSensivity;
+    info.cameraInfo.yLook += Look[1] * moveSensivity;
+    info.cameraInfo.zLook += Look[2] * moveSensivity;
+    info.cameraInfo.xPos += Pos[0] * moveSensivity;
+    info.cameraInfo.yPos += Pos[1] * moveSensivity;
+    info.cameraInfo.zPos += Pos[2] * moveSensivity;
 }
 
 void renderScene(void) {
@@ -566,7 +569,6 @@ void defaultKeyFunc(unsigned char key, int x, int y) {
             glutSetWindowTitle("CG@13");
         }
 	}
-	//glutPostRedisplay();
 }
 
 void defaultKeyUpFunc(unsigned char key, int x, int y){
@@ -574,8 +576,6 @@ void defaultKeyUpFunc(unsigned char key, int x, int y){
 }
 
 int main(int argc, char** argv) {
-
-
 	// init GLUT and the window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
