@@ -33,13 +33,9 @@ public:
     }
 };
 
-
-int cameraMode = 0;
 int wW=800,wH=800;
 int timebase = 0, frame = 0;
-int startX, startY, tracking = 0;
 int nmodels = 0;
-float alpha, beta1, r,sensibility = 0.01;
 
 float emissive_def[4] = {0.0f,0.0f,0.0f,1.0f};
 float emissive_full[4] = {1.0f,1.0f,1.0f,1.0f};
@@ -50,18 +46,166 @@ vector<Group> groups;
 unordered_map<char*, ModelVBO*> modelDict;
 unordered_map<char*, GLuint> textureDict;
 
+// ******* Auxiliar ******* //
 
+float calcCamRadius(){
+    float dirX = (float) (info.cameraInfo.xLook - info.cameraInfo.xPos),
+                  dirY = (float) (info.cameraInfo.yLook - info.cameraInfo.yPos),
+                  dirZ = (float) (info.cameraInfo.zLook - info.cameraInfo.zPos);
+    return sqrt(pow(dirX, 2) + pow(dirY, 2) + pow(dirZ, 2));
+}
+
+// ******* Camera Orientation ******* //
+
+int startX, startY, cameraMode = 1; // Camera Mode: 0 - Fixed Look Point | 1 - FPS Mode
+float lastCenterModeRadius, myalpha = 0, mybeta, mybetadif = 0, cameraSensivity = 0.01;
+
+void initCameraVars(){
+    float cameraD[3] = {(float) (info.cameraInfo.xLook - info.cameraInfo.xPos),
+                        (float) (info.cameraInfo.yLook - info.cameraInfo.yPos),
+                        (float) (info.cameraInfo.zLook - info.cameraInfo.zPos)};
+    float up[3] = {(float) info.cameraInfo.xUp, (float) info.cameraInfo.yUp, (float) info.cameraInfo.zUp};
+    lastCenterModeRadius = sqrt(pow(cameraD[0], 2) + pow(cameraD[1], 2) + pow(cameraD[2], 2));
+    normalize(cameraD);
+    normalize(up);
+    mybeta = acos(cameraD[0]*up[0] + cameraD[1]*up[1] + cameraD[2]*up[2]);
+}
+
+void calculateNewCameraParam() {
+    float cameraD[3] = {};
+    if (cameraMode) { //vector pointing from camera pos to camera look point (FPS MODE)
+        cameraD[0] = (float) (info.cameraInfo.xLook - info.cameraInfo.xPos);
+        cameraD[1] = (float) (info.cameraInfo.yLook - info.cameraInfo.yPos);
+        cameraD[2] = (float) (info.cameraInfo.zLook - info.cameraInfo.zPos);
+    } else{ //vector pointing from camera look point to camera pos (FIXED CENTER MODE)
+        cameraD[0] = (float) (info.cameraInfo.xPos - info.cameraInfo.xLook);
+        cameraD[1] = (float) (info.cameraInfo.yPos - info.cameraInfo.yLook);
+        cameraD[2] = (float) (info.cameraInfo.zPos - info.cameraInfo.zLook);
+    }
+
+    float right[3] = {0};
+    float up[3] = {(float) info.cameraInfo.xUp, (float) info.cameraInfo.yUp, (float) info.cameraInfo.zUp};
+    getNormal(cameraD, up, right); //Calculates camera right vector
+    getNormal(right, cameraD, up); //Calculates camera up vector
+
+    float res[4] = {0}, point[4] = {cameraD[0], cameraD[1], cameraD[2], 1};
+    bool changed = false;
+
+    if (myalpha != 0) {
+        float vx = up[0],
+                vy = up[1],
+                vz = up[2],
+                vxSquared = pow(vx, 2),
+                vySquared = pow(vy, 2),
+                vzSquared = pow(vz, 2);
+        float x[4] = {vxSquared + (1 - vxSquared) * cos(myalpha), vx * vy * (1 - cos(myalpha)) - vz * sin(myalpha),
+                      vx * vz * (1 - cos(myalpha)) + vy * sin(myalpha), 0},
+                y[4] = {vx * vy * (1 - cos(myalpha)) + vz * sin(myalpha), vySquared + (1 - vySquared) * cos(myalpha),
+                        vy * vz * (1 - cos(myalpha)) - vx * sin(myalpha), 0},
+                z[4] = {vx * vz * (1 - cos(myalpha)) - vy * sin(myalpha),
+                        vy * vz * (1 - cos(myalpha)) + vx * sin(myalpha),
+                        vzSquared + (1 - vzSquared) * cos(myalpha), 0};
+        float rotMatrix[16] = {};
+        buildRotMatrix(x, y, z, rotMatrix);
+        multMatrixVector(rotMatrix, point, res);
+        point[0] = res[0];
+        point[1] = res[1];
+        point[2] = res[2];
+        point[3] = res[3]; //updates point so it can be used to apply the alteration with the beta value
+        changed = true;
+    }
+
+    if (mybetadif != 0) {
+        float vx = right[0],
+                vy = right[1],
+                vz = right[2],
+                vxSquared = (float) pow(vx, 2),
+                vySquared = (float) pow(vy, 2),
+                vzSquared = (float) pow(vz, 2);
+        float x[4] = {vxSquared + (1 - vxSquared) * cos(mybetadif),
+                      vx * vy * (1 - cos(mybetadif)) - vz * sin(mybetadif),
+                      vx * vz * (1 - cos(mybetadif)) + vy * sin(mybetadif), 0},
+                y[4] = {vx * vy * (1 - cos(mybetadif)) + vz * sin(mybetadif),
+                        vySquared + (1 - vySquared) * cos(mybetadif),
+                        vy * vz * (1 - cos(mybetadif)) - vx * sin(mybetadif), 0},
+                z[4] = {vx * vz * (1 - cos(mybetadif)) - vy * sin(mybetadif),
+                        vy * vz * (1 - cos(mybetadif)) + vx * sin(mybetadif),
+                        vzSquared + (1 - vzSquared) * cos(mybetadif), 0};
+        float rotMatrix[16] = {};
+        buildRotMatrix(x, y, z, rotMatrix);
+        multMatrixVector(rotMatrix, point, res);
+        changed = true;
+    }
+
+    if (changed) {
+        if (cameraMode) { //updates camera look point (FPS MODE)
+            info.cameraInfo.xLook = info.cameraInfo.xPos + res[0];
+            info.cameraInfo.yLook = info.cameraInfo.yPos + res[1];
+            info.cameraInfo.zLook = info.cameraInfo.zPos + res[2];
+        } else{ //updates camera position (FIXED CENTER MODE)
+            info.cameraInfo.xPos = info.cameraInfo.xLook + res[0] * lastCenterModeRadius;
+            info.cameraInfo.yPos = info.cameraInfo.yLook + res[1] * lastCenterModeRadius;
+            info.cameraInfo.zPos = info.cameraInfo.zLook + res[2] * lastCenterModeRadius;
+        }
+    }
+}
+
+
+// ******* Camera Movimentation ******* //
 set<unsigned char> keysBeingPressed;
-float moveSensivity = 0.5f;
+float moveSensivity = 1.0f;
 
-void calculatePolarCoordinates(){
-    float xAux, yAux, zAux;
-    xAux = info.cameraInfo.xPos - info.cameraInfo.xLook;
-    yAux = info.cameraInfo.yPos - info.cameraInfo.yLook;
-    zAux = info.cameraInfo.zPos - info.cameraInfo.zLook;
-    r = sqrt(pow(xAux, 2) + pow(yAux, 2) + pow(zAux, 2));
-    alpha = atan(xAux / zAux);
-    beta1 = asin(yAux / r);
+//add vector b to vector a
+void inline addVector(float* a, float* b){
+    for(int i = 0; i < 3; i++)
+        a[i] += b[i];
+}
+
+//sub vector b to vector a
+void inline subVector(float* a, float* b){
+    for(int i = 0; i < 3; i++)
+        a[i] -= b[i];
+}
+
+void performKeyFunctions(){
+    float cameraD[3] = {(float) (info.cameraInfo.xLook - info.cameraInfo.xPos),
+                        (float) (info.cameraInfo.yLook - info.cameraInfo.yPos),
+                        (float) (info.cameraInfo.zLook - info.cameraInfo.zPos)};
+    float right[3] = {};
+    float up[3] = {(float) info.cameraInfo.xUp, (float) info.cameraInfo.yUp, (float) info.cameraInfo.zUp};
+    getNormal(cameraD, up, right); //Calculates camera right vector
+    getNormal(right, cameraD, up); //Calculates camera up vector
+
+    //Movements of
+    float Look[3] = {0}, Pos[3] = {0};
+    for(auto key = keysBeingPressed.begin(); key != keysBeingPressed.end(); key++) {
+        if (*key == 'w' || *key == 'W') {
+            addVector(Look, cameraD);
+            addVector(Pos, cameraD);
+        } else if (*key == 's' || *key == 'S') {
+            subVector(Look, cameraD);
+            subVector(Pos, cameraD);
+        } else if (*key == 'd' || *key == 'D') {
+            addVector(Look, right);
+            addVector(Pos, right);
+        } else if (*key == 'a' || *key == 'A') {
+            subVector(Look, right);
+            subVector(Pos, right);
+        } else if (*key == ' '){
+            addVector(Look, up);
+            addVector(Pos, up);
+        } else if (*key == 'c' || *key == 'C'){
+            subVector(Look, up);
+            subVector(Pos, up);
+        }
+    }
+
+    info.cameraInfo.xLook += Look[0] * moveSensivity;
+    info.cameraInfo.yLook += Look[1] * moveSensivity;
+    info.cameraInfo.zLook += Look[2] * moveSensivity;
+    info.cameraInfo.xPos += Pos[0] * moveSensivity;
+    info.cameraInfo.yPos += Pos[1] * moveSensivity;
+    info.cameraInfo.zPos += Pos[2] * moveSensivity;
 }
 
 int loadTexture(std::string s) {
@@ -343,60 +487,6 @@ void renderText(const std::string text,double posx, double posy) {
 	glMaterialfv(GL_FRONT, GL_EMISSION, emissive_def);
 }
 
-
-//add vector b to vector a
-void inline addVector(float* a, float* b){
-    for(int i = 0; i < 3; i++)
-        a[i] += b[i];
-}
-
-//sub vector b to vector a
-void inline subVector(float* a, float* b){
-    for(int i = 0; i < 3; i++)
-        a[i] -= b[i];
-}
-
-void performKeyFunctions(){
-    float cameraD[3] = {(float) (info.cameraInfo.xLook - info.cameraInfo.xPos),
-                        (float) (info.cameraInfo.yLook - info.cameraInfo.yPos),
-                        (float) (info.cameraInfo.zLook - info.cameraInfo.zPos)};
-    float right[3] = {};
-    float up[3] = {(float) info.cameraInfo.xUp, (float) info.cameraInfo.yUp, (float) info.cameraInfo.zUp};
-    getNormal(cameraD, up, right); //Calculates camera right vector
-    getNormal(right, cameraD, up); //Calculates camera up vector
-
-    //Movements of
-    float Look[3] = {0}, Pos[3] = {0};
-    for(auto key = keysBeingPressed.begin(); key != keysBeingPressed.end(); key++) {
-        if (*key == 'w' || *key == 'W') {
-            addVector(Look, cameraD);
-            addVector(Pos, cameraD);
-        } else if (*key == 's' || *key == 'S') {
-            subVector(Look, cameraD);
-            subVector(Pos, cameraD);
-        } else if (*key == 'd' || *key == 'D') {
-            addVector(Look, right);
-            addVector(Pos, right);
-        } else if (*key == 'a' || *key == 'A') {
-            subVector(Look, right);
-            subVector(Pos, right);
-        } else if (*key == ' '){
-            addVector(Look, up);
-            addVector(Pos, up);
-        } else if (*key == 'c' || *key == 'C'){
-            subVector(Look, up);
-            subVector(Pos, up);
-        }
-    }
-
-    info.cameraInfo.xLook += Look[0] * moveSensivity;
-    info.cameraInfo.yLook += Look[1] * moveSensivity;
-    info.cameraInfo.zLook += Look[2] * moveSensivity;
-    info.cameraInfo.xPos += Pos[0] * moveSensivity;
-    info.cameraInfo.yPos += Pos[1] * moveSensivity;
-    info.cameraInfo.zPos += Pos[2] * moveSensivity;
-}
-
 void renderScene(void) {
 	// clear buffers
 	int time;
@@ -410,7 +500,7 @@ void renderScene(void) {
 	glLoadIdentity();
 	gluLookAt(info.cameraInfo.xPos, info.cameraInfo.yPos, info.cameraInfo.zPos,
 		info.cameraInfo.xLook, info.cameraInfo.yLook, info.cameraInfo.zLook,
-		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.xUp);
+		info.cameraInfo.xUp, info.cameraInfo.yUp, info.cameraInfo.zUp);
 
 
 	info.lightsList.apply(GL_LIGHT0);
@@ -462,87 +552,49 @@ void renderScene(void) {
 
 // functions to process mouse events
 void processMouseButtons(int button, int state, int xx, int yy) {
-	if (cameraMode ==1)
-		yy = -yy;
+    if (state == GLUT_DOWN) {
+        if (button == GLUT_LEFT_BUTTON) {
+            startX = xx;
+            startY = yy;
+        } else if (cameraMode == 0) {
+            if (button == 3 || button == 4) {
+                //Calculates orientation vector and normalizes it
+                float cameraD[3] = {(float) (info.cameraInfo.xLook - info.cameraInfo.xPos),
+                                    (float) (info.cameraInfo.yLook - info.cameraInfo.yPos),
+                                    (float) (info.cameraInfo.zLook - info.cameraInfo.zPos)};
 
-	if (state == GLUT_DOWN)  {
-		startX = xx;
-		startY = yy;
-		if (button == GLUT_LEFT_BUTTON)
-			tracking = 1;
-		else if (button == GLUT_RIGHT_BUTTON)
-			tracking = 2;
-		else
-			tracking = 0;
-	}
-	else if (state == GLUT_UP) {
-		if (tracking == 1) {
-			alpha += (startX - xx) * sensibility;
-			beta1 += (startY - yy) * sensibility;
+                if (button == 3) { //Scroll Up
+                    float dist = sqrt(pow(cameraD[0], 2) + pow(cameraD[1], 2) + pow(cameraD[2], 2));
+                    normalize(cameraD);
+                    if (dist > moveSensivity * 10) {
+                        info.cameraInfo.xPos += cameraD[0] * moveSensivity * 10;
+                        info.cameraInfo.yPos += cameraD[1] * moveSensivity * 10;
+                        info.cameraInfo.zPos += cameraD[2] * moveSensivity * 10;
+                    }
+                } else { //Scroll Down
+                    normalize(cameraD);
+                    info.cameraInfo.xPos -= cameraD[0] * moveSensivity * 10;
+                    info.cameraInfo.yPos -= cameraD[1] * moveSensivity * 10;
+                    info.cameraInfo.zPos -= cameraD[2] * moveSensivity * 10;
+                }
 
-			if (beta1 > M_PI_2-0.1)
-				beta1 = M_PI_2-0.1;
-			else if (beta1 < -M_PI_2+0.1)
-				beta1 = -M_PI_2+0.1;
-		}
-		else if (tracking == 2) {
-
-			r -= startY - yy;
-			if (r < 1)
-				r = 1.0;
-		}
-		tracking = 0;
-	}
+                lastCenterModeRadius = calcCamRadius();
+            }
+        }
+    }
 }
 
 
 void processMouseMotion(int xx, int yy) {
-	if (cameraMode ==1)
-		yy = -yy;
-
-	float deltaX, deltaY;
-	float alphaAux, betaAux;
-	float rAux;
-
-	if (!tracking)
-		return;
-
-	deltaX = startX - xx;
-	deltaY = startY - yy;
-
-	if (tracking == 1) {
-
-		alphaAux = alpha + deltaX * sensibility;
-		betaAux = beta1 + deltaY * sensibility;
-
-		if (betaAux > M_PI_2-0.1)
-			betaAux = M_PI_2-0.1;
-		else if (betaAux < -M_PI_2+0.1)
-			betaAux = -M_PI_2+0.1;
-
-		rAux = r;
-	}
-	else if (tracking == 2) {
-
-		alphaAux = alpha;
-		betaAux = beta1;
-		rAux = r - deltaY;
-		if (rAux < 1)
-			rAux = 1;
-	}
-
-    if(cameraMode == 0) {
-        info.cameraInfo.xPos = info.cameraInfo.xLook + rAux * sin(alphaAux) * cos(betaAux);
-        info.cameraInfo.zPos = info.cameraInfo.zLook + rAux * cos(alphaAux) * cos(betaAux);
-        info.cameraInfo.yPos = info.cameraInfo.yLook + rAux * sin(betaAux);
-    }
-    else if (tracking == 1){ //cameraMode == 1
-        info.cameraInfo.xLook = info.cameraInfo.xPos + rAux * sin(alphaAux + M_PI) * cos(-betaAux);
-        info.cameraInfo.zLook = info.cameraInfo.zPos + rAux * cos(alphaAux + M_PI) * cos(-betaAux);
-        info.cameraInfo.yLook = info.cameraInfo.yPos + rAux * sin(-betaAux);
-    }
-
-    //glutPostRedisplay();
+    myalpha = ((float) (startX - xx)) * cameraSensivity;
+    float angY = mybeta + ((float) (startY - yy)) * cameraSensivity;
+    if (angY > M_PI) angY = M_PI - 0.01;
+    else if (angY < 0) angY = 0.01;
+    startX = xx;
+    startY = yy;
+    mybetadif = angY - mybeta;
+    mybeta += mybetadif;
+    calculateNewCameraParam();
 }
 
 // function to process keyboard events
@@ -561,14 +613,34 @@ void defaultKeyFunc(unsigned char key, int x, int y) {
     }
     else if (key == 'm' || key == 'M') {
 		if(cameraMode == 0){
+            lastCenterModeRadius = calcCamRadius();
+            mybeta = M_PI - mybeta;
             cameraMode = 1;
             glutSetWindowTitle("CG@13 - FPS Mode");
         }
         else{
             cameraMode = 0;
+            mybeta = M_PI - mybeta;
+
+            //Adjust look point to avoid jumps
+            float cameraD[3] = {(float) (info.cameraInfo.xLook - info.cameraInfo.xPos),
+                                (float) (info.cameraInfo.yLook - info.cameraInfo.yPos),
+                                (float) (info.cameraInfo.zLook - info.cameraInfo.zPos)};
+            normalize(cameraD);
+            info.cameraInfo.xLook = info.cameraInfo.xPos + lastCenterModeRadius * cameraD[0];
+            info.cameraInfo.yLook = info.cameraInfo.yPos + lastCenterModeRadius * cameraD[1];
+            info.cameraInfo.zLook = info.cameraInfo.zPos + lastCenterModeRadius * cameraD[2];
+
             glutSetWindowTitle("CG@13");
         }
 	}
+    else if (key == 'j' || key == 'J'){
+        cameraSensivity += cameraSensivity * 0.01f;
+    }
+    else if (key == 'k' || key == 'K'){
+        if (cameraSensivity > 0.001)
+            cameraSensivity -= cameraSensivity * 0.01f;
+    }
 }
 
 void defaultKeyUpFunc(unsigned char key, int x, int y){
@@ -581,7 +653,7 @@ int main(int argc, char** argv) {
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(wW, wH);
-	glutCreateWindow("CG@G13");
+	glutCreateWindow("CG@G13 - FPS Mode");
     
     //init GLEW
     glewInit();
@@ -620,7 +692,7 @@ int main(int argc, char** argv) {
 			cout << msg << endl;
 			return -1;
 		}
-        calculatePolarCoordinates();
+        initCameraVars(); //Calculates angle between world's up vector and camera's look vector & sets initial "fixed center mode" radius
 	}
 	else {
 		cout << "Invalid arguments" << endl;
