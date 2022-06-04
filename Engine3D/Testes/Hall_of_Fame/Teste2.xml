@@ -43,6 +43,26 @@
                 </model> 
             </models>
         </group>
+         <group>
+            <transform>
+                <translate x="-50" y="0" z= "60" />
+                <rotate angle= "90" x="-1" y = "0" z="0"/>
+                <scale x="20" y="20" z="20" />
+                 
+            </transform>
+           <models> 
+                <model file="Testes/Hall_of_Fame/teapot.3d" >
+                <texture file="Testes/Hall_of_Fame/teapot2.jpg" />
+                <color>
+                    <diffuse R="230" G="230" B="230"/>
+                    <ambient R="0" G="0" B="0"/>
+                    <specular R="0" G="0" B="0"/>
+                    <emissive R="0" G="0" B="0"/>
+                    <shininess value="0"/>
+                </color>    
+                </model> 
+            </models>
+        </group>
         <group>
             <transform>
                 <translate x="0" y="230" z= "-1500" />
@@ -61,7 +81,47 @@
                 </model> 
             </models>
         </group>    
-        </group>  
+        </group>
+        <group>
+            <transform>
+                
+                <translate x ="0" y="5" z="-95"/>
+                <rotate angle="90" x="1" y ="0" z = "0" />
+                
+            </transform>
+        1   <models> 
+                <model file="Testes/Hall_of_Fame/parede.3d" >
+                <texture file = "Testes/Hall_of_Fame/wall.jpg"/>
+                <color>
+                    <diffuse R="45" G="45" B="45"/>
+                    <ambient R="0" G="0" B="0"/>
+                    <specular R="0" G="0" B="0"/>
+                    <emissive R="0" G="0" B="0"/>
+                    <shininess value="0"/>
+                </color>    
+                </model> 
+            </models>
+        </group>
+         <group>
+            <transform>
+                
+                <translate x ="0" y="5" z="5"/>
+                <rotate angle="90" x="-1" y ="0" z = "0" />
+                
+            </transform>
+        1   <models> 
+                <model file="Testes/Hall_of_Fame/parede.3d" >
+                <texture file = "Testes/Hall_of_Fame/wall.jpg"/>
+                <color>
+                    <diffuse R="45" G="45" B="45"/>
+                    <ambient R="0" G="0" B="0"/>
+                    <specular R="0" G="0" B="0"/>
+                    <emissive R="0" G="0" B="0"/>
+                    <shininess value="0"/>
+                </color>    
+                </model> 
+            </models>
+        </group>    
         <group>
            <models> 
                 <model file="Testes/Hall_of_Fame/parede.3d" >
@@ -234,7 +294,7 @@
                 <translate x="5" y="5" z="0" />
                 <rotate angle="90" x="0" y ="0" z = "1" />
             </transform>
-        1   <models> 
+           <models> 
                 <model file="Testes/Hall_of_Fame/parede.3d" >
                 <texture file = "Testes/Hall_of_Fame/wall.jpg"/>
                 <color>
@@ -411,7 +471,7 @@
                     <transform>
                         <translate x ="0" y="0" z="-10"/>
                     </transform>
-                1   <models> 
+                   <models> 
                         <model file="Testes/Hall_of_Fame/parede.3d" >
                         <texture file = "Testes/Hall_of_Fame/wall.jpg"/>
                         <color>
