@@ -19,7 +19,7 @@
             </transform>
             <group>
                 <models>
-                    <model file="/Testes/Test1/parede.3d" >
+                    <model file="Testes/Test1/parede.3d" >
                         <color>
                             <diffuse R="50" G="150" B="150"/>
                             <ambient R="50" G="150" B="150"/>
@@ -36,7 +36,7 @@
                         <rotate angle="90" x="1" y ="0" z = "0" />
                     </transform>
                     <models>
-                        <model file="/Testes/Test1/parede.3d" >
+                        <model file="Testes/Test1/parede.3d" >
                             <color>
                                 <diffuse R="50" G="50" B="150"/>
                                 <ambient R="50" G="50" B="150"/>
@@ -54,7 +54,7 @@
                         <rotate angle="90" x="0" y ="0" z = "1" />
                     </transform>
                     <models>
-                        <model file="/Testes/Test1/parede.3d" >
+                        <model file="Testes/Test1/parede.3d" >
                             <color>
                                 <diffuse R="50" G="150" B="50"/>
                                 <ambient R="50" G="150" B="50"/>
@@ -72,7 +72,7 @@
                         <rotate angle="90" x="0" y ="0" z = "-1" />
                     </transform>
                     <models>
-                        <model file="/Testes/Test1/parede.3d" >
+                        <model file="Testes/Test1/parede.3d" >
                             <color>
                                 <diffuse  R="127" G="0" B="255"/>
                                 <ambient R="127" G="0" B="255"/>
@@ -90,7 +90,7 @@
                         <rotate angle="90" x="-1" y ="0" z = "0" />
                     </transform>
                     <models>
-                        <model file="/Testes/Test1/parede.3d" >
+                        <model file="Testes/Test1/parede.3d" >
                             <color>
                                 <diffuse  R="150" G="50" B="50"/>
                                 <ambient R="150" G="50" B="50"/>
@@ -108,7 +108,7 @@
                         <rotate angle="180" x="1" y ="0" z = "0" />
                     </transform>
                     <models>
-                        <model file="/Testes/Test1/parede.3d" >
+                        <model file="Testes/Test1/parede.3d" >
                             <color>
                                 <diffuse R="150" G="150" B="50"/>
                                 <ambient R="150" G="150" B="50"/>
@@ -135,7 +135,7 @@
                         <scale x = "0.05" y = "0.05" z = "0.05"/>
                     </transform>
                     <models>
-                        <model file="/Testes/Test1/cone.3d" >
+                        <model file="Testes/Test1/cone.3d" >
                             <color>
                                 <diffuse R="10" G="10" B="255"/>
                                 <ambient R="10" G="10" B="255"/>
@@ -150,7 +150,7 @@
                             <scale x="4" y="4" z="4"/>
                         </transform>
                         <models>
-                            <model file="/Testes/Test1/sphere.3d" >
+                            <model file="Testes/Test1/sphere.3d" >
                                 <color>
                                     <diffuse R="255" G="255" B="255"/>
                                     <ambient R="255" G="255" B="255"/>
@@ -177,7 +177,7 @@
                         <scale x = "0.05" y = "0.05" z = "0.05"/>
                     </transform>
                     <models>
-                        <model file="/Testes/Test1/cone.3d" >
+                        <model file="Testes/Test1/cone.3d" >
                             <color>
                                 <diffuse R="10" G="10" B="255"/>
                                 <ambient R="10" G="10" B="255"/>
@@ -192,7 +192,7 @@
                             <scale x="4" y="4" z="4"/>
                         </transform>
                         <models>
-                            <model file="/Testes/Test1/sphere.3d" >
+                            <model file="Testes/Test1/sphere.3d" >
                                 <color>
                                     <diffuse R="255" G="255" B="255"/>
                                     <ambient R="255" G="255" B="255"/>
@@ -218,7 +218,7 @@
                     <rotate angle="90" x="-1" y ="0" z = "0" />
                 </transform>
                 <models>
-                    <model file="/Testes/Test1/box.3d" >
+                    <model file="Testes/Test1/box.3d" >
                         <color>
                             <diffuse R="100" G="100" B="100"/>
                             <ambient R="60" G="60" B="60"/>
@@ -236,7 +236,7 @@
                     <rotate angle="90" x="-1" y ="0" z = "0" />
                 </transform>
                 <models>
-                    <model file="/Testes/Test1/box.3d" >
+                    <model file="Testes/Test1/box.3d" >
                         <color>
                             <diffuse R="100" G="100" B="100"/>
                             <ambient R="60" G="60" B="60"/>
@@ -254,7 +254,7 @@
                     <rotate angle="90" x="-1" y ="0" z = "0" />
                 </transform>
                 <models>
-                    <model file="/Testes/Test1/box.3d" >
+                    <model file="Testes/Test1/box.3d" >
                         <color>
                             <diffuse R="100" G="100" B="100"/>
                             <ambient R="60" G="60" B="60"/>
@@ -272,7 +272,7 @@
                     <rotate angle="90" x="-1" y ="0" z = "0" />
                 </transform>
                 <models>
-                    <model file="/Testes/Test1/box.3d" >
+                    <model file="Testes/Test1/box.3d" >
                         <color>
                             <diffuse R="100" G="100" B="100"/>
                             <ambient R="60" G="60" B="60"/>
@@ -290,7 +290,7 @@
                     <rotate angle="90" x="-1" y ="0" z = "0" />
                 </transform>
                 <models>
-                    <model file="/Testes/Test1/box.3d" >
+                    <model file="Testes/Test1/box.3d" >
                         <color>
                             <diffuse R="100" G="100" B="100"/>
                             <ambient R="60" G="60" B="60"/>
@@ -313,7 +313,7 @@
                     <rotate angle="90" x="-1" y ="0" z = "0" />
                 </transform>
                 <models>
-                    <model file="/Testes/Test1/sphere.3d" >
+                    <model file="Testes/Test1/sphere.3d" >
                         <color>
                             <diffuse R="100" G="100" B="100"/>
                             <ambient R="60" G="60" B="60"/>
@@ -331,7 +331,7 @@
                     <translate x="0" y="1" z="0" />
                 </transform>
                 <models>
-                    <model file="/Testes/Test1/cone.3d" >
+                    <model file="Testes/Test1/cone.3d" >
                         <color>
                             <diffuse R="100" G="100" B="100"/>
                             <ambient R="60" G="60" B="60"/>
