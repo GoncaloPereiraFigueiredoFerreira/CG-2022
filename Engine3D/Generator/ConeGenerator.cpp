@@ -27,7 +27,7 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
         textB.push_back(0.0f);
     }
 
-    cos_y = atan(height/base);
+    cos_y = M_PI_2 - atan(height/base);
     normal_y = sin(cos_y);
     cos_y = cos(cos_y);
     normal_y = normal_y;
