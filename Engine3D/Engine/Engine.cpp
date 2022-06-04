@@ -39,7 +39,14 @@ int nmodels = 0;
 
 float emissive_def[4] = {0.0f,0.0f,0.0f,1.0f};
 float emissive_full[4] = {1.0f,1.0f,1.0f,1.0f};
+float red[3] = {1.0f,0.0f,0.0f};
+float green[3] = {0.0f,1.0f,0.0f};
+float blue[3] = {0.0f,0.0f,1.0f};
+float diffuse[3] = {0.8f, 0.8f, 0.8f};
+float ambient[3] = {0.2f, 0.2f, 0.2f};
+float zeros[3] = {0.0f,0.0f,0.0f};
 int shininess = 0;
+char show_box = false;
 
 xmlInfo info;
 vector<Group> groups;
@@ -387,37 +394,39 @@ void recursiveDraw(Group tmpGroup) {
 
 			tmpGroup.modelList[i].color->apply();
 
-			/*glBegin(GL_QUADS);
-				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
-				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
+			if(show_box){
+				glBegin(GL_QUADS);
+					glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
 
-				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
-				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
 
-				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
-				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
 
-				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
-				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
 
-				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
-				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[4] + 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[4] + 0.1);
 
-				glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
-				glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
-				glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
-				glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
-			glEnd();*/
+					glVertex3f(m->cube[0] + 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
+					glVertex3f(m->cube[0] + 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[3] - 0.1,m->cube[5] - 0.1);
+					glVertex3f(m->cube[1] - 0.1,m->cube[2] + 0.1,m->cube[5] - 0.1);
+				glEnd();
+			}
 
 	        glBindBuffer(GL_ARRAY_BUFFER, m->vertices);
 	        glVertexPointer(3, GL_FLOAT, 0, 0);
@@ -502,19 +511,27 @@ void renderScene(void) {
 
     //Desenho dos eixos
 	glBegin(GL_LINES);
-	// X axis in red
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(100.0f, 0.0f, 0.0f);
-	// Y Axis in Green
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 100.0f, 0.0f);
-	// Z Axis in Blue
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 100.0f);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, zeros);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, zeros);
+		// X axis in red
+    	glMaterialfv(GL_FRONT, GL_EMISSION, red);
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(100.0f, 0.0f, 0.0f);
+		// Y Axis in Green
+		glMaterialfv(GL_FRONT, GL_EMISSION, green);
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 100.0f, 0.0f);
+		// Z Axis in Blue
+		glMaterialfv(GL_FRONT, GL_EMISSION, blue);
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 100.0f);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 	glEnd();
+	glMaterialfv(GL_FRONT, GL_EMISSION, emissive_def);
 
 	glColor3f(1.0f, 1.0f, 1.0f);
 	recursiveDraw(info.groups);
@@ -605,6 +622,9 @@ void defaultKeyFunc(unsigned char key, int x, int y) {
         if (moveSensivity > 0.1)
             moveSensivity -= 0.05;
     }
+    else if (key == 'b' || key == 'B'){
+        show_box = !show_box;
+    }
     else if (key == 'm' || key == 'M') {
 		if(cameraMode == 0){
             lastCenterModeRadius = calcCamRadius();
@@ -676,7 +696,7 @@ int main(int argc, char** argv) {
 	glEnable(GL_TEXTURE_2D);
 
 	float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
+	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
 	if (argc == 2) {
 		//Reads XML file

@@ -65,9 +65,9 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
     textB.push_back(0.5f);
     textB.push_back(0.0f);
 
-    ang = 0;
+    ang = angInc * 0.5;
     for(int i = 0; i < slices;i++){
-        ang = angInc * i;
+        ang = angInc * (float(i) + 0.5);
 
         //Coordinates of highest point
         vertexB.push_back(0);
@@ -117,9 +117,9 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
         indexB.push_back(j);
         indexB.push_back(j - 1);
 
-        indexB.push_back((stacks - 1) * slices + (j - 1));
-        indexB.push_back((stacks - 1) * slices + j);
-        indexB.push_back(verticesCount - slices + j);
+        indexB.push_back((stacks) * (slices) + (j - 1));
+        indexB.push_back((stacks) * (slices) + j);
+        indexB.push_back(verticesCount - slices + j - 1);
     }
 
     //da a volta aos indices
@@ -127,7 +127,7 @@ void cone(float base, float height, int slices, int stacks, vector<float>& verte
     indexB.push_back(0);
     indexB.push_back(slices - 1);
 
-    indexB.push_back(verticesCount - slices);
-    indexB.push_back((stacks - 1) * slices + (slices - 1));
-    indexB.push_back((stacks - 1) * slices);
+    indexB.push_back((stacks) * (slices) + (slices - 1));
+    indexB.push_back((stacks) * (slices));
+    indexB.push_back(verticesCount - 1);
 }
