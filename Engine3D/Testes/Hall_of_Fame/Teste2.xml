@@ -101,6 +101,55 @@
                 </color>    
                 </model> 
             </models>
+            
+            <group>
+                <transform>
+                <rotate angle="90" x="0" y ="1" z = "0" />
+                
+                <scale x="0.4" y ="0.4" z ="0.4"/>
+                <translate x="-7.5" y="0.3" z= "0"/>
+                    
+                    
+                </transform>
+                <models> 
+                <model file="Testes/Hall_of_Fame/parede.3d" >
+                <texture file = "Testes/Hall_of_Fame/porta1.png"/>
+                <color>
+                    <diffuse R="45" G="45" B="45"/>
+                    <ambient R="0" G="0" B="0"/>
+                    <specular R="0" G="0" B="0"/>
+                    <emissive R="0" G="0" B="0"/>
+                    <shininess value="0"/>
+                </color>    
+                </model> 
+            </models>
+             <group>
+                <transform>
+                
+                <translate x="10" y="0" z= "0"/>
+                
+                    
+                    
+                </transform>
+                <models> 
+                <model file="Testes/Hall_of_Fame/parede.3d" >
+                <texture file = "Testes/Hall_of_Fame/porta2.png"/>
+                <color>
+                    <diffuse R="45" G="45" B="45"/>
+                    <ambient R="0" G="0" B="0"/>
+                    <specular R="0" G="0" B="0"/>
+                    <emissive R="0" G="0" B="0"/>
+                    <shininess value="0"/>
+                </color>    
+                </model> 
+            </models>
+            </group>
+
+
+            </group>
+                
+
+
         </group>
          <group>
             <transform>
@@ -121,6 +170,51 @@
                 </color>    
                 </model> 
             </models>
+              <group>
+                <transform>
+                <rotate angle="-90" x="0" y ="1" z = "0" />
+                
+                <scale x="0.4" y ="0.4" z ="0.4"/>
+                <translate x="-7.5" y="0.3" z= "0"/>
+                    
+                    
+                </transform>
+                <models> 
+                <model file="Testes/Hall_of_Fame/parede.3d" >
+                <texture file = "Testes/Hall_of_Fame/porta1.png"/>
+                <color>
+                    <diffuse R="45" G="45" B="45"/>
+                    <ambient R="0" G="0" B="0"/>
+                    <specular R="0" G="0" B="0"/>
+                    <emissive R="0" G="0" B="0"/>
+                    <shininess value="0"/>
+                </color>    
+                </model> 
+            </models>
+             <group>
+                <transform>
+                
+                <translate x="10" y="0" z= "0"/>
+                          
+                </transform>
+                <models> 
+                <model file="Testes/Hall_of_Fame/parede.3d" >
+                <texture file = "Testes/Hall_of_Fame/porta2.png"/>
+                <color>
+                    <diffuse R="45" G="45" B="45"/>
+                    <ambient R="0" G="0" B="0"/>
+                    <specular R="0" G="0" B="0"/>
+                    <emissive R="0" G="0" B="0"/>
+                    <shininess value="0"/>
+                </color>    
+                </model> 
+            </models>
+            </group>
+
+
+            </group>
+                
+
         </group>    
         <group>
            <models> 
@@ -556,7 +650,7 @@
             </models>
             </group>
             </group>
-                                            <group>
+                <group>
                             <transform>
                                 <translate x ="0" y="0" z="-10"/>
                             </transform>
@@ -574,7 +668,7 @@
                             </models>
                         
                             
-                                                    <group>
+                            <group>
                                 <transform>
                                     <translate x ="0" y="0" z="-10"/>
                                 </transform>
