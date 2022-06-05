@@ -702,7 +702,7 @@ int main(int argc, char** argv) {
 	glEnable(GL_TEXTURE_2D);
 
 	float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
+	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
 	if (argc == 2) {
 		//Reads XML file
