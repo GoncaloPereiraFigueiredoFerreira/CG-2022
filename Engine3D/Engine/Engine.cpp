@@ -214,7 +214,7 @@ void performKeyFunctions(){
     info.cameraInfo.yPos += Pos[1] * moveSensivity;
     info.cameraInfo.zPos += Pos[2] * moveSensivity;
 }
-
+// Carrega a textura a partir de um ficheiro
 int loadTexture(std::string s) {
 
 	unsigned int t,tw,th;
@@ -344,6 +344,7 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+//Retorna a Model View Matrix
 static inline void getMPVMatrix(float *a){
 	float m[16],p[16];
 	glGetFloatv(GL_MODELVIEW_MATRIX,m);
@@ -356,6 +357,7 @@ static inline void getMPVMatrix(float *a){
 	glPopMatrix();
 }
 
+//Verificação do View Frustum Culling com recurso a ModelView Matrix
 static inline char checkDraw(float *m,float *points){
 	char flag = true;
 	float c1[4],c2[4],p1[3],p2[3];
@@ -376,6 +378,8 @@ static inline char checkDraw(float *m,float *points){
 	return flag;
 }
 
+
+//Método de desenho e aplicação de transformações aos modelos
 void recursiveDraw(Group tmpGroup) {
 
 	float matrix[16];
@@ -455,6 +459,7 @@ void recursiveDraw(Group tmpGroup) {
 	glPopMatrix();
 }
 
+//Renderização de texto
 void renderText(const std::string text,double posx, double posy) {
 	// Guardar a projeção anterior
 	glMatrixMode(GL_PROJECTION);
@@ -492,6 +497,7 @@ void renderText(const std::string text,double posx, double posy) {
 	glMaterialfv(GL_FRONT, GL_EMISSION, emissive_def);
 }
 
+// Renderizar a cena
 void renderScene(void) {
 	// clear buffers
 	int time;
@@ -696,7 +702,7 @@ int main(int argc, char** argv) {
 	glEnable(GL_TEXTURE_2D);
 
 	float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
 	if (argc == 2) {
 		//Reads XML file
