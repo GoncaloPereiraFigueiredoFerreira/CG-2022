@@ -37,9 +37,10 @@
                     </transform>
                     <models>
                         <model file="Testes/Test1/parede.3d" >
+                        <texture file ="Testes/Test1/wall.jpg"/>
                             <color>
-                                <diffuse R="50" G="50" B="150"/>
-                                <ambient R="50" G="50" B="150"/>
+                                <diffuse R="150" G="150" B="150"/>
+                                <ambient R="75" G="75" B="75"/>
                                 <specular R="255" G="255" B="255"/>
                                 <emissive R="0" G="0" B="0"/>
                                 <shininess value="100"/>
@@ -55,6 +56,7 @@
                     </transform>
                     <models>
                         <model file="Testes/Test1/parede.3d" >
+                        <texture file ="Testes/Test1/wall.jpg"/>
                             <color>
                                 <diffuse R="50" G="150" B="50"/>
                                 <ambient R="50" G="150" B="50"/>
@@ -73,9 +75,10 @@
                     </transform>
                     <models>
                         <model file="Testes/Test1/parede.3d" >
+                        <texture file ="Testes/Test1/wall.jpg"/>
                             <color>
-                                <diffuse  R="127" G="0" B="255"/>
-                                <ambient R="127" G="0" B="255"/>
+                                <diffuse  R="171" G="64" B="64"/>
+                                <ambient R="86" G="32" B="32"/>
                                 <specular R="255" G="255" B="255"/>
                                 <emissive R="0" G="0" B="0"/>
                                 <shininess value="100"/>
@@ -91,9 +94,10 @@
                     </transform>
                     <models>
                         <model file="Testes/Test1/parede.3d" >
+                        <texture file ="Testes/Test1/wall.jpg"/>
                             <color>
-                                <diffuse  R="150" G="50" B="50"/>
-                                <ambient R="150" G="50" B="50"/>
+                                <diffuse  R="171" G="64" B="64"/>
+                                <ambient R="86" G="32" B="32"/>
                                 <specular R="255" G="255" B="255"/>
                                 <emissive R="0" G="0" B="0"/>
                                 <shininess value="100"/>
@@ -109,6 +113,7 @@
                     </transform>
                     <models>
                         <model file="Testes/Test1/parede.3d" >
+                            <texture file ="Testes/Test1/stars.jpg"/>
                             <color>
                                 <diffuse R="150" G="150" B="50"/>
                                 <ambient R="150" G="150" B="50"/>
